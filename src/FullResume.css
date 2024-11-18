@@ -1,0 +1,93 @@
+.full-resume-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 70%;
+  margin-left: 15%;
+}
+
+.resume-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space between image, logo, and name */
+  background-color: #202c7c;
+  padding: 20px;
+  width: 90%;
+}
+
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.name {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+  text-align: center; /* Center-align the name */
+  margin: 0;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.resume-content {
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+}
+
+.left-column, .right-column {
+  flex: 1;
+  padding: 0px;
+}
+
+.left-column {
+  border-right: 3px solid #ddd;
+  margin-left: 0px; /* Removed left margin */
+  font-size: 1.1em; 
+  padding: o;/* Slightly larger font size */
+}
+
+.right-column {
+  margin-left: 10px;
+  font-size: 18px;
+  width: 70%; /* Removed left margin from the right column */
+}
+
+.career-objective-section p {
+  width: 60%; /* Adjusted width for better text wrapping */
+  word-wrap: break-word;
+}
+
+.internships-section, .projects-section {
+  margin-top: 20px;
+}
+
+h3 {
+  color: #a51c30;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+ul li::before {
+  content: "• ";
+  color: #a51c30;
+}
+
+.resume-logo {
+  width: 80px; /* Adjust logo size */
+  height: auto;
+  margin: 0 20px; /* Spacing between name and logo */
+}
+
+.btn{
+  margin-top: 5%;
+}
