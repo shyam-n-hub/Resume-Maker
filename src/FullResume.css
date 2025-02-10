@@ -1,29 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Jersey+15&family=Josefin+Sans:wght@100..700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Permanent+Marker&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Spicy+Rice&display=swap');
+.area{
+  background-color: gray;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
 .full-resume-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 70%;
-  margin-left: 15%;
+  width: 50%;
+  margin: auto;
+  font-family: "Josefin Sans", serif;
+  background-color: #fff;
+  height: auto;
+  overflow: hidden;
+  margin-top: 20px;
 }
 
 .resume-header {
   display: flex;
   align-items: center;
   justify-content: space-between; /* Space between image, logo, and name */
-  background-color: #202c7c;
-  padding: 20px;
-  width: 90%;
+  background-color: #120834;
+  padding: 0px;
+  width: 100%;
+  height: 150px;
+  margin: 0;
 }
 
 .profile-pic {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  margin-right: 20px;
-}
+  width: 140px;
+  height: 135px;
+  border-radius: 20px;
+  margin-left: 30px;
+  margin-top: 60px;
+  border: white 6px solid;
+  box-shadow:  rgba(0, 0, 0, 0.23) 0px 0px 1px, rgba(0, 0, 0, 0.16) 0px 4px 8px;}
 
-.name {
+.header-name {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -31,53 +48,87 @@
   color: white;
   text-align: center; /* Center-align the name */
   margin: 0;
-  font-size: 1.5em;
+  font-size: 1.7em;
+  font-weight: bold;
+
+}
+.header-subname{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+  text-align: center; /* Center-align the name */
+  margin: 0;
+  font-size: 1.2em;
   font-weight: bold;
 }
-
 .resume-content {
   display: flex;
   width: 100%;
-  max-width: 900px;
+  max-width: 100%;
+  word-wrap: break-word;
 }
 
 .left-column, .right-column {
-  flex: 1;
-  padding: 0px;
+  flex: block;
+  padding: 20px;
 }
 
 .left-column {
   border-right: 3px solid #ddd;
   margin-left: 0px; /* Removed left margin */
-  font-size: 1.1em; 
-  padding: o;/* Slightly larger font size */
+  font-size: 1.1em; /* Slightly larger font size */
+  width: 35%;
+  
 }
 
 .right-column {
   margin-left: 10px;
   font-size: 18px;
-  width: 70%; /* Removed left margin from the right column */
+  width: 65%; /* Removed left margin from the right column */
+  word-wrap: break-word;
 }
 
-.career-objective-section p {
-  width: 60%; /* Adjusted width for better text wrapping */
+.word{
+  padding: 5px;
   word-wrap: break-word;
+  gap: 5px;
+  text-align:justify;
+}
+.career-objective-section p {
+  width: 90%; /* Adjusted width for better text wrapping */
+  word-wrap: break-word;
+  text-align: justify;
+  line-height: 1.4;
+
 }
 
 .internships-section, .projects-section {
   margin-top: 20px;
+  word-wrap: break-word;
+  text-align: justify;
 }
 
-h3 {
+.resumeh2{
   color: #a51c30;
+  text-decoration: underline;
+  text-transform: uppercase;
+  font-size: 20px;
+  line-height: 1.3em;
 }
 
-ul {
+.resumeul {
   list-style-type: none;
-  padding-left: 0;
+  
+}
+.resumeul .resumeli{
+  
+  padding: 4px;
+  padding-left: 0px;
 }
 
-ul li::before {
+.resumeul .resumeli::before {
   content: "• ";
   color: #a51c30;
 }
@@ -86,8 +137,83 @@ ul li::before {
   width: 80px; /* Adjust logo size */
   height: auto;
   margin: 0 20px; /* Spacing between name and logo */
+  margin-top: 10px;
+}
+
+.paragraph{
+  font-size: 15px;
+  margin: 4px;
+  padding: 8px;
+}
+
+.para{
+  font-size: 13px;
+  padding: 0;
+  margin: 0;
+  margin-left: 15px;
+  font-weight: 500;
+}
+
+.internships-section{
+  margin: 0;
+  padding: 0;
+}
+
+.education-section .paragraph::before {
+  content: "• ";
+  color: #1c191a;
+  font-size: 30px;
+}
+
+.projects-section .paragraph::before {
+  content: "• ";
+  color: #1c191a;
+  font-size: 30px;}
+
+.internships-section .paragraph::before {
+  content: "• ";
+  color: #1c191a;
+  font-size: 30px;}
+
+.vv{
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space between image, logo, and name */
+  background-color: #120834;
+  padding: 0px;
+  width: 100%;
+  height: 30px;
+  margin: 0;
 }
 
 .btn{
-  margin-top: 5%;
+  color:lightblue;
+  background-color: rgb(16, 77, 74);
+  border-radius: 0px;
+  padding: 8px;
+  margin: 10px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+}
+.btn:hover{
+  color:rgb(7, 46, 44);
+  background-color: rgb(66, 115, 132);
+}
+
+.back-to-generate-button{
+  text-align: center;
+  color: tomato;
+  padding: 8px;
+  border: none;
+  border-radius: 0px;
+  cursor: pointer;
+  outline: none;
+  border: tomato 3px solid;
+  margin: auto;
+}
+.back-to-generate-button:hover {
+  background-color: tomato;
+  color: white;
 }

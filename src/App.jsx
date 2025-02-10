@@ -1,84 +1,97 @@
-// import React, { useState } from "react";
-// import BasicDetails from "./BasicDetails";
-// import FullResume from "./FullResume";
-// import Login from "./Login.jsx";
-// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-// import Signup from "./Signup.jsx"
-
-// function App() {
- 
-
-
-//   return (
-//     <>
-  
-// <Router>
-//       <Routes>
-//         <Route path="/" element={<Login />} />
-//         <Route path="/login" element={<Login />} />
-//         <Route path="/basicdetails" element={<BasicDetails />} />
-//         <Route path="/fullresume" element={<FullResume />} />
-//         <Route path="/signup" element={<Signup />} />
-        
-//       </Routes>
-//     </Router>
-//     </>
-    
-    
-      
-     
-
-//   );
-// }
-
-// export default App;
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import BasicDetails from "./BasicDetails";
 import FullResume from "./FullResume";
+import Home from "./Home";
+import { auth } from "./firebase";
+import Login from "./Login";
+import Admin from "./Admin"
+import Signup from "./Signup";
+import Dashboard from "./Dashboard";
 
 function App() {
-  const [showFullResume, setShowFullResume] = useState(false);
-  const [basicDetails, setBasicDetails] = useState({
-    name: "",
-    department:"",
-    phone: "",
-    email: "",
-    address: "",
-    linkedin: "",
-    github: "",
-    leetcode: "",
-    careerObjective: "",
-    college: "",
-    degree: "",
-    cgpa: "",
-    highSchool: "",
-    school: "",
-    technicalSkills: [],
-    softSkills: [],
-    extracurricular: [],
-    interests: [],
-    internships: [],
-    projects: []
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
 
-  const toggleResume = () => setShowFullResume(!showFullResume);
+  useEffect(() => {
+    const loggedInStatus = localStorage.getItem("isLoggedIn");
+    setIsLoggedIn(loggedInStatus === "true");
+  }, []);
 
-  const handleBasicDetailsChange = (details) => setBasicDetails(details);
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    localStorage.setItem("isLoggedIn", "true");
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem("isLoggedIn");
+  };
 
   return (
-    <div className="App">
-      {showFullResume ? (
-        <FullResume
-          toggleResume={toggleResume}
-          {...basicDetails}
-        />
-      ) : (
-        <BasicDetails
-          toggleResume={toggleResume}
-          onDetailsChange={handleBasicDetailsChange}
-        />
-      )}
-    </div>
+    <Router>
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "10px 20px",
+          backgroundColor: "#2d3436",
+          borderRadius: "10px",
+        }}
+      >
+        <h1 style={{ margin: 0, color: "white", fontSize: "30px" }}>Resume Maker</h1>
+        <nav style={{ display: "flex", alignItems: "center" }}>
+          <Link
+            to="/"
+            style={{
+              margin: "10px",
+              textDecoration: "none",
+              backgroundColor: "aliceblue",
+              borderRadius: "5px",
+              color: "black",
+              padding: "5px",
+              fontSize: "18px",
+            }}
+          >
+            Home
+          </Link>
+          {!isLoggedIn ? (
+            <>
+              <Link to="/signup" style={{ margin: "10px", color: "white" }}>Signup</Link>
+              <Link to="/login" style={{ margin: "10px", color: "white" }}>Login</Link>
+            </>
+          ) : (
+            <button
+              onClick={() => setShowDashboard(!showDashboard)}
+              style={{
+                marginLeft: "10px",
+                backgroundColor: "#007bff",
+                color: "white",
+                border: "none",
+                padding: "5px 15px",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              Profile
+            </button>
+          )}
+        </nav>
+      </header>
+
+      {showDashboard && <Dashboard closeDashboard={() => setShowDashboard(false)} onLogout={handleLogout} />}
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/Home" element={<Home />} />
+        <Route path="/Admin" element={<Admin/>} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route path="/signup" element={<Signup onSignup={handleLogin} />} />
+        <Route path="/basicdetails" element={<BasicDetails />} />
+        <Route path="/fullresume" element={<FullResume />} />
+      </Routes>
+    </Router>
   );
 }
 

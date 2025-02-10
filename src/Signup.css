@@ -1,0 +1,104 @@
+/* Container Styling */
+.signupbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+}
+
+.signupbox1 {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.signuph1 {
+  color: #28a745;
+  margin-bottom: 30px;
+}
+
+.signupinput {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.signupbutton {
+  width: 100%;
+  padding: 14px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.signupbutton:hover {
+  background-color: #218838;
+}
+
+.login-link {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* Message Styling */
+.signupmessage {
+  margin-top: 10px;
+  color: #fff;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 5px;
+  animation: slideIn 0.5s ease-out;
+}
+
+.signupmessage {
+  background-color: #28a745;
+}
+
+.signupmessage.error {
+  background-color: #ff4d4d;
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.signup-show{
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
+  cursor: pointer;
+}
+.signup-show-password{
+  cursor: pointer;
+}
+

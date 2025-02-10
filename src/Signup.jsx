@@ -1,54 +1,90 @@
+import { Link, useNavigate } from "react-router-dom";
+import "./Signup.css";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { auth, database } from "./firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "./firebaseConfig"; // Import Firebase configuration
-import { getDatabase, ref, set } from "firebase/database"; // Import Realtime Database functions
+import { ref, set } from "firebase/database";
 
-function Signup() {
+function Signup({ onSignup }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
+  const adminEmail = "abcd1234@gmail.com";
+
+  const handleSignup = (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) return alert("Passwords do not match");
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const userId = userCredential.user.uid;
-
-      // Save user data to Realtime Database
-      const database = getDatabase();
-      await set(ref(database, `users/${userId}`), {
-        name: name,
-        email: email,
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        setMessage("Account Created Successfully! Redirecting...");
+        setTimeout(() => {
+          onSignup();
+          if (email === adminEmail) {
+            navigate("/Admin");
+          } else {
+            navigate("/basicdetails");
+          }
+        }, 2000);
+      })
+      .catch(() => {
+        setMessage("Failed to create account. Please try again.");
+        setTimeout(() => setMessage(""), 4000);
       });
-
-      navigate("/basicdetails"); // Redirect after signup
-    } catch (error) {
-      alert(error.message);
-    }
   };
 
   return (
-    <div className="auth-form-container">
-      <h2 className="login">Signup</h2>
-      <form onSubmit={handleSignup} className="formsubmit">
-        <input className="email" type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
-        <input className="email" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input className="email" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <input className="email"
-          type="password"
-          placeholder="Re-enter Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+    <div className="signupbox">
+      <form className="signupbox1" onSubmit={handleSignup}>
+        <h1 className="signuph1">Signup</h1>
+        <input
+          className="signupinput"
+          type="text"
+          placeholder="Enter Your Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           required
         />
-        <button className="submit"  type="submit">Signup</button>
+        <input
+          className="signupinput"
+          type="email"
+          placeholder="Enter Your Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <div className="password-container">
+          <input
+            className="signupinput"
+            type={showPassword ? "text" : "password"}
+            placeholder="Create Your Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          
+        </div>
+        <div className="signup-show">
+        <label className="signup-show-password">
+            <input
+              type="checkbox"
+              checked={showPassword}
+              onChange={(e) => setShowPassword(e.target.checked)}
+            />
+            Show Password
+          </label>
+        </div>
+        <button type="submit" className="signupbutton">
+          Sign Up
+        </button>
+        {message && <div className="signupmessage">{message}</div>}
+        <p className="login-link">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
       </form>
-      <button className="submit" onClick={() => navigate("/login")}>Go to Login</button>
     </div>
   );
 }
