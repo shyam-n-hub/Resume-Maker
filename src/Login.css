@@ -172,4 +172,112 @@
   align-items: center;
   margin-top: 10px;
 } */
+/* Login Box Styling */
+/* .loginbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.loginbox1 {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.loginh1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.logininput {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+.password-container {
+  position: relative;
+}
+
+.login-show-password {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  color: #666;
+}
+
+.forgotpasswordlink {
+  color: #3498db;
+  cursor: pointer;
+}
+
+.forgotpasswordlink:hover {
+  text-decoration: underline;
+}
+
+.loginbutton {
+  background-color: #6c5ce7;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s;
+}
+
+.loginbutton:hover {
+  background-color: #4b47b8;
+}
+
+.signup-link {
+  margin-top: 15px;
+  font-size: 1rem;
+}
+
+.reset-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reset-modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+} */
+
+/* .reset-email-input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.reset-button,
+.cancel-button {
+  background-color: #6c5ce7;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  margin: 5px;
+  cursor: pointer;
+} */
 

@@ -4,7 +4,6 @@ import { auth } from "./firebase";
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
-  confirmPasswordReset,
 } from "firebase/auth";
 import "./Login.css";
 
@@ -16,7 +15,8 @@ function Login({ onLogin }) {
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const navigate = useNavigate();
-  const adminEmail = "abcd1234@gmail.com";
+
+  const adminEmails = ["admin1@example.com", "admin2@example.com", "admin3@example.com"];
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -26,7 +26,7 @@ function Login({ onLogin }) {
         setMessage("Login Successful! Redirecting...");
         setTimeout(() => {
           onLogin();
-          if (email === adminEmail) {
+          if (adminEmails.includes(email)) {
             navigate("/Admin");
           } else {
             navigate("/basicdetails");
@@ -85,10 +85,9 @@ function Login({ onLogin }) {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-         
         </div>
         <div className="login-show">
-        <label className="login-show-password">
+          <label className="login-show-password">
             <input
               type="checkbox"
               checked={showPassword}
@@ -97,8 +96,8 @@ function Login({ onLogin }) {
             Show Password
           </label>
           <p className="forgotpasswordlink" onClick={handleForgotPassword}>
-          Forgot Password?
-        </p>
+            Forgot Password?
+          </p>
         </div>
         <button type="submit" className="loginbutton">
           Login
@@ -109,11 +108,8 @@ function Login({ onLogin }) {
         <p className="signup-link">
           Don’t have an account? <Link to="/signup">Create Account</Link>
         </p>
-
-        
       </form>
 
-      {/* Reset Password Modal */}
       {showResetModal && (
         <div className="reset-modal">
           <div className="reset-modal-content">

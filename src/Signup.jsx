@@ -13,7 +13,7 @@ function Signup({ onSignup }) {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const adminEmail = "abcd1234@gmail.com";
+  const adminEmails = ["admin1@example.com", "admin2@example.com", "admin3@example.com"];
 
   const handleSignup = (e) => {
     e.preventDefault();
@@ -23,7 +23,7 @@ function Signup({ onSignup }) {
         setMessage("Account Created Successfully! Redirecting...");
         setTimeout(() => {
           onSignup();
-          if (email === adminEmail) {
+          if (adminEmails.includes(email)) {
             navigate("/Admin");
           } else {
             navigate("/basicdetails");
@@ -65,10 +65,9 @@ function Signup({ onSignup }) {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          
         </div>
         <div className="signup-show">
-        <label className="signup-show-password">
+          <label className="signup-show-password">
             <input
               type="checkbox"
               checked={showPassword}

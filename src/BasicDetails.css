@@ -7,16 +7,23 @@
   background-repeat: no-repeat;
   margin-top: 0;
 } */
+ *{
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+ }
 .basicheaderfirst{
   font-size: 17px;
   background-image: url("blue.jpg");
   background-position: fixed;
   background-size: cover;
-  background-repeat: no-repeat;  box-sizing: border-box;
+  background-repeat: no-repeat; 
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  border-radius: 7px;
+  border-radius: 0px;
+  box-sizing: border-box;
 }
 .basicheader {
   width: 50%;
@@ -41,8 +48,8 @@
   margin-bottom: 20px;
 }
 
-.binput[type="text"],
-.binput[type="email"],
+.binput1[type="text"],
+.binput1[type="email"],
 textarea.careerobjective {
   width: 100%;
   padding: 12px;
@@ -52,9 +59,11 @@ textarea.careerobjective {
   font-size: 16px;
   color: black;
 }
-
-.binput[type="text"]:focus,
-.binput[type="email"]:focus,
+textarea.careerobjective{
+  width: 100%;
+}
+.binput1[type="text"]:focus,
+.binput1[type="email"]:focus,
 textarea:focus {
   border-color: #007bff;
   outline: none;

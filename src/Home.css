@@ -1,292 +1,52 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Home Container
+.home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+  background-image: url("back.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 10px;
 }
 
+/* Titles */
+/* .home-title,
+.admin-title {
+  font-size: 3rem;
+  color: black;
+  margin-bottom: 10px;
+  text-align: center;
+} */
 
-/* 
+/* Descriptions */
+/* .home-description,
+.admin-description {
+  font-size: 1.2rem;
+  color: #495057;
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 30px;
+} */
 
-import React, { useEffect, useState } from "react";
-import { ref, listAll, getDownloadURL } from "firebase/storage";
-import { onAuthStateChanged } from "firebase/auth";
-import { storage, auth } from "./firebase";
-import "./dashboard.css";
-
-function Dashboard({ closeDashboard }) {
-  const [resumeUrls, setResumeUrls] = useState([]);
-  const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    if (userId) {
-      const userResumesRef = ref(storage, `resumes/${userId}`);
-      listAll(userResumesRef)
-        .then((result) => {
-          const urlPromises = result.items.map((itemRef) =>
-            getDownloadURL(itemRef)
-          );
-          return Promise.all(urlPromises);
-        })
-        .then((urls) => {
-          setResumeUrls(urls);
-        })
-        .catch((error) => {
-          console.error("Error fetching resumes:", error);
-        });
-    }
-  }, [userId]);
-
-  return (
-    <div className="dashboard-sidebar">
-      <button className="close-btn" onClick={closeDashboard}>X</button>
-      <h2>My Resumes</h2>
-      {resumeUrls.length === 0 ? (
-        <p>No resumes found.</p>
-      ) : (
-        resumeUrls.map((url, index) => (
-          <div key={index}>
-            <p><strong>Resume {index + 1}</strong></p>
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              View Resume
-            </a>
-          </div>
-        ))
-      )}
-    </div>
-  );
+/* Buttons */
+/* .home-button,
+.admin-button {
+  padding: 15px 30px;
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-export default Dashboard; it is my dashboard.jsx code in that the image should be appear that must be retrieved from firebase by the image chosen by user in basic details file and bottom of image the respected and particular user's name should be appear and email also appear by current user */
-
-
-/* 
-import React, { useState, useEffect } from "react";
-import './FullResume.css';
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import logo from "/image.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faPhone, faAddressBook, faCode } from "@fortawesome/free-solid-svg-icons";
-import { faLinkedin, faSquareGithub } from "@fortawesome/free-brands-svg-icons";
-import { storage } from "./firebase";
-import { ref, uploadBytes, getDownloadURL, updateMetadata } from "firebase/storage";
-import { getAuth } from "firebase/auth";
-import { useLocation, useNavigate } from 'react-router-dom';
-
-function FullResume() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [resumeData, setResumeData] = useState(null);
-
-  useEffect(() => {
-    if (location.state) {
-      setResumeData(location.state);
-    } else {
-      alert("No resume details found. Please fill in your details first.");
-      navigate('/basicdetails');
-    }
-  }, [location.state, navigate]);
-
-  if (!resumeData) {
-    return <div>Loading resume details...</div>;
-  }
-
-  const {
-    name = "Your Name", 
-    department = "Your Department", 
-    phone = "N/A", 
-    email = "N/A", 
-    address = "N/A",
-    linkedin = "N/A",
-    github = "N/A",
-    leetcode = "N/A",
-    careerObjective = "No objective provided",
-    college = "N/A",
-    degree = "N/A",
-    cgpa = "N/A",
-    highSchool = "N/A",
-    school = "N/A",
-    technicalSkills = [],
-    softSkills = [],
-    extracurricular = [],
-    interests = [],
-    internships = [],
-    projects = [],
-    profileImage = null
-  } = resumeData;
-
-  const downloadResume = () => {
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
-
-    if (!currentUser) {
-      alert("User not authenticated. Please log in.");
-      return;
-    }
-
-    const userId = currentUser.uid;
-    const resumeElement = document.querySelector(".full-resume-container");
-    const scale = 2;
-
-    setLoading(true);
-
-    html2canvas(resumeElement, {
-      scale: scale,
-      useCORS: true,
-      ignoreElements: el => el.tagName === 'BUTTON',
-    }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210;
-      const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight > pageHeight ? pageHeight : imgHeight);
-
-      const pdfBlob = pdf.output("blob");
-
-      const storageRef = ref(storage, `resumes/${userId}/${name}.pdf`);
-
-      uploadBytes(storageRef, pdfBlob, { contentType: "application/pdf" })
-        .then(async (uploadResult) => {
-          const metadata = {
-            customMetadata: {
-              name: name,
-              email: email,
-            },
-          };
-          await updateMetadata(uploadResult.ref, metadata);
-
-          const downloadURL = await getDownloadURL(storageRef);
-          console.log("Resume successfully uploaded at:", downloadURL);
-          alert("Resume uploaded to Firebase successfully!");
-
-          const link = document.createElement("a");
-          link.href = downloadURL;
-          link.download = `${name}_Resume.pdf`;
-          link.click();
-        })
-        .catch((error) => {
-          console.error("Error uploading resume: ", error);
-        })
-        .finally(() => setLoading(false));
-    });
-  };
-
-  const toggleResume = () => {
-    navigate('/basicdetails');
-  };
-
-  return (
-    <div className="area">
-      <div className="full-resume-container">
-        <div className="resume-header">
-          {profileImage && <img src={profileImage} alt="Profile" className="profile-pic" />}
-          <div className="header-name">
-            <h1 className="header-name">{name}</h1>
-            <br />
-            <h3 className="header-subname">{department}</h3>
-          </div>
-          <img src={logo} alt="Logo" className="resume-logo" />
-        </div>
-
-        <div className="resume-content">
-          {/* Left Column */
-          /* <div className="left-column">
-            <section className="contact-section">
-              <h2 className="resumeh2">My Contact</h2>
-              <p className="word"><strong><FontAwesomeIcon icon={faEnvelope} /></strong> {email}</p>
-              <p className="paragraph"><strong><FontAwesomeIcon icon={faPhone} /></strong> {phone}</p>
-              <p className="paragraph"><strong><FontAwesomeIcon icon={faAddressBook} /></strong> {address}</p>
-              <p className="paragraph"><strong><FontAwesomeIcon icon={faLinkedin} /></strong> {linkedin}</p>
-              <p className="paragraph"><strong><FontAwesomeIcon icon={faSquareGithub} /></strong> {github}</p>
-              <p className="paragraph"><strong><FontAwesomeIcon icon={faCode} /></strong> {leetcode}</p>
-            </section>
-
-            <section className="technical-skills-section">
-              <h2 className="resumeh2">Technical Skills</h2>
-              <ul className="resumeul">
-                {technicalSkills.map((skill, index) => <li className="resumeli" key={index}>{skill}</li>)}
-              </ul>
-            </section>
-
-            <section className="soft-skills-section">
-              <h2 className="resumeh2">Soft Skills</h2>
-              <ul className="resumeul">
-                {softSkills.map((skill, index) => <li className="resumeli" key={index}>{skill}</li>)}
-              </ul>
-            </section>
-
-            <section className="extra-curricular-section">
-              <h2 className="resumeh2">Extra-Curricular Activities</h2>
-              <ul className="resumeul">
-                {extracurricular.map((activity, index) => <li className="resumeli" key={index}>{activity}</li>)}
-              </ul>
-            </section>
-
-            <section className="interests-section">
-              <h2 className="resumeh2">Areas of Interest</h2>
-              <ul className="resumeul">
-                {interests.map((interest, index) => <li className="resumeli" key={index}>{interest}</li>)}
-              </ul>
-            </section>
-          </div> */
-
-          /* {Right Column } */
-          /* <div className="right-column">
-            <section className="career-objective-section">
-              <h2 className="resumeh2">Career Objective</h2>
-              <p className="car-para">{careerObjective}</p>
-            </section>
-
-            <section className="education-section">
-              <h2 className="resumeh2">Education Background</h2>
-              <p className="paragraph"><strong>{college}</strong></p>
-              <h5 className="para">-{degree}, CGPA: {cgpa}</h5>
-              <p className="paragraph"><strong>{highSchool}</strong></p>
-              <h5 className="para">-{school}</h5>
-            </section>
-
-            <section className="internships-section">
-              <h2 className="resumeh2">Internships/Workshops</h2>
-              {internships.map((internship, index) => (
-                <div key={index}>
-                  <p className="paragraph"><strong>{internship.name}</strong></p>
-                  <h5 className="para">{internship.description}</h5>
-                </div>
-              ))}
-            </section>
-
-            <section className="projects-section">
-              <h2 className="resumeh2">Projects/Certifications</h2>
-              {projects.map((project, index) => (
-                <div key={index}>
-                  <p className="paragraph"><strong>{project.name}</strong></p>
-                  <h5 className="para">{project.description}</h5>
-                </div>
-              ))}
-            </section>
-          </div>
-        </div>
-
-        <div className="vv"></div>
-        <button className="btn" onClick={downloadResume} disabled={loading}>
-          {loading ? "Uploading..." : "Download Resume"}
-        </button>
-        <hr />
-        <button className="back-to-generate-button" onClick={toggleResume}>Back to Basic Details</button>
-      </div>
-    </div>
-  );
-}
-
-export default FullResume; */
+.home-button:hover,
+.admin-button:hover {
+  background-color: rgb(39, 35, 35);
+} */ 

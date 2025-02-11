@@ -171,7 +171,7 @@ function BasicDetails() {
               placeholder="Name"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
             <input
@@ -180,7 +180,7 @@ function BasicDetails() {
               placeholder="Department"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
             <input
@@ -189,7 +189,7 @@ function BasicDetails() {
               placeholder="Phone"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
             <input
@@ -198,7 +198,7 @@ function BasicDetails() {
               placeholder="Email"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
             <input
@@ -207,7 +207,7 @@ function BasicDetails() {
               placeholder="Address"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
             <input
@@ -216,7 +216,7 @@ function BasicDetails() {
               placeholder="LinkedIn"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
             <input
@@ -225,7 +225,7 @@ function BasicDetails() {
               placeholder="GitHub"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
             <input
@@ -234,7 +234,7 @@ function BasicDetails() {
               placeholder="Leetcode"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
 
@@ -253,7 +253,7 @@ function BasicDetails() {
               placeholder="College"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
             <input
@@ -262,7 +262,7 @@ function BasicDetails() {
               placeholder="Degree"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
             <input
@@ -271,7 +271,7 @@ function BasicDetails() {
               placeholder="CGPA"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
             <input
@@ -279,7 +279,7 @@ function BasicDetails() {
               name="highSchool"
               placeholder="High School"
               onChange={handleChange}
-              className="binput"
+              className="binput1"
               required
             />
             <input
@@ -288,7 +288,7 @@ function BasicDetails() {
               placeholder="School"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput1"
               required
             />
           </form>

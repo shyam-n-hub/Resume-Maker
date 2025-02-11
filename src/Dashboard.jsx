@@ -43,10 +43,10 @@ function Dashboard({ closeDashboard, onLogout }) {
       }
     });
 
-    // Handle click outside to close the dashboard
+    // Handle click outside to close the dashboard smoothly
     const handleClickOutside = (event) => {
       if (dashboardRef.current && !dashboardRef.current.contains(event.target)) {
-        closeDashboard();
+        handleClose();
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
