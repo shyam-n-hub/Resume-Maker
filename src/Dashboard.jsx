@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ref as storageRef, getDownloadURL } from "firebase/storage";
-import { ref as dbRef, get, child } from "firebase/database";
+import { ref as dbRef, get } from "firebase/database";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { storage, auth, database } from "./firebase";
@@ -8,7 +8,11 @@ import "./dashboard.css";
 
 function Dashboard({ closeDashboard, onLogout }) {
   const [resumeUrl, setResumeUrl] = useState(null);
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState({
+    name: "User",
+    email: "",
+    profileImage: "/default-image.jpg", // Default image if not found
+  });
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -16,52 +20,53 @@ function Dashboard({ closeDashboard, onLogout }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userEmail = user.email;
-
-        // Fetch user profile data from Realtime Database
-        const userRef = dbRef(database, `users/${user.uid}`);
-        get(child(userRef, "/"))
-          .then((snapshot) => {
-            if (snapshot.exists()) {
-              const userInfo = snapshot.val();
-              setUserData({
-                name: userInfo.name || "User",
-                email: userEmail,
-                profileImage: userInfo.profileImage || "default-image.jpg",
-              });
-            }
-          })
-          .catch((error) => console.error("Error fetching user data:", error));
+        try {
+          // Fetch user data from Firebase Realtime Database
+          const userRef = dbRef(database, `users/${user.uid}`);
+          const snapshot = await get(userRef);
+          if (snapshot.exists()) {
+            const userInfo = snapshot.val();
+            setUserData({
+              name: userInfo.name || "User",
+              email: userInfo.email,
+              profileImage: userInfo.profileImage || "https://thumbs.dreamstime.com/b/man-profile-cartoon-smiling-vector-illustration-graphic-design-135443492.jpg",
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
 
         // Fetch resume URL from Firebase Storage
-        const resumeReference = storageRef(storage, `resumes/${userEmail}.pdf`);
-        getDownloadURL(resumeReference)
-          .then((url) => setResumeUrl(url))
-          .catch(() => setResumeUrl(null));
+        try {
+          const resumeReference = storageRef(storage, `resumes/${user.email}.pdf`);
+          const url = await getDownloadURL(resumeReference);
+          setResumeUrl(url);
+        } catch {
+          setResumeUrl(null);
+        }
       }
     });
 
-    // Handle click outside to close the dashboard
+    // Close dashboard on outside click
     const handleClickOutside = (event) => {
       if (dashboardRef.current && !dashboardRef.current.contains(event.target)) {
-        closeDashboard();
+        handleClose();
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      unsubscribe();
     };
   }, [closeDashboard]);
 
   const handleClose = () => {
-    const dashboardElement = dashboardRef.current;
-    if (dashboardElement) {
-      dashboardElement.classList.add("slide-out");
-      setTimeout(() => {
-        closeDashboard();
-      }, 300); // Timeout matches the slide-out animation duration
+    if (dashboardRef.current) {
+      dashboardRef.current.classList.add("slide-out");
+      setTimeout(() => closeDashboard(), 300);
     }
   };
 
@@ -71,13 +76,13 @@ function Dashboard({ closeDashboard, onLogout }) {
       .then(() => {
         setIsLoggingOut(false);
         setShowLogoutConfirm(false);
-        setShowSuccessMessage(true); // Show success message
+        setShowSuccessMessage(true);
         setTimeout(() => {
           setShowSuccessMessage(false);
-          handleClose(); // Close the sidebar
+          handleClose();
           onLogout();
-          navigate("/"); // Redirect to the home page
-        }, 2000);
+          navigate("/Home"); // Directly go to Home page after logout
+        }, 1000);
       })
       .catch((error) => {
         setIsLoggingOut(false);
@@ -86,6 +91,7 @@ function Dashboard({ closeDashboard, onLogout }) {
   };
 
   return (
+    
     <div className="dashboard-sidebar" ref={dashboardRef}>
       <button className="close-btn" onClick={handleClose}>
         ✖
@@ -99,7 +105,7 @@ function Dashboard({ closeDashboard, onLogout }) {
             alt="Profile"
             className="dash-profile-image"
           />
-          <p className="dash-user-name">{userData.name}</p>
+          <p className="dash-user-name" style={{ textTransform: "uppercase" }}>{userData.name}</p>
           <p className="dash-user-email">{userData.email}</p>
         </>
       )}

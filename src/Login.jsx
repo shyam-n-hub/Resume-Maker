@@ -27,7 +27,7 @@ function Login({ onLogin }) {
         setTimeout(() => {
           onLogin();
           if (email === adminEmail) {
-            navigate("/Admin");
+            navigate("/admin-home");
           } else {
             navigate("/basicdetails");
           }
@@ -141,4 +141,4 @@ function Login({ onLogin }) {
   );
 }
 
-export default Login;
+export default Login; 

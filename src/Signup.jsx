@@ -17,14 +17,24 @@ function Signup({ onSignup }) {
 
   const handleSignup = (e) => {
     e.preventDefault();
-
+  
     createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
+      .then((userCredential) => {
+        const user = userCredential.user;
+  
+        // Store user data in Firebase Realtime Database
+        set(ref(database, `users/${user.uid}`), {
+          name: name,
+          email: email,
+          profileImage: "/default-image.jpg", // Default profile image
+          resumeLink: "", // Initially empty
+        });
+  
         setMessage("Account Created Successfully! Redirecting...");
         setTimeout(() => {
           onSignup();
           if (email === adminEmail) {
-            navigate("/Admin");
+            navigate("/admin-home");
           } else {
             navigate("/basicdetails");
           }
@@ -35,7 +45,7 @@ function Signup({ onSignup }) {
         setTimeout(() => setMessage(""), 4000);
       });
   };
-
+  
   return (
     <div className="signupbox">
       <form className="signupbox1" onSubmit={handleSignup}>
@@ -47,6 +57,7 @@ function Signup({ onSignup }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
+          style={{ textTransform: "uppercase" }}
         />
         <input
           className="signupinput"

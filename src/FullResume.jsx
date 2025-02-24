@@ -107,6 +107,7 @@ function FullResume() {
       }
     );
   };
+  
 
   const generateAndUploadResume = () => {
     const resumeElement = document.querySelector(".full-resume-container");
@@ -238,3 +239,6 @@ function FullResume() {
 }
 
 export default FullResume;
+
+
+/* so second thing is give the same functionality and methods with ui of header/navbar code to  fullresume code also*/

@@ -1,9 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate,Link } from "react-router-dom";
 import "./BasicDetails.css";
+import Dashboard from "./Dashboard";
 
 function BasicDetails() {
   const navigate = useNavigate();
+  const [showDashboard, setShowDashboard] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [details, setDetails] = useState({
     name: "",
     department: "",
@@ -27,6 +30,13 @@ function BasicDetails() {
     projects: [],
     profileImage: null,
   });
+  
+  useEffect(() => {
+      const storedLoginState = localStorage.getItem("isLoggedIn");
+      if (storedLoginState === "true") {
+        setIsLoggedIn(true);
+      }
+    }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,20 +44,38 @@ function BasicDetails() {
   };
 
   const handleAddItem = (field) => {
-    const newItem = prompt(`Enter a new ${field}`);
-    if (newItem) {
-      setDetails({ ...details, [field]: [...details[field], newItem] });
+    let items = [];
+    for (let i = 0; i < 2; i++) {
+      let newItem = prompt(`Enter a ${field} (at least 2 required)`);
+      if (newItem) items.push(newItem);
+      else return alert(`You must enter at least 2 ${field}!`);
     }
+    setDetails({ ...details, [field]: [...details[field], ...items] });
   };
 
   const handleAddObjectItem = (field) => {
-    const name = prompt(`Enter the name for ${field}`);
-    const description = prompt(`Enter the description for ${field}`);
-    if (name && description) {
-      setDetails({
-        ...details,
-        [field]: [...details[field], { name, description }],
-      });
+    let newItems = [];
+    for (let i = 0; i < 2; i++) {
+      let name = prompt(`Enter the name for ${field} (at least 2 required)`);
+      let description = prompt(`Enter the description for ${field}`);
+      if (name && description) newItems.push({ name, description });
+      else return alert(`You must enter at least 2 ${field}!`);
+    }
+    setDetails({ ...details, [field]: [...details[field], ...newItems] });
+  };
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  
+  const checkLoginStatus = () => {
+    const storedLoginState = localStorage.getItem("isLoggedIn");
+    if (storedLoginState === "true") {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+      navigate("/login");
     }
   };
 
@@ -61,6 +89,19 @@ function BasicDetails() {
       reader.readAsDataURL(file);
     }
   };
+
+  const handleLogout = () => {
+    localStorage.setItem("isLoggedIn", "false");
+    setIsLoggedIn(false);
+    setShowDashboard(false);
+    navigate("/login");
+  };
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, [isLoggedIn, navigate]);
+
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -96,33 +137,33 @@ function BasicDetails() {
       }
     }
 
-    if (details.technicalSkills.length === 0) {
-      alert("Please add at least one technical skill.");
+    if (details.technicalSkills.length < 0) {
+      alert("Please add at least two technical skills.");
       return false;
     }
 
-    if (details.softSkills.length === 0) {
-      alert("Please add at least one soft skill.");
+    if (details.softSkills.length < 0) {
+      alert("Please add at least two soft skills.");
       return false;
     }
 
-    if (details.extracurricular.length === 0) {
-      alert("Please add at least one extracurricular activity.");
+    if (details.extracurricular.length < 0) {
+      alert("Please add at least two extracurricular activities.");
       return false;
     }
 
-    if (details.interests.length === 0) {
-      alert("Please add at least one area of interest.");
+    if (details.interests.length < 0) {
+      alert("Please add at least two areas of interest.");
       return false;
     }
 
-    if (details.internships.length === 0) {
-      alert("Please add at least one internship.");
+    if (details.internships.length < 0) {
+      alert("Please add at least two internships.");
       return false;
     }
 
-    if (details.projects.length === 0) {
-      alert("Please add at least one project.");
+    if (details.projects.length < 0) {
+      alert("Please add at least two projects.");
       return false;
     }
 
@@ -144,11 +185,87 @@ function BasicDetails() {
 
   return (
     <div className="basicheaderfirst">
+    
+      <header className="header" style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "10px 20px",
+        backgroundColor: "#2d3436",
+        borderRadius: "10px 10px 0px 0px",
+      }}>
+        <h1 style={{ margin: 0, color: "white", fontSize: "30px" }}>Resume Maker</h1>
+        <nav style={{ display: "flex", alignItems: "center" }}>
+          {isLoggedIn ? (
+            <>
+              <Link to="/" style={{
+                margin: "10px",
+                textDecoration: "none",
+                backgroundColor: "aliceblue",
+                borderRadius: "5px",
+                color: "black",
+                padding: "5px",
+                fontSize: "18px",
+              }}>
+                Home
+              </Link>
+              <button
+                onClick={() => setShowDashboard(!showDashboard)}
+                style={{
+                  marginLeft: "10px",
+                  backgroundColor: "#007bff",
+                  color: "white",
+                  border: "none",
+                  padding: "5px 15px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Profile
+              </button>
+              
+            </>
+          ) : (
+            <>
+              <Link to="/" style={{
+                margin: "10px",
+                textDecoration: "none",
+                backgroundColor: "aliceblue",
+                borderRadius: "5px",
+                color: "black",
+                padding: "5px",
+                fontSize: "18px",
+              }}>
+                Home
+              </Link>
+              <Link to="/signup" style={{
+                margin: "10px",
+                textDecoration: "none",
+                color: "white",
+                fontSize: "18px",
+              }}>
+                Signup
+              </Link>
+              <Link to="/login" style={{
+                margin: "10px",
+                textDecoration: "none",
+                color: "white",
+                fontSize: "18px",
+              }}>
+                Login
+              </Link>
+            </>
+          )}
+        </nav>
+      </header>
+
+      {showDashboard && <Dashboard closeDashboard={() => setShowDashboard(false)} onLogout={handleLogout} />}
       <div className="basicheader">
         <div>
           <form>
             <h2 className="bheader">Enter Your Details</h2>
-            <label>
+            <label style={{color:"Black"
+            }}>
               {" "}
               Profile :
               <input
@@ -293,7 +410,7 @@ function BasicDetails() {
             />
           </form>
 
-          <h3>Technical Skills</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}}>Technical Skills</h3>
           <button
             onClick={() => handleAddItem("technicalSkills")}
             className="bbutton"
@@ -306,7 +423,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3>Soft Skills</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}}>Soft Skills</h3>
           <button onClick={() => handleAddItem("softSkills")} className="bbutton">
             Add Skill
           </button>
@@ -316,7 +433,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3>Extra-Curricular Activities</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}}>Extra-Curricular Activities</h3>
           <button
             onClick={() => handleAddItem("extracurricular")}
             className="bbutton"
@@ -329,7 +446,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3>Areas of Interest</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}}>Areas of Interest</h3>
           <button onClick={() => handleAddItem("interests")} className="bbutton">
             Add Interest
           </button>
@@ -339,7 +456,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3>Internships</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}}>Internships</h3>
           <button
             onClick={() => handleAddObjectItem("internships")}
             className="bbutton"
@@ -354,7 +471,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3>Projects</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}}>Projects</h3>
           <button
             onClick={() => handleAddObjectItem("projects")}
             className="bbutton"
