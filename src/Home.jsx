@@ -87,20 +87,35 @@ import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Dashboard from "./Dashboard"; 
 import "./Home.css";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
+
 
 
 function Home() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showDashboard, setShowDashboard] = useState(false);
-
   
+  const adminemail="abcd1234@gmail.com"
+
 
   useEffect(() => {
     const storedLoginState = localStorage.getItem("isLoggedIn");
     if (storedLoginState === "true") {
       setIsLoggedIn(true);
     }
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if(user.email===adminemail){
+          navigate("/admin-home");
+          return;
+        }
+        navigate("/basicdetails");
+      } else {
+        navigate("/login");
+      }
+    });
   }, []);
 
   

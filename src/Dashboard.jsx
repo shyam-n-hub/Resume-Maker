@@ -11,7 +11,7 @@ function Dashboard({ closeDashboard, onLogout }) {
   const [userData, setUserData] = useState({
     name: "User",
     email: "",
-    profileImage: "/default-image.jpg", // Default image if not found
+    profileImage: "/default-image.jpg", 
   });
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
