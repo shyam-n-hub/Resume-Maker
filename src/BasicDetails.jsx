@@ -198,7 +198,7 @@ function BasicDetails() {
         <nav style={{ display: "flex", alignItems: "center" }}>
           {isLoggedIn ? (
             <>
-              <Link to="/" style={{
+              <Link to="/home" style={{
                 margin: "10px",
                 textDecoration: "none",
                 backgroundColor: "aliceblue",
@@ -227,7 +227,7 @@ function BasicDetails() {
             </>
           ) : (
             <>
-              <Link to="/" style={{
+              <Link to="/home" style={{
                 margin: "10px",
                 textDecoration: "none",
                 backgroundColor: "aliceblue",
