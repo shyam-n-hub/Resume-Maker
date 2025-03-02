@@ -176,18 +176,12 @@ function BasicDetails() {
   };
 
   const handleSubmit = () => {
-    if (window.innerWidth < 1024) { 
-      alert("For the best experience, please switch to desktop site!");
-      return; 
-    }
-  
     if (validateFields()) {
       navigate("/fullresume", {
         state: { ...details },
       });
     }
   };
-  
 
   return (
     <div className="basicheaderfirst">
