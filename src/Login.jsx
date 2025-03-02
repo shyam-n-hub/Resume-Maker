@@ -104,10 +104,14 @@ function Login({ onLogin }) {
           Login
         </button>
 
-        {message && <div className="loginmessage">{message}</div>}
+        {message && (
+  <div className={`loginmessage ${message.includes("Successful") ? "success" : "error"}`}>
+    {message}
+  </div>
+)}
 
         <p className="signup-link">
-          Don’t have an account? <Link to="/signup">Create Account</Link>
+          Don’t have an account?   <Link to="/signup">Create Account</Link>
         </p>
 
         

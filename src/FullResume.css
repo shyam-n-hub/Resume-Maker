@@ -71,7 +71,7 @@
 }
 
 .left-column, .right-column {
-  flex: block;
+  flex: 1;  /* flex:block*/
   padding: 20px;
 }
 
@@ -216,4 +216,22 @@
 .back-to-generate-button:hover {
   background-color: tomato;
   color: white;
+}
+
+/* 🚀 Force Desktop View */
+@media screen and (max-width: 1024px) {
+  .full-resume-container {
+    width: 800px !important; /* Lock width */
+  }
+
+  .resume-content {
+    flex-wrap: nowrap !important;
+    display: flex !important;
+    flex-direction: row !important;
+  }
+
+  .left-column, .right-column {
+    width: auto !important;
+    flex: 1 !important;
+  }
 }

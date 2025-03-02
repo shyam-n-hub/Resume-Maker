@@ -106,7 +106,7 @@ function Dashboard({ closeDashboard, onLogout }) {
             className="dash-profile-image"
           />
           <p className="dash-user-name" style={{ textTransform: "uppercase" }}>{userData.name}</p>
-          <p className="dash-user-email">{userData.email}</p>
+          <p className="dash-user-email" style={{fontSize:"17px"}}>{userData.email}</p>
         </>
       )}
       <h3 className="dash-h3">My Resume</h3>
@@ -118,16 +118,7 @@ function Dashboard({ closeDashboard, onLogout }) {
         <p className="no-resume-text">No resume uploaded yet.</p>
       )}
       <button
-        onClick={() => setShowLogoutConfirm(true)}
-        style={{
-          marginLeft: "10px",
-          backgroundColor: "#dc3545",
-          color: "white",
-          border: "none",
-          padding: "5px 15px",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
+        onClick={() => setShowLogoutConfirm(true)} className="profile-log"
       >
         Logout
       </button>

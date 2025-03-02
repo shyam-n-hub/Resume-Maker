@@ -176,85 +176,36 @@ function BasicDetails() {
   };
 
   const handleSubmit = () => {
+    if (window.innerWidth < 1024) { 
+      alert("For the best experience, please switch to desktop site!");
+      return; 
+    }
+  
     if (validateFields()) {
       navigate("/fullresume", {
         state: { ...details },
       });
     }
   };
+  
 
   return (
     <div className="basicheaderfirst">
     
-      <header className="header" style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "10px 20px",
-        backgroundColor: "#2d3436",
-        borderRadius: "10px 10px 0px 0px",
-      }}>
-        <h1 style={{ margin: 0, color: "white", fontSize: "30px" }}>Resume Maker</h1>
-        <nav style={{ display: "flex", alignItems: "center" }}>
-          {isLoggedIn ? (
+    <header className="header">
+        <h1>Resume Maker</h1>
+        <nav className="nav">
+          <Link to="/" style={{fontSize:"16px",padding: "8px 12px",}}>Home</Link>
+
+          {!isLoggedIn ? (
             <>
-              <Link to="/home" style={{
-                margin: "10px",
-                textDecoration: "none",
-                backgroundColor: "aliceblue",
-                borderRadius: "5px",
-                color: "black",
-                padding: "5px",
-                fontSize: "18px",
-              }}>
-                Home
-              </Link>
-              <button
-                onClick={() => setShowDashboard(!showDashboard)}
-                style={{
-                  marginLeft: "10px",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                  border: "none",
-                  padding: "5px 15px",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                Profile
-              </button>
-              
+              <Link to="/signup">Signup</Link>
+              <Link to="/login">Login</Link>
             </>
           ) : (
-            <>
-              <Link to="/home" style={{
-                margin: "10px",
-                textDecoration: "none",
-                backgroundColor: "aliceblue",
-                borderRadius: "5px",
-                color: "black",
-                padding: "5px",
-                fontSize: "18px",
-              }}>
-                Home
-              </Link>
-              <Link to="/signup" style={{
-                margin: "10px",
-                textDecoration: "none",
-                color: "white",
-                fontSize: "18px",
-              }}>
-                Signup
-              </Link>
-              <Link to="/login" style={{
-                margin: "10px",
-                textDecoration: "none",
-                color: "white",
-                fontSize: "18px",
-              }}>
-                Login
-              </Link>
-            </>
+            <button onClick={() => setShowDashboard(!showDashboard)} className="profile-btn">
+              Profile
+            </button>
           )}
         </nav>
       </header>

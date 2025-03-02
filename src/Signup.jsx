@@ -69,7 +69,7 @@ function Signup({ onSignup }) {
         />
         <div className="password-container">
           <input
-            className="signupinput"
+            className="signupinput-password"
             type={showPassword ? "text" : "password"}
             placeholder="Create Your Password"
             value={password}
@@ -91,7 +91,11 @@ function Signup({ onSignup }) {
         <button type="submit" className="signupbutton">
           Sign Up
         </button>
-        {message && <div className="signupmessage">{message}</div>}
+        {message && (
+  <div className={`signupmessage ${message.includes("Successful") ? "success" : "error"}`}>
+    {message}
+  </div>
+)}
         <p className="login-link">
           Already have an account? <Link to="/login">Login</Link>
         </p>

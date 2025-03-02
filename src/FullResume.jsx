@@ -107,9 +107,13 @@ function FullResume() {
       }
     );
   };
-  
 
   const generateAndUploadResume = () => {
+    if (window.innerWidth < 768) {
+      alert("For best results, please switch to Desktop Mode or use a larger screen before generating the resume.");
+      return;
+    }
+
     const resumeElement = document.querySelector(".full-resume-container");
     const scale = 2;
     setLoading(true);
