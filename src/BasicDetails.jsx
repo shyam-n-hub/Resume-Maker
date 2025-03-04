@@ -53,6 +53,13 @@ function BasicDetails() {
     setDetails({ ...details, [field]: [...details[field], ...items] });
   };
 
+  const handleRemoveItem = (field, index) => {
+    setDetails({
+      ...details,
+      [field]: details[field].filter((_, i) => i !== index),
+    });
+  };
+
   const handleAddObjectItem = (field) => {
     let newItems = [];
     for (let i = 0; i < 2; i++) {
@@ -63,6 +70,14 @@ function BasicDetails() {
     }
     setDetails({ ...details, [field]: [...details[field], ...newItems] });
   };
+
+  const handleRemoveObjectItem = (field, index) => {
+    setDetails({
+      ...details,
+      [field]: details[field].filter((_, i) => i !== index),
+    });
+  };
+
 
   useEffect(() => {
     checkLoginStatus();
@@ -364,7 +379,7 @@ function BasicDetails() {
           </button>
           <ul>
             {details.technicalSkills.map((skill, i) => (
-              <li key={i}>{skill}</li>
+              <li key={i} className="bbutton-li">{skill}<span className="remove" onClick={() => handleRemoveItem("technicalSkills", i)}>✖</span></li>
             ))}
           </ul>
 
@@ -374,7 +389,7 @@ function BasicDetails() {
           </button>
           <ul>
             {details.softSkills.map((skill, i) => (
-              <li key={i}>{skill}</li>
+              <li key={i} className="bbutton-li">{skill} <span className="remove" onClick={() => handleRemoveItem("softSkills", i)}>✖</span></li>
             ))}
           </ul>
 
@@ -387,7 +402,7 @@ function BasicDetails() {
           </button>
           <ul>
             {details.extracurricular.map((activity, i) => (
-              <li key={i}>{activity}</li>
+              <li key={i} className="bbutton-li">{activity}<span className="remove" onClick={() => handleRemoveItem("extracurricular", i)}>✖</span></li>
             ))}
           </ul>
 
@@ -397,7 +412,7 @@ function BasicDetails() {
           </button>
           <ul>
             {details.interests.map((interest, i) => (
-              <li key={i}>{interest}</li>
+              <li key={i} className="bbutton-li">{interest}<span className="remove" onClick={() => handleRemoveItem("interests", i)}>✖</span></li>
             ))}
           </ul>
 
@@ -410,9 +425,9 @@ function BasicDetails() {
           </button>
           <ul>
             {details.internships.map((internship, i) => (
-              <li key={i}>
+              <li key={i} className="bbutton-li">
                 <strong>{internship.name}</strong>: {internship.description}
-              </li>
+                <span className="remove" onClick={() => handleRemoveObjectItem("internships", i)}>✖</span></li>
             ))}
           </ul>
 
@@ -425,9 +440,9 @@ function BasicDetails() {
           </button>
           <ul>
             {details.projects.map((project, i) => (
-              <li key={i}>
+              <li key={i} className="bbutton-li">
                 <strong>{project.name}</strong>: {project.description}
-              </li>
+                <span className="remove" onClick={() => handleRemoveObjectItem("projects", i)}>✖</span></li>
             ))}
           </ul>
 

@@ -30,6 +30,59 @@ function FullResume() {
     }
   }, [location.state, navigate]);
 
+  const handleEdit = (field, index = null) => {
+    const isConfirmed = window.confirm("Are you sure you want to edit this?");
+    if (isConfirmed) {
+      const newValue = prompt("Enter new value:", resumeData[field]);
+      if (newValue !== null) {
+        setResumeData((prevData) => {
+          if (index !== null) {
+            const updatedArray = [...prevData[field]];
+            updatedArray[index] = newValue;
+            return { ...prevData, [field]: updatedArray };
+          } else {
+            return { ...prevData, [field]: newValue };
+          }
+        });
+      }
+    }
+  };
+
+  const handleEditInternship = (index, field) => {
+    const confirmEdit = window.confirm("Do you want to edit this field?");
+    if (confirmEdit) {
+      const newValue = prompt("Enter new value:");
+      if (newValue) {
+        setResumeData((prevData) => {
+          const updatedInternships = [...prevData.internships];
+          updatedInternships[index] = {
+            ...updatedInternships[index],
+            [field]: newValue,
+          };
+          return { ...prevData, internships: updatedInternships };
+        });
+      }
+    }
+  };
+  
+  const handleEditProject = (index, field) => {
+    const confirmEdit = window.confirm("Do you want to edit this field?");
+    if (confirmEdit) {
+      const newValue = prompt("Enter new value:");
+      if (newValue) {
+        setResumeData((prevData) => {
+          const updatedProjects = [...prevData.projects];
+          updatedProjects[index] = {
+            ...updatedProjects[index],
+            [field]: newValue,
+          };
+          return { ...prevData, projects: updatedProjects };
+        });
+      }
+    }
+  };
+  
+
   if (!resumeData) {
     return <div>Loading resume details...</div>;
   }
@@ -141,9 +194,9 @@ function FullResume() {
         <div className="resume-header">
           {profileImage && <img src={profileImage} alt="Profile" className="profile-pic" />}
           <div className="header-name">
-            <h1 className="header-name">{name}</h1>
+            <h1  onClick={() => handleEdit("name")} className="header-name">{name}</h1>
             <br />
-            <h3 className="header-subname">{department}</h3>
+            <h3  onClick={() => handleEdit("department")}className="header-subname">{department}</h3>
           </div>
           <img src={logo} alt="Logo" className="resume-logo" />
         </div>
@@ -153,39 +206,39 @@ function FullResume() {
           <div className="left-column">
             <section className="contact-section">
               <h2 className="resumeh2">My Contact</h2>
-              <p className="word"><strong><FontAwesomeIcon icon={faEnvelope} /></strong> {email}</p>
-              <p className="word"><strong><FontAwesomeIcon icon={faPhone} /></strong> {phone}</p>
-              <p className="word"><strong><FontAwesomeIcon icon={faAddressBook} /></strong> {address}</p>
-              <p className="word"><strong><FontAwesomeIcon icon={faLinkedin} /></strong> {linkedin}</p>
-              <p className="word"><strong><FontAwesomeIcon icon={faSquareGithub} /></strong> {github}</p>
-              <p className="word"><strong><FontAwesomeIcon icon={faCode} /></strong> {leetcode}</p>
+              <p className="word" onClick={() => handleEdit("email")}><strong><FontAwesomeIcon icon={faEnvelope} /></strong> {email}</p>
+              <p className="word" onClick={() => handleEdit("phone")}><strong><FontAwesomeIcon icon={faPhone} /></strong> {phone}</p>
+              <p className="word" onClick={() => handleEdit("address")}><strong><FontAwesomeIcon icon={faAddressBook} /></strong> {address}</p>
+              <p className="word" onClick={() => handleEdit("linkedin")}><strong><FontAwesomeIcon icon={faLinkedin} /></strong> {linkedin}</p>
+              <p className="word" onClick={() => handleEdit("github")}><strong><FontAwesomeIcon icon={faSquareGithub} /></strong> {github}</p>
+              <p className="word" onClick={() => handleEdit("leetcode")}><strong><FontAwesomeIcon icon={faCode} /></strong> {leetcode}</p>
             </section>
 
             <section className="technical-skills-section">
               <h2 className="resumeh2">Technical Skills</h2>
               <ul className="resumeul">
-                {technicalSkills.map((skill, index) => <li className="resumeli" key={index}>{skill}</li>)}
+                {technicalSkills.map((skill, index) => <li className="resumeli" key={index}onClick={() => handleEdit("technicalSkills", index)}>{skill}</li>)}
               </ul>
             </section>
 
             <section className="soft-skills-section">
               <h2 className="resumeh2">Soft Skills</h2>
               <ul className="resumeul">
-                {softSkills.map((skill, index) => <li className="resumeli" key={index}>{skill}</li>)}
+                {softSkills.map((skill, index) => <li className="resumeli" key={index} onClick={() => handleEdit("softSkills", index)}>{skill}</li>)}
               </ul>
             </section>
 
             <section className="extra-curricular-section">
               <h2 className="resumeh2">Extra-Curricular Activities</h2>
               <ul className="resumeul">
-                {extracurricular.map((activity, index) => <li className="resumeli" key={index}>{activity}</li>)}
+                {extracurricular.map((activity, index) => <li className="resumeli" key={index}  onClick={() => handleEdit("extracurricular", index)}>{activity}</li>)}
               </ul>
             </section>
 
             <section className="interests-section">
               <h2 className="resumeh2">Areas of Interest</h2>
               <ul className="resumeul">
-                {interests.map((interest, index) => <li className="resumeli" key={index}>{interest}</li>)}
+                {interests.map((interest, index) => <li className="resumeli" key={index} onClick={() => handleEdit("interests", index)}>{interest}</li>)}
               </ul>
             </section>
           </div>
@@ -194,36 +247,57 @@ function FullResume() {
           <div className="right-column">
             <section className="career-objective-section">
               <h2 className="resumeh2">Career Objective</h2>
-              <p className="car-para">{careerObjective}</p>
+              <p className="car-para" onClick={() => handleEdit("careerObjective")}>{careerObjective}</p>
             </section>
 
             <section className="education-section">
-              <h2 className="resumeh2">Education Background</h2>
-              <p className="paragraph"><strong>{college}</strong></p>
-              <h5 className="para">-{degree}, CGPA: {cgpa}</h5>
-              <p className="paragraph"><strong>{highSchool}</strong></p>
-              <h5 className="para">-{school}</h5>
+              <h2 className="resumeh2" >Education Background</h2>
+              <p className="paragraph" onClick={() => handleEdit("college")}><strong>{college}</strong></p>
+              <h5 className="para"  onClick={() => handleEdit("degree")}>-{degree}, CGPA: {cgpa}</h5>
+              <p className="paragraph" onClick={() => handleEdit("highSchool")}><strong>{highSchool}</strong></p>
+              <h5 className="para" onClick={() => handleEdit("school")}>-{school}</h5>
             </section>
 
             <section className="internships-section">
-              <h2 className="resumeh2">Internships/Workshops</h2>
-              {internships.map((internship, index) => (
-                <div key={index}>
-                  <p className="paragraph"><strong>{internship.name}</strong></p>
-                  <h5 className="para">{internship.description}</h5>
-                </div>
-              ))}
-            </section>
+  <h2 className="resumeh2">Internships/Workshops</h2>
+  {internships.map((internship, index) => (
+    <div key={index}>
+      <p
+        className="paragraph"
+        onClick={() => handleEditInternship(index, "name")}
+      >
+        <strong>{internship.name}</strong>
+      </p>
+      <h5
+        className="para"
+        onClick={() => handleEditInternship(index, "description")}
+      >
+        {internship.description}
+      </h5>
+    </div>
+  ))}
+</section>
 
-            <section className="projects-section">
-              <h2 className="resumeh2">Projects/Certifications</h2>
-              {projects.map((project, index) => (
-                <div key={index}>
-                  <p className="paragraph"><strong>{project.name}</strong></p>
-                  <h5 className="para">{project.description}</h5>
-                </div>
-              ))}
-            </section>
+<section className="projects-section">
+  <h2 className="resumeh2">Projects/Certifications</h2>
+  {projects.map((project, index) => (
+    <div key={index}>
+      <p
+        className="paragraph"
+        onClick={() => handleEditProject(index, "name")}
+      >
+        <strong>{project.name}</strong>
+      </p>
+      <h5
+        className="para"
+        onClick={() => handleEditProject(index, "description")}
+      >
+        {project.description}
+      </h5>
+    </div>
+  ))}
+</section>
+
           </div>
         </div>
 

@@ -60,7 +60,7 @@
 }
 
 .profile-btn:hover {
-  background-color: #0056b3;
+  background-color: palevioletred;
 }
 
 /* Main Content */
@@ -71,7 +71,7 @@
   align-items: center;
   min-height: 100vh;
   padding: 20px;
-  background-image: url("back.jpg");
+  background-image: url("https://img.freepik.com/free-photo/flat-lay-back-school-concept-with-copy-space_23-2148559670.jpg?t=st=1740938363~exp=1740941963~hmac=e87ebf5f6c54725e4e84e06e101d5697d752e5c4adc9726a5a37f0b2fc82d1fb&w=1800");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

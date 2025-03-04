@@ -59,12 +59,12 @@
 }
 
 .profile-btn:hover {
-  background-color: #0056b3;
+  background-color: pink;
 }
 
 .basicheaderfirst{
   font-size: 17px;
-  background-image: url("blue.jpg");
+  background-image: url("https://img.freepik.com/free-photo/multi-colored-textured-backdrop_23-2147948671.jpg?t=st=1740939633~exp=1740943233~hmac=75a73d8c4779518e77acea15893bd4a68178f549fad889ce4819164ed49b9c5f&w=1380");
   background-position: fixed;
   background-size: cover;
   background-repeat: no-repeat; 
@@ -81,14 +81,14 @@
   margin: auto;
   border-radius: 0px;
   padding: 20px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  background-image: url("pop.jpg");
+  box-shadow: 4px 8px 12px rgba(0, 0, 0, 0.1);
+  background-image: url("https://img.freepik.com/free-vector/abstract-background-design_1116-112.jpg?t=st=1740939583~exp=1740943183~hmac=322ecc4618d86c53d26776fc792efc0e1708277f19bdb0f5cdf10d885fb48b31&w=900");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
   /* background-color: #636e72;*/
   margin-top: 50px;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
 }
 
 .bheader {
@@ -138,10 +138,16 @@ textarea:focus {
   border-radius: 0px;
   font-size: 15px;
   cursor: pointer;
+  
 }
 
 .bbutton:hover {
   background-color: #0056b3;
+}
+
+.bbutton-li{
+  margin-left: 20px;
+  padding: 5px;
 }
 
 .careerobjective{
@@ -177,6 +183,22 @@ textarea:focus {
   color: #5c3333;
 }
 
+
+.remove {
+  background-color: rgb(18, 17, 17);
+  color: white;
+  border: none;
+  padding: 2px 4px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.remove:hover {
+  background-color: darkred;
+}
 /* Default Styles (for larger screens remain unchanged) */
 
 /* Tablet View (768px and below) */
