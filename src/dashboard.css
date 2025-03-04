@@ -234,9 +234,15 @@
   }
 
   .close-btn {
-    font-size: 2rem;
+    font-size: 1rem;
     top: 12px;
     right: 12px;
+    background-color: black;
+    color: white;
+    border-radius: 50%;
+    
+    width: 25px;
+    height: 30px;
   }
 
   .dash-profile-image {
@@ -257,6 +263,13 @@
     font-size: 15px;
     width: 90%;
   }
+
+.profile-log{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
 
   .logout-buttons {
     flex-direction: column;
