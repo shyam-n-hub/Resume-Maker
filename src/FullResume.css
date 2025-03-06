@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Jersey+15&family=Josefin+Sans:wght@100..700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Permanent+Marker&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Spicy+Rice&display=swap');
 .area{
-  background-color: gray;
+  background-color: rgb(221, 231, 240);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -50,6 +50,7 @@
   margin: 0;
   font-size: 1.7em;
   font-weight: bold;
+  text-transform: uppercase;
 
 }
 .header-subname{
@@ -62,6 +63,7 @@
   margin: 0;
   font-size: 1.2em;
   font-weight: bold;
+  text-transform: uppercase;
 }
 .resume-content {
   display: flex;
@@ -187,19 +189,28 @@
 }
 
 .btn{
-  color:lightblue;
-  background-color: rgb(16, 77, 74);
+  color:white;
+  background-color: black;
   border-radius: 0px;
-  padding: 8px;
+  padding: 15px 5px;
   margin: 10px;
   border: none;
   outline: none;
   cursor: pointer;
+  width: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 700;
 
 }
 .btn:hover{
-  color:rgb(7, 46, 44);
-  background-color: rgb(66, 115, 132);
+  color:white;
+  background-color: rgb(44, 41, 41);
 }
 
 .back-to-generate-button{
@@ -212,12 +223,19 @@
   outline: none;
   border: tomato 3px solid;
   margin: auto;
+  margin-bottom: 10px;
+  font-size: 15px;
 }
 .back-to-generate-button:hover {
   background-color: tomato;
   color: white;
 }
 
+.fotter-r{
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
 /* 🚀 Force Desktop View */
 @media screen and (max-width: 1024px) {
   .full-resume-container {

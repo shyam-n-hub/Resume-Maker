@@ -14,7 +14,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background-color: #2d3436;
+  background-color: black;
   
 }
 
@@ -22,34 +22,52 @@
 .header h1 {
   margin: 0;
   color: white;
-  font-size: 28px;
+  font-size: 30px;
+  font-weight: 800;
 }
 
 /* Navigation */
-.nav {
+.nav{
   display: flex;
   align-items: center;
 }
 
 /* Navigation Links */
-.nav a {
+.nav-home {
   margin: 0px;
   margin-left: 5px;
   text-decoration: none;
-  background-color: aliceblue;
+  background-color: white;
   color: black;
-  padding: 8px 12px;
+  padding: 4px 10px;
   font-size: 18px;
   transition: background 0.3s ease-in-out;
+  font-weight: 800;
+  border-radius: 20px;
+  border: 2px dashed black;
 }
 
-.nav a:hover {
-  background-color: #d4e6f1;
+.nav-home:hover {
+  background-color: tomato;
 }
 
+.nav-log-sign{
+  margin: 0px;
+  margin-left: 5px;
+  text-decoration: none;
+  color: white;
+  padding: 4px 10px;
+  font-size: 18px;
+  border: white 1px solid;
+  transition: background 0.3s ease-in-out;
+}
+.nav-log-sign:hover{
+  color: black;
+  background-color: #fff;
+}
 /* Profile Button */
 .profile-btn {
-  margin-left: 10px;
+  /* margin-left: 10px;
   background-color:lightcoral;
   color: black;
   border: none;
@@ -57,13 +75,65 @@
   cursor: pointer;
   transition: background 0.3s ease-in-out;
   font-size: 16px;
+  font-weight: 800;
+  border-radius: 20px;
+  border: white 2px solid; */
+
+  margin: 0px;
+  margin-left: 5px;
+  text-decoration: none;
+  color: white;
+  padding: 7px 10px;
+  font-size: 17px;
+  border: white 1px solid;
+  transition: background 0.3s ease-in-out;
 }
 
 .profile-btn:hover {
-  background-color: palevioletred;
+  color: black;
+  background-color: #fff;}
+
+
+/* Steps Guide Section */
+.steps-container {
+  text-align: center;
+  margin: 40px auto;
+  padding: 30px;
+  /* background: rgba(255, 255, 255, 0.2); */
+  /* backdrop-filter: blur(6px); */
+  background-color: whitesmoke;
+  border-radius: 15px;
+  max-width: 700px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Main Content */
+.steps-title {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.step {
+  flex: 1;
+  padding: 20px;
+  background:gray;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.step-icon {
+  font-size: 40px;
+  color: tomato;
+  margin-bottom: 10px;
+}
 .home-container {
   display: flex;
   flex-direction: column;
@@ -71,14 +141,26 @@
   align-items: center;
   min-height: 100vh;
   padding: 20px;
-  /* background-image: url("https://img.freepik.com/free-photo/flat-lay-back-school-concept-with-copy-space_23-2148559670.jpg?t=st=1740938363~exp=1740941963~hmac=e87ebf5f6c54725e4e84e06e101d5697d752e5c4adc9726a5a37f0b2fc82d1fb&w=1800"); */
+  background-image: url("https://blog.kickresume.com/wp-content/uploads/2024/01/how-long-should-a-resume-be-cover.png");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  border-radius: 0 0 10px 10px;
-  background-color: rgb(176, 195, 139);
-
 }
+
+/* Home Details */
+.home-container-details {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 50px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin: 150px;
+}
+
+
 
 /* Main Title */
 .home-title {
@@ -86,12 +168,13 @@
   color: black;
   margin-bottom: 10px;
   text-align: center;
+  font-weight: 750;
 }
 
 /* Subtitle */
 .home-description {
   font-size: 1.2rem;
-  color: #495057;
+  color: #1e2022;
   text-align: center;
   max-width: 600px;
   margin-bottom: 30px;
@@ -107,6 +190,8 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
+  display: flex;
+  margin: auto;
 }
 
 .get-started-btn:hover {
@@ -142,7 +227,41 @@
       padding: 12px 25px;
       font-size: 0.9rem;
   }
+  .home-container-details {
+    padding: 40px;
+    margin: 100px;
+  }
+
+  .steps {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .step {
+    padding: 15px;
+  }
+  .home-container-details {
+    padding: 30px;
+    margin: 50px auto;
+    width: 90%;
+  }
+
+  .steps-container {
+    padding: 20px;
+    max-width: 90%;
+  }
+
+  .steps {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .step {
+    padding: 15px;
+  }
+
 }
+
 
 /* Mobile View */
 @media (max-width: 768px) {
@@ -154,7 +273,11 @@
       flex-direction: row;
       gap: 3px;
   }
-
+  .profile-btn{
+    width: 90px;
+    display: flex;
+    flex-direction: column;
+  }
   .home-title {
       font-size: 2rem;
   }
@@ -168,4 +291,23 @@
       padding: 10px 20px;
       font-size: 0.9rem;
   }
+  .home-container-details {
+    padding: 20px;
+    margin: 30px auto;
+    width: 95%;
+  }
+
+  .steps-container {
+    padding: 15px;
+    max-width: 95%;
+  }
+
+  .step {
+    padding: 10px;
+  }
+
+  .step-icon {
+    font-size: 30px;
+  }
+
 }

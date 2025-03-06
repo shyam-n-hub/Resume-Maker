@@ -74,14 +74,22 @@ function Dashboard({ closeDashboard, onLogout }) {
     setIsLoggingOut(true);
     signOut(auth)
       .then(() => {
+        // Clear local storage and session storage
+        localStorage.clear();
+        sessionStorage.clear();
+  
+        // Ensure Firebase does not keep the session
+        document.cookie = "firebase:authUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  
         setIsLoggingOut(false);
         setShowLogoutConfirm(false);
         setShowSuccessMessage(true);
+  
         setTimeout(() => {
           setShowSuccessMessage(false);
           handleClose();
           onLogout();
-          navigate("/Home"); // Directly go to Home page after logout
+          navigate("/Home"); // Redirect to Home page after logout
         }, 1000);
       })
       .catch((error) => {
@@ -89,6 +97,7 @@ function Dashboard({ closeDashboard, onLogout }) {
         console.error("Error logging out: ", error);
       });
   };
+  
 
   return (
     
@@ -96,7 +105,7 @@ function Dashboard({ closeDashboard, onLogout }) {
       <button className="close-btn" onClick={handleClose}>
         ✖
       </button>
-      <h2 className="dash-h2">My Dashboard</h2>
+      <h2 className="dash-h2">My Profile</h2>
       {userData.email && (
         <>
           <img
@@ -146,7 +155,12 @@ function Dashboard({ closeDashboard, onLogout }) {
            Successfully Logout !...
         </div>
       )}
+      <div>
+        <p className="develop">Developed by <a  href="https://www.linkedin.com/in/shyam--n/" className="develop-a">IoT Engineer</a></p>
+        <p style={{textAlign:"center",display:"flex",flexDirection:"row",margin:"auto"}}><a href="https://rapcodetechsolutions.netlify.app/" className="develop-aa"><img src="Frame - Copy (2).png" style={{width:"15px",height:"15px",display:"flex",margin:"auto",flexDirection:"row"}}></img>RapCode Tech Solutions</a></p>
+      </div>
     </div>
+    
   );
 }
 

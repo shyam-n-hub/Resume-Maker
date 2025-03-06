@@ -3,10 +3,11 @@
   right: 0;
   top: 0;
   height: 100%;
-  width: 300px;
+  width: 350px;
   /* background: linear-gradient(to bottom right, #cdddce, #eaeeea); */
   color: black;
-  background-color: rgb(176, 195, 139);
+  /* background-color: rgb(176, 195, 139); */
+  background-color: #af9b9b;
   box-shadow: -4px 0 8px rgba(0, 0, 0, 0.3);
   z-index: 1000;
   padding: 20px;
@@ -43,6 +44,11 @@
   object-fit: cover;
   margin: 10px 0;
   border: 3px solid #120834;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  margin-top: 50px;
+
 }
 
 .dash-user-name {
@@ -50,6 +56,12 @@
   font-weight: bold;
   margin-top: 5px;
   color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  margin-top: 20px;
 }
 
 
@@ -57,12 +69,20 @@
   font-size: 28px;
   color: rgb(21, 20, 20);
   margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  margin-top: 10px;
 }
 
 .dash-h2 {
   font-size: 24px;
   margin-bottom: 10px;
-  color: #333;
+  color: black;
+  text-align: center;
+  margin-top: 50px;
 }
 
 .dash-h3 {
@@ -84,6 +104,8 @@
   text-decoration: none;
   border-radius: 5px;
   font-weight: bold;
+  margin: auto;
+  margin: 10px;
   
 }
 
@@ -94,6 +116,7 @@
 .no-resume-text {
   font-size: 14px;
   color: black;
+  text-align: center;
 }
 
 .close-btn {
@@ -105,6 +128,8 @@
   top: 10px;
   right: 10px;
   cursor: pointer;
+  background-color: #fff;
+  padding: 0px 5px;
 }
 
 .close-btn:hover {
@@ -159,12 +184,11 @@
 }
 
 .profile-log{
-  /* display: flex;
+   display: flex;
   justify-content: center;
   align-items: center;
-  margin: auto; */
+  margin: auto;
   text-align: center;
-  margin-left: 70px;
   background-color: black;
   color: white;
   border: none;
@@ -173,7 +197,30 @@
   cursor: pointer;
   font-size: 16px;
 }
+.develop{
+  margin-top:180px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: black;
 
+}
+.develop-a{
+  color: red;
+  text-decoration: wavy;
+}
+.develop-aa{
+  color: black;
+  text-decoration: none;
+  text-align: center;
+  padding: 0px;
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  margin-top: 5px;
+  font-size: 12px;
+  gap: 5px;
+}
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -282,6 +329,9 @@
     width: 100%;
     padding: 12px;
     font-size: 15px;
+  }
+  .develop{
+    margin-top: 110px;
   }
 }
 

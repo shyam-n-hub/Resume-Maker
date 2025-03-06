@@ -20,8 +20,12 @@ function BasicDetails() {
     college: "",
     degree: "",
     cgpa: "",
-    highSchool: "",
+    highschool: "",
+    highschool1:"",
+    highschool2:"",
     school: "",
+    school1:"",
+    school2:"",
     technicalSkills: [],
     softSkills: [],
     extracurricular: [],
@@ -141,8 +145,12 @@ function BasicDetails() {
       "college",
       "degree",
       "cgpa",
-      "highSchool",
+      "highschool",
+      "highschool1",
+      "highschool2",
       "school",
+      "school1",
+      "school2",
     ];
 
     for (const field of requiredFields) {
@@ -201,10 +209,10 @@ function BasicDetails() {
   return (
     <div className="basicheaderfirst">
     
-    <header className="header">
+    <header className="headerh">
         <h1>Resume Maker</h1>
         <nav className="nav">
-          <Link to="/" style={{fontSize:"16px",padding: "8px 12px",}}>Home</Link>
+          <Link to="/" style={{fontSize:"16px",padding: "8px 12px",}} className="nav-home">Home</Link>
 
           {!isLoggedIn ? (
             <>
@@ -227,12 +235,12 @@ function BasicDetails() {
             <label style={{color:"Black"
             }}>
               {" "}
-              Profile :
+              Choose Your Profile Image:
               <input
                 type="file"
                 onChange={handleImageUpload}
                 accept="image/*"
-                className="binput"
+                className="profileinput"
               />
             </label>
             {details.profileImage && (
@@ -290,7 +298,7 @@ function BasicDetails() {
             <input
               type="text"
               name="linkedin"
-              placeholder="LinkedIn"
+              placeholder="LinkedIn (Id or Link)"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
@@ -299,7 +307,7 @@ function BasicDetails() {
             <input
               type="text"
               name="github"
-              placeholder="GitHub"
+              placeholder="GitHub (Id or Link)"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
@@ -308,7 +316,7 @@ function BasicDetails() {
             <input
               type="text"
               name="leetcode"
-              placeholder="Leetcode"
+              placeholder="Leetcode (Id or Link)"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
@@ -327,7 +335,7 @@ function BasicDetails() {
             <input
               type="text"
               name="college"
-              placeholder="College"
+              placeholder="Name Of The College"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
@@ -336,7 +344,7 @@ function BasicDetails() {
             <input
               type="text"
               name="degree"
-              placeholder="Degree"
+              placeholder="Degree (College)"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
@@ -345,7 +353,7 @@ function BasicDetails() {
             <input
               type="text"
               name="cgpa"
-              placeholder="CGPA"
+              placeholder="Current CGPA"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
@@ -353,16 +361,53 @@ function BasicDetails() {
             />
             <input
               type="text"
-              name="highSchool"
-              placeholder="High School"
+              name="highschool"
+              placeholder="Name Of The School"
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
               className="binput"
               required
             />
             <input
               type="text"
+              name="highschool1"
+              placeholder="School Degree (eg.. HSC)"
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              className="binput"
+              required
+            />
+            <input
+              type="text"
+              name="highschool2"
+              placeholder="Percentage with year (eg.. 76%  in 2014"
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              className="binput"
+              required
+            />
+             <input
+              type="text"
               name="school"
-              placeholder="School"
+              placeholder="Name Of The School"
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              className="binput"
+              required
+            />
+            <input
+              type="text"
+              name="school1"
+              placeholder="School Degree (eg.. SSLC)"
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              className="binput"
+              required
+            />
+            <input
+              type="text"
+              name="school2"
+              placeholder="Percentage with year (eg.. 76%  in 2012"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
