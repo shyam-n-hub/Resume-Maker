@@ -69,18 +69,18 @@ function BasicDetails() {
     for (let i = 0; i < 2; i++) {
       let name = prompt(`Enter the name for ${field} (at least 2 required)`);
       let description = prompt(`Enter the description for ${field}`);
-      if (name && description) newItems.push({ name, description });
-      else return alert(`You must enter at least 2 ${field}!`);
+      let startDate = prompt(`Enter the Starting Date for ${field} (YYYY-MM-DD)`);
+      let endDate = prompt(`Enter the Ending Date for ${field} (YYYY-MM-DD)`);
+      
+      if (name && description && startDate && endDate) {
+        newItems.push({ name, description, startDate, endDate });
+      } else {
+        return alert(`You must enter at least 2 ${field} with complete details!`);
+      }
     }
     setDetails({ ...details, [field]: [...details[field], ...newItems] });
   };
-
-  const handleRemoveObjectItem = (field, index) => {
-    setDetails({
-      ...details,
-      [field]: details[field].filter((_, i) => i !== index),
-    });
-  };
+  
 
 
   useEffect(() => {
@@ -199,6 +199,10 @@ function BasicDetails() {
   };
 
   const handleSubmit = () => {
+    if (window.innerWidth < 768) {
+      alert("For better visibility, please enable 'Desktop Site' in your browser settings.");
+    }
+    
     if (validateFields()) {
       navigate("/fullresume", {
         state: { ...details },
@@ -463,15 +467,14 @@ function BasicDetails() {
 
           <h3 style={{color:"black", margin:"10px 0px"}}>Internships</h3>
           <button
-            onClick={() => handleAddObjectItem("internships")}
-            className="bbutton"
-          >
+            onClick={() => handleAddObjectItem("internships")}className="bbutton" >
             Add Internship
           </button>
           <ul>
             {details.internships.map((internship, i) => (
               <li key={i} className="bbutton-li">
-                <strong>{internship.name}</strong>: {internship.description}
+                <strong>{internship.name}</strong>: {internship.description} <br />
+                <em>{internship.startDate} - {internship.endDate}</em>
                 <span className="remove" onClick={() => handleRemoveObjectItem("internships", i)}>✖</span></li>
             ))}
           </ul>
