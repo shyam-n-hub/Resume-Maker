@@ -56,7 +56,15 @@ function BasicDetails() {
     }
     setDetails({ ...details, [field]: [...details[field], ...items] });
   };
+   
 
+  const handleRemoveItem = (field, index) => {
+    setDetails({
+      ...details,
+      [field]: details[field].filter((_, i) => i !== index),
+    });
+  };
+  
   const handleRemoveObjectItem = (field, index) => {
     setDetails((prevDetails) => ({
       ...prevDetails,
@@ -273,7 +281,7 @@ function BasicDetails() {
             <input
               type="text"
               name="name"
-              placeholder="Name"
+              placeholder="First Name and Last Name"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
@@ -291,10 +299,10 @@ function BasicDetails() {
             <input
               type="text"
               name="phone"
-              placeholder="Phone"
+              placeholder="Phone Number"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              className="binput"
+              className="binput"  
               required
             />
             <input
@@ -373,7 +381,7 @@ function BasicDetails() {
             <input
               type="text"
               name="cgpa"
-              placeholder="Current CGPA"
+              placeholder="Current CGPA only"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
@@ -400,7 +408,7 @@ function BasicDetails() {
             <input
               type="text"
               name="highschool2"
-              placeholder="Percentage with year (eg.. 76%  in 2014"
+              placeholder="Percentage with year (eg.. 76%  in 2014)"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
@@ -427,7 +435,7 @@ function BasicDetails() {
             <input
               type="text"
               name="school2"
-              placeholder="Percentage with year (eg.. 76%  in 2012"
+              placeholder="Percentage with year (eg.. 76%  in 2012)"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
@@ -481,7 +489,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3 style={{color:"black", margin:"10px 0px"}}>Internships</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}}>Internships / Workshops</h3>
           <button
             onClick={() => handleAddObjectItem("internships")}className="bbutton" >
             Add Internship
@@ -495,7 +503,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3 style={{color:"black", margin:"10px 0px"}}>Projects</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}}>Projects / Certifications</h3>
           <button
             onClick={() => handleAddObjectItem("projects")}
             className="bbutton"

@@ -37,18 +37,20 @@
   margin: 0px;
   margin-left: 5px;
   text-decoration: none;
-  background-color: white;
-  color: black;
+  background-color: black;
+  color: white;
   padding: 4px 10px;
   font-size: 18px;
   transition: background 0.3s ease-in-out;
   font-weight: 800;
   border-radius: 20px;
-  border: 2px solid black;
+  border: 2px solid white;
 }
 
 .nav-home:hover {
-  background-color: tomato;
+  color: rgb(36, 34, 34);
+  background-color: white;
+  border: black 2px solid;
 }
 
 .nav-log-sign{
@@ -85,16 +87,18 @@
   color: white;
   padding: 8px 12px;
   font-size: 17px;
-  border: white 1px solid;
+  border: white 2px solid;
   border-radius: 20px;
   transition: background 0.3s ease-in-out;
-  background-color:  #ff793f;
+  background-color: black;
   font-weight: 700;
 }
 
 .profile-btn:hover {
   color: rgb(36, 34, 34);
-  background-color: #cd6133}
+  background-color: white;
+  border: black 2px solid;
+}
 
 
 /* Steps Guide Section */

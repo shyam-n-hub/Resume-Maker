@@ -103,7 +103,7 @@ function Dashboard({ closeDashboard, onLogout }) {
     
     <div className="dashboard-sidebar" ref={dashboardRef}>
       <button className="close-btn" onClick={handleClose}>
-        ✖
+        
       </button>
       <h2 className="dash-h2">My Profile</h2>
       {userData.email && (

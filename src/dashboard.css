@@ -5,9 +5,11 @@
   height: 100%;
   width: 350px;
   /* background: linear-gradient(to bottom right, #cdddce, #eaeeea); */
-  color: black;
+  color: #1A1A2E;
   /* background-color: rgb(176, 195, 139); */
-  background-color: #af9b9b;
+  background: rgba(255, 255, 255, 0.6);
+backdrop-filter: blur(10px);
+border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: -4px 0 8px rgba(0, 0, 0, 0.3);
   z-index: 1000;
   padding: 20px;
@@ -47,7 +49,7 @@
   display: flex;
   flex-direction: column;
   margin: auto;
-  margin-top: 50px;
+  margin-top: 20px;
 
 }
 
@@ -79,10 +81,10 @@
 
 .dash-h2 {
   font-size: 24px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   color: black;
   text-align: center;
-  margin-top: 50px;
+  margin-top: 80px;
 }
 
 .dash-h3 {
@@ -131,6 +133,9 @@
   background-color: #fff;
   padding: 0px 5px;
 }
+.close-btn::before {
+  content: "✖";
+}
 
 .close-btn:hover {
   color: #ff5252;
@@ -173,6 +178,7 @@
   background-color: #6c757d;
   color: white;
 }
+
 
 .cancel-btn:hover {
   background-color: #5a6268;
@@ -282,15 +288,15 @@
   }
 
   .close-btn {
-    font-size: 1rem;
+    font-size: 15px;
+    font-weight: 700;
     top: 12px;
-    right: 12px;
-    background-color: black;
-    color: white;
-    border-radius: 50%;
-    
+    left: 12px;
+    background-color: white;
+    color: black;
+    border-radius: 10%;
     width: 25px;
-    height: 30px;
+    height: 25px;
   }
 
   .dash-profile-image {
@@ -349,7 +355,7 @@
     flex-direction: column;
 
     width: 100%;
-    gap: 0px;
+    gap: 10px;
     justify-content: center;
   }
 
@@ -392,6 +398,7 @@
   .cancel-btn {
     padding: 10px;
     font-size: 14px;
+    gap: 10px;
   }
 }
 

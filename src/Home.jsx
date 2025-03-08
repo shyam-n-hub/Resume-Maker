@@ -38,8 +38,6 @@ function Home() {
       <header className="header">
         <h1>Resume Maker</h1>
         <nav className="nav">
-          <Link to="/" className="nav-home" style={{fontSize:"16px",padding: "8px 12px",}}>Home</Link>
-
           {!isLoggedIn ? (
             <>
               <Link to="/signup" className="nav-log-sign">Signup</Link>

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { auth } from "./firebase";
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -16,17 +17,17 @@ function Login({ onLogin }) {
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const navigate = useNavigate();
-  const adminEmail = "abcd1234@gmail.com";
-
+  const adminEmails = ["abcd1234@gmail.com", "admin2@example.com", "admin3@example.com", "admin4@example.com"];
+  
   const handleLogin = (e) => {
     e.preventDefault();
-
+  
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         setMessage("Login Successful! Redirecting...");
         setTimeout(() => {
           onLogin();
-          if (email === adminEmail) {
+          if (adminEmails.includes(email)) {
             navigate("/admin-home");
           } else {
             navigate("/basicdetails");
@@ -61,6 +62,17 @@ function Login({ onLogin }) {
         setTimeout(() => setMessage(""), 4000);
       });
   };
+
+  const auth = getAuth();
+
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    // Proceed with sign-in
+    return signInWithEmailAndPassword(auth, email, password);
+  })
+  .catch((error) => {
+    console.error("Persistence error:", error);
+  });
 
   return (
     <div className="loginbox">
