@@ -57,28 +57,44 @@ function BasicDetails() {
     setDetails({ ...details, [field]: [...details[field], ...items] });
   };
 
-  const handleRemoveItem = (field, index) => {
-    setDetails({
-      ...details,
-      [field]: details[field].filter((_, i) => i !== index),
-    });
+  const handleRemoveObjectItem = (field, index) => {
+    setDetails((prevDetails) => ({
+      ...prevDetails,
+      [field]: prevDetails[field].filter((_, i) => i !== index),
+    }));
   };
-
+  
   const handleAddObjectItem = (field) => {
     let newItems = [];
-    for (let i = 0; i < 2; i++) {
-      let name = prompt(`Enter the name for ${field} (at least 2 required)`);
-      let description = prompt(`Enter the description for ${field}`);
-      let startDate = prompt(`Enter the Starting Date for ${field} (YYYY-MM-DD)`);
-      let endDate = prompt(`Enter the Ending Date for ${field} (YYYY-MM-DD)`);
-      
-      if (name && description && startDate && endDate) {
-        newItems.push({ name, description, startDate, endDate });
+  
+    if (field === "internships") {
+      for (let i = 0; i < 2; i++) {
+        let name = prompt(`Enter the name for ${field} (at least 2 required)`);
+        let description = prompt(`Enter the description for ${field}`);
+        let startDate = prompt(`Enter the Starting Date for ${field} (YYYY-MM-DD)`);
+        let endDate = prompt(`Enter the Ending Date for ${field} (YYYY-MM-DD)`);
+  
+        if (name && description && startDate && endDate) {
+          newItems.push({ name, description, startDate, endDate });
+        } else {
+          return alert(`You must enter at least 2 ${field} with complete details!`);
+        }
+      }
+    } else if (field === "projects") {
+      let name = prompt("Enter the name for the project");
+      let description = prompt("Enter the description for the project");
+  
+      if (name && description) {
+        newItems.push({ name, description }); // No date fields for projects
       } else {
-        return alert(`You must enter at least 2 ${field} with complete details!`);
+        return alert("You must enter both a project name and description!");
       }
     }
-    setDetails({ ...details, [field]: [...details[field], ...newItems] });
+  
+    setDetails((prevDetails) => ({
+      ...prevDetails,
+      [field]: [...prevDetails[field], ...newItems],
+    }));
   };
   
 

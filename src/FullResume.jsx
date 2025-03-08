@@ -550,7 +550,7 @@ function FullResume() {
             disabled={loading}
           >
             {loading
-              ? `Downloading... ${Math.round(uploadProgress)}%`
+              ? `Please Wait... ${Math.round(uploadProgress)}%`
               : "Download Resume"}
           </button>
           <button className="back-to-generate-button" onClick={toggleResume}>

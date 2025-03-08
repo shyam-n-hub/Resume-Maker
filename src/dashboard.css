@@ -146,8 +146,9 @@
 
 .logout-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 10px;
+  gap: 15px;
 }
 
 .confirm-btn,
@@ -328,7 +329,7 @@
     justify-content: center;
     align-items: center;
     margin: auto;
-    margin-top: 5px;
+    margin-top: 2px;
   }
 
   .dash-resume-link {
@@ -346,8 +347,10 @@
 
   .logout-buttons {
     flex-direction: column;
+
     width: 100%;
-    gap: 12px;
+    gap: 0px;
+    justify-content: center;
   }
 
   .confirm-btn,
