@@ -18,7 +18,7 @@ function Home() {
     const storedLoginState = localStorage.getItem("isLoggedIn");
     if (storedLoginState === "true") {
       setIsLoggedIn(true);
-    }
+    } 
 
     onAuthStateChanged(auth, (user) => {
       setLoading(false);

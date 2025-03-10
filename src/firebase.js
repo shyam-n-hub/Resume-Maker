@@ -1,15 +1,13 @@
-// Import Firebase functions
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { 
-  getAuth, 
-  setPersistence, 
-  browserLocalPersistence, 
-  onAuthStateChanged 
-} from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Firebase configuration
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBAUOFu6V1064mXjnsal4dedF4LQIRgVOk",
   authDomain: "chattapp-b2703.firebaseapp.com",
@@ -21,30 +19,9 @@ const firebaseConfig = {
   measurementId: "G-L62Q1Z4Z35"
 };
 
+
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const database = getDatabase(app);
 export const storage = getStorage(app);
-
-// Set authentication persistence
-setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    console.log("🔹 Auth persistence set to LOCAL");
-  })
-  .catch((error) => {
-    console.error("⚠️ Error setting persistence:", error);
-  });
-
-// Check user authentication status (use this in your app)
-export const checkAuthState = (callback) => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("✅ User is logged in:", user);
-      callback(user);
-    } else {
-      console.log("❌ No user is logged in.");
-      callback(null);
-    }
-  });
-};
