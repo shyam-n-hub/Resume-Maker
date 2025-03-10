@@ -58,7 +58,7 @@
   }
   
   .admin-table th, .admin-table td {
-    border: 1px solid #ddd;
+    border: 2px solid #757373;
     padding: 10px;
     text-align: center;
   }
