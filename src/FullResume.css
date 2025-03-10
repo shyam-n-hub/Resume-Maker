@@ -53,6 +53,8 @@
   text-align: left;
   max-width: 420px;
   align-items: flex-start;
+  justify-content: center;
+  margin-left: 80px;
 }
 
 /* For short names: center the entire container */
@@ -183,35 +185,36 @@
   bottom: 0;
   left: 0;
 }
-.contact-section{
+.contact-section {
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   margin: 0px 0px;
-  font-weight: 410;
-}
-
-.word{
-  margin: 4px 0px 0px 0px;
-  word-wrap: break-word;
-  padding: 0px;
-  
-}
-
-.word2 { 
-  display: flex; /* Ensures elements stay in one line */
-  flex-wrap: wrap; /* Allows wrapping to the next line */
-  align-items: center; /* Aligns text and icon vertically */
+  font-weight: 400;
   margin-left: 3px;
-  width: 300px; /* Sets the max width for wrapping */
-  
-  word-wrap: break-word; /* Allows breaking words properly */
-  overflow-wrap: break-word; /* Ensures long words break */
 }
-.word{
-  padding: 3px;
+
+.word, .word2 {
+  display: flex;
+  align-items: flex-start; /* Aligns icon and text at the top */
+  gap: 4px; /* Adds spacing between icon and text */
+  max-width: 300px; /* Restricts width for wrapping */
   word-wrap: break-word;
-  gap: 5px;
-  text-align:justify;
+  overflow-wrap: break-word;
+  margin: 4px 0px;
+}
+
+.word strong, .word2 strong {
+  flex-shrink: 0; /* Prevents icon from shrinking */
+  display: flex;
+  align-items: center; /* Ensures icon stays vertically aligned */
+}
+
+.word span, .word2 span {
+  display: inline-block;
+  flex-grow: 1;
+  min-width: 0; /* Allows wrapping of long text */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 
@@ -369,7 +372,7 @@
   background-color: rgb(44, 41, 41);
 }
 
-.back-to-generate-button{
+.back-to-generate-button {
   text-align: center;
   color: tomato;
   padding: 8px;
@@ -382,10 +385,71 @@
   margin-bottom: 10px;
   font-size: 15px;
 }
+
 .back-to-generate-button:hover {
   background-color: tomato;
   color: white;
 }
+
+/* Background overlay when confirmation box appears */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dark overlay with low opacity */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Confirmation box styling */
+.confirm-box {
+  background: white;
+  padding: 20px;
+  width: 350px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  z-index: 1001;
+}
+
+/* Confirmation buttons */
+.confirm-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.confirm-btn,
+.cancel-btn {
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.confirm-btn {
+  background-color: tomato;
+  color: white;
+}
+
+.confirm-btn:hover {
+  background-color: darkred;
+}
+
+.cancel-btn {
+  background-color: gray;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: darkgray;
+}
+
 
 .fotter-r{
   display: flex;

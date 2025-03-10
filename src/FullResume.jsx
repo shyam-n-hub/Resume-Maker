@@ -30,6 +30,20 @@ function FullResume() {
   const [resumeData, setResumeData] = useState(null);
   const auth = getAuth();
   const currentUser = auth.currentUser;
+  const [showConfirmBox, setShowConfirmBox] = useState(false);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (!user) {
+        alert("User logged out. Please log in again.");
+        navigate("/login"); // Redirect to login page if user logs out
+      }
+    });
+  
+    return () => unsubscribe(); // Cleanup listener on component unmount
+  }, [navigate]);
+  
 
   useEffect(() => {
     if (location.state) {
@@ -251,8 +265,8 @@ function FullResume() {
       });
   };
 
-  const toggleResume = () => {
-    navigate("/basicdetails");
+  const handleGoBack = () => {
+    navigate("/basicdetails"); // Navigates back to BasicDetails
   };
 
   const styles = {
@@ -298,10 +312,11 @@ function FullResume() {
                   <strong>
                     <FontAwesomeIcon
                       icon={faEnvelope}
-                      style={{ fontSize: "18px", paddingRight: "5px" }}
+                      style={{ fontSize: "18px", paddingRight: "5px",display:"flex",gap:"5px", marginTop:"4px" }}
                     />
                   </strong>{" "}
-                  {email}
+                  <span style={{paddingLeft:"5px", fontFamily: 'Poppins, sans-serif',}}>
+                  {email}</span>
                 </p>
                 <p
                   className="word"
@@ -311,10 +326,11 @@ function FullResume() {
                   <strong>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      style={{ fontSize: "16px", paddingRight: "5px" }}
+                      style={{ fontSize: "16px", paddingRight: "5px" , display:"flex",gap:"5px", marginTop:"4px"}}
                     />
-                  </strong>{" "}
-                  + 91 -{phone}
+                  </strong>{" "}                  <span style={{paddingLeft:"5px", fontFamily: 'Poppins, sans-serif',}}>
+
+                  + 91 -{phone}</span>
                 </p>
                 <p
                   className="word2"
@@ -328,6 +344,8 @@ function FullResume() {
                         fontSize: "20px",
                         paddingRight: "10px",
                         marginTop: "0px",
+                        fontFamily: 'Poppins, sans-serif',
+                        marginTop:"4px"
                       }}
                     />
                   </strong>{" "}
@@ -336,7 +354,10 @@ function FullResume() {
                       display: "inline-block",
                       maxWidth: "250px",
                       marginTop: "5px",
+                      fontFamily: 'Poppins, sans-serif',
+                      marginTop:"4px"
                     }}
+                  
                   >
                     {address}
                   </span>
@@ -350,10 +371,25 @@ function FullResume() {
                   <strong>
                     <FontAwesomeIcon
                       icon={faLinkedin}
-                      style={{ fontSize: "19px", paddingRight: "5px" }}
+                      style={{
+                        fontSize: "22px",
+                        paddingRight: "10px",
+                        marginTop: "0px",
+                        fontFamily: 'Poppins, sans-serif',
+                        marginTop:"8px"
+                      }}
                     />
                   </strong>{" "}
-                  LinkedIn: {linkedin}
+                  <span
+                    style={{
+                      display: "inline-block",
+                      maxWidth: "250px",
+                      marginTop: "5px",
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  
+                  >
+                  LinkedIn: {linkedin}</span>
                 </p>
                 <p
                   className="word"
@@ -363,10 +399,25 @@ function FullResume() {
                   <strong>
                     <FontAwesomeIcon
                       icon={faGithub}
-                      style={{ fontSize: "19px", paddingRight: "5px" }}
-                    />
+                      style={{
+                        fontSize: "20px",
+                        paddingRight: "10px",
+                        marginTop: "0px",
+                        fontFamily: 'Poppins, sans-serif',
+                         marginTop:"8px"
+                      }}                    />
                   </strong>{" "}
-                  GitHub: {github}
+                  <span
+                    style={{
+                      display: "inline-block",
+                      maxWidth: "250px",
+                      marginTop: "5px",
+                      fontFamily: 'Poppins, sans-serif',
+                       marginTop:"8px"
+                    }}
+                  
+                  >
+                  GitHub: {github}</span>
                 </p>
                 <p
                   className="word"
@@ -376,10 +427,24 @@ function FullResume() {
                   <strong>
                     <FontAwesomeIcon
                       icon={faCode}
-                      style={{ fontSize: "16px", paddingRight: "5px" }}
-                    />
+                      style={{
+                        fontSize: "15px",
+                        paddingRight: "10px",
+                        marginTop: "0px",
+                        fontFamily: 'Poppins, sans-serif',
+                        marginTop:"4px"
+                      }}                    />
                   </strong>{" "}
-                  Leetcode: {leetcode}
+                  <span
+                    style={{
+                      display: "inline-block",
+                      maxWidth: "250px",
+                      marginTop: "5px",
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  
+                  >
+                  Leetcode: {leetcode}</span>
                 </p>
               </section>
 
@@ -553,9 +618,29 @@ function FullResume() {
               ? `Please Wait... ${Math.round(uploadProgress)}%`
               : "Download Resume"}
           </button>
-          <button className="back-to-generate-button" onClick={toggleResume}>
-            Back to Create New Resume
-          </button>
+          <button
+        className="back-to-generate-button"
+        onClick={() => setShowConfirmBox(true)}
+      >
+        Back to Create New Resume
+      </button>
+
+      {showConfirmBox && (
+  <div className="confirm-overlay">
+    <div className="confirm-box">
+      <p>If you go back, you will need to enter all details again.</p>
+      <div className="confirm-buttons">
+        <button className="confirm-btn" onClick={handleGoBack}>
+          Go Back
+        </button>
+        <button className="cancel-btn" onClick={() => setShowConfirmBox(false)}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
         </div>
       </div>
     </div>

@@ -224,7 +224,9 @@ function BasicDetails() {
 
   const handleSubmit = () => {
     if (window.innerWidth < 768) {
-      alert("For better visibility, please enable 'Desktop Site' in your browser settings.");
+      // alert("For better visibility, please enable 'Desktop Site' in your browser settings.");
+      alert("Please do not enable 'Desktop Site' in your browser settings to view your resume, If enabled means you can't download resume.");
+
     }
     
     if (validateFields()) {
