@@ -400,19 +400,7 @@ function FullResume() {
 
   return (
     <div className="area">
-      {isMobileView && (
-        <div className="view-mode-toggle">
-          {isDesktopMode ? (
-            <button className="switch-view-btn" onClick={switchToMobileView}>
-              <FontAwesomeIcon icon={faPhone} className="view-icon" /> Switch to Mobile View
-            </button>
-          ) : (
-            <button className="switch-view-btn" onClick={switchToDesktopView}>
-              <FontAwesomeIcon icon={faDesktop} className="view-icon" /> Switch to Desktop View
-            </button>
-          )}
-        </div>
-      )}
+      
       
       <div>
         <div className="full-resume-container">
@@ -745,6 +733,20 @@ function FullResume() {
           </div>
           <div className="vv"></div>
         </div>
+
+        {isMobileView && (
+        <div className="view-mode-toggle">
+          {isDesktopMode ? (
+            <button className="switch-view-btn" onClick={switchToMobileView}>
+              <FontAwesomeIcon icon={faPhone} className="view-icon" /> Switch to Mobile View
+            </button>
+          ) : (
+            <button className="switch-view-btn" onClick={switchToDesktopView}>
+              <FontAwesomeIcon icon={faDesktop} className="view-icon" /> Switch to Desktop View
+            </button>
+          )}
+        </div>
+      )}
 
         <div className="fotter-r">
           <button

@@ -20,7 +20,7 @@
   background-color: white;
   height: auto;
   overflow: hidden;
-  margin-top: 20px;
+  margin-top: 50px;
   font-family: 'Poppins', sans-serif;
   border: white 10px solid;
 }
@@ -474,3 +474,37 @@
   }
 } */
 
+/* .view-mode-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+} */
+
+.switch-view-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+  justify-content: center;
+  margin: auto;
+}
+
+.switch-view-btn:hover {
+  background-color: #0055aa;
+}
+
+.view-icon {
+  font-size: 16px;
+}
