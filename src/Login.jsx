@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { auth } from "./firebase";
-import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -17,11 +17,16 @@ function Login({ onLogin }) {
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const navigate = useNavigate();
-  const adminEmails = ["abcd1234@gmail.com", "admin2@example.com", "admin3@example.com", "admin4@example.com"];
-  
+  const adminEmails = [
+    "abcd1234@gmail.com",
+    "admin2@example.com",
+    "admin3@example.com",
+    "admin4@example.com",
+  ];
+
   const handleLogin = (e) => {
     e.preventDefault();
-  
+
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         setMessage("Login Successful! Redirecting...");
@@ -34,8 +39,10 @@ function Login({ onLogin }) {
           }
         }, 2000);
       })
-      .catch(() => {
+      .catch((error) => {
         setMessage("Incorrect email or password. Please try again.");
+        console.log(error);
+        alert(error);
         setTimeout(() => setMessage(""), 4000);
       });
   };
@@ -65,19 +72,10 @@ function Login({ onLogin }) {
 
   const auth = getAuth();
 
-setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    // Proceed with sign-in
-    return signInWithEmailAndPassword(auth, email, password);
-  })
-  .catch((error) => {
-    console.error("Persistence error:", error);
-  });
-
   return (
     <div className="loginbox">
       <form className="loginbox1" onSubmit={handleLogin}>
-        <h1 className="loginh1">Logimkn</h1>
+        <h1 className="loginh1">Login</h1>
 
         <input
           className="logininput"
@@ -97,10 +95,9 @@ setPersistence(auth, browserLocalPersistence)
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-         
         </div>
         <div className="login-show">
-        <label className="login-show-password">
+          <label className="login-show-password">
             <input
               type="checkbox"
               checked={showPassword}
@@ -109,24 +106,26 @@ setPersistence(auth, browserLocalPersistence)
             Show Password
           </label>
           <p className="forgotpasswordlink" onClick={handleForgotPassword}>
-          Forgot Password?
-        </p>
+            Forgot Password?
+          </p>
         </div>
         <button type="submit" className="loginbutton">
           Login
         </button>
 
         {message && (
-  <div className={`loginmessage ${message.includes("Successful") ? "success" : "error"}`}>
-    {message}
-  </div>
-)}
+          <div
+            className={`loginmessage ${
+              message.includes("Successful") ? "success" : "error"
+            }`}
+          >
+            {message}
+          </div>
+        )}
 
         <p className="signup-link">
-          Don’t have an account?   <Link to="/signup">Create Account</Link>
+          Don’t have an account? <Link to="/signup">Create Account</Link>
         </p>
-
-        
       </form>
 
       {/* Reset Password Modal */}
@@ -157,4 +156,4 @@ setPersistence(auth, browserLocalPersistence)
   );
 }
 
-export default Login; 
+export default Login;

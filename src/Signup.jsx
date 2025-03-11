@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { auth, database } from "./firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, set } from "firebase/database";
-import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
+// import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 
 function Signup({ onSignup }) {
   const [name, setName] = useState("");
@@ -24,7 +24,7 @@ function Signup({ onSignup }) {
       .then((userCredential) => {
         const user = userCredential.user;
         const defaultProfileImage = "/default-image.jpg";
-        
+       
         // Store user data in Firebase Realtime Database
         set(ref(database, `users/${user.uid}`), {
           name: name,
@@ -50,16 +50,16 @@ function Signup({ onSignup }) {
   };
   
   
-  const auth = getAuth();
+//   const auth = getAuth();
 
-setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    // Proceed with sign-in
-    return signInWithEmailAndPassword(auth, email, password);
-  })
-  .catch((error) => {
-    console.error("Persistence error:", error);
-  });
+// setPersistence(auth, browserLocalPersistence)
+//   .then(() => {
+//     // Proceed with sign-in
+//     return signInWithEmailAndPassword(auth, email, password);
+//   })
+//   .catch((error) => {
+//     console.error("Persistence error:", error);
+//   });
 
 
   return (
