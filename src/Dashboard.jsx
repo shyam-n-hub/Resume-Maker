@@ -31,37 +31,21 @@ function Dashboard({ closeDashboard, onLogout }) {
             setUserData({
               name: userInfo.name || "User",
               email: userInfo.email,
-              profileImage: userInfo.profileImage || "https://thumbs.dreamstime.com/b/man-profile-cartoon-smiling-vector-illustration-graphic-design-135443492.jpg",
+              profileImage: userInfo.profileImage || "/default-image.jpg",
             });
+  
+            // Set resume URL from database
+            setResumeUrl(userInfo.resumeLink || null);
           }
         } catch (error) {
           console.error("Error fetching user data:", error);
         }
-
-        // Fetch resume URL from Firebase Storage
-        try {
-          const resumeReference = storageRef(storage, `resumes/${user.email}.pdf`);
-          const url = await getDownloadURL(resumeReference);
-          setResumeUrl(url);
-        } catch {
-          setResumeUrl(null);
-        }
       }
     });
-
-    // Close dashboard on outside click
-    const handleClickOutside = (event) => {
-      if (dashboardRef.current && !dashboardRef.current.contains(event.target)) {
-        handleClose();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      unsubscribe();
-    };
-  }, [closeDashboard]);
+  
+    return () => unsubscribe();
+  }, []);
+  
 
   const handleClose = () => {
     if (dashboardRef.current) {

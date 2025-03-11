@@ -430,9 +430,8 @@ function FullResume() {
                       style={{
                         fontSize: "15px",
                         paddingRight: "10px",
-                        marginTop: "0px",
                         fontFamily: 'Poppins, sans-serif',
-                        marginTop:"4px"
+                        marginTop:"4px",
                       }}                    />
                   </strong>{" "}
                   <span

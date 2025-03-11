@@ -17,36 +17,38 @@ function Signup({ onSignup }) {
   const adminEmails = ["abcd1234@gmail.com", "admin2@example.com", "admin3@example.com", "admin4@example.com"];
 
  
-const handleSignup = (e) => {
-  e.preventDefault();
-
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-
-      // Store user data in Firebase Realtime Database
-      set(ref(database, `users/${user.uid}`), {
-        name: name,
-        email: email,
-        profileImage: "/default-image.jpg", // Default profile image
-        resumeLink: "", // Initially empty
+  const handleSignup = (e) => {
+    e.preventDefault();
+  
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        const defaultProfileImage = "/default-image.jpg";
+        
+        // Store user data in Firebase Realtime Database
+        set(ref(database, `users/${user.uid}`), {
+          name: name,
+          email: email,
+          profileImage: defaultProfileImage,
+          resumeLink: "", // Auto-generate resume link
+        });
+  
+        setMessage("Account Created Successfully! Redirecting...");
+        setTimeout(() => {
+          onSignup();
+          if (adminEmails.includes(email)) {
+            navigate("/admin-home");
+          } else {
+            navigate("/basicdetails");
+          }
+        }, 2000);
+      })
+      .catch(() => {
+        setMessage("Failed to create account. Please try again.");
+        setTimeout(() => setMessage(""), 4000);
       });
-
-      setMessage("Account Created Successfully! Redirecting...");
-      setTimeout(() => {
-        onSignup();
-        if (adminEmails.includes(email)) {
-          navigate("/admin-home");
-        } else {
-          navigate("/basicdetails");
-        }
-      }, 2000);
-    })
-    .catch(() => {
-      setMessage("Failed to create account. Please try again.");
-      setTimeout(() => setMessage(""), 4000);
-    });
-};
+  };
+  
   
   const auth = getAuth();
 
