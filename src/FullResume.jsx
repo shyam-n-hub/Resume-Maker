@@ -31,7 +31,6 @@ function FullResume() {
   const auth = getAuth();
   const currentUser = auth.currentUser;
   const [showConfirmBox, setShowConfirmBox] = useState(false);
-  
 
   useEffect(() => {
     const auth = getAuth();
@@ -41,9 +40,10 @@ function FullResume() {
         navigate("/login"); // Redirect to login page if user logs out
       }
     });
-
+  
     return () => unsubscribe(); // Cleanup listener on component unmount
   }, [navigate]);
+  
 
   useEffect(() => {
     if (location.state) {
@@ -136,7 +136,6 @@ function FullResume() {
     internships = [],
     projects = [],
     profileImage = null,
-    
   } = resumeData;
 
   const uploadAndDownloadResume = async (pdfBlob) => {
@@ -145,7 +144,6 @@ function FullResume() {
     //   return;
     // }
 
-    
     const userId = currentUser.uid;
     const userEmail = currentUser.email;
     const storageRef = ref(storage, `resumes/${userEmail}.pdf`);
@@ -314,23 +312,11 @@ function FullResume() {
                   <strong>
                     <FontAwesomeIcon
                       icon={faEnvelope}
-                      style={{
-                        fontSize: "18px",
-                        paddingRight: "5px",
-                        display: "flex",
-                        gap: "5px",
-                        marginTop: "4px",
-                      }}
+                      style={{ fontSize: "18px", paddingRight: "5px",display:"flex",gap:"5px", marginTop:"4px" }}
                     />
                   </strong>{" "}
-                  <span
-                    style={{
-                      paddingLeft: "5px",
-                      fontFamily: "Poppins, sans-serif",
-                    }}
-                  >
-                    {email}
-                  </span>
+                  <span style={{paddingLeft:"5px", fontFamily: 'Poppins, sans-serif',}}>
+                  {email}</span>
                 </p>
                 <p
                   className="word"
@@ -340,23 +326,11 @@ function FullResume() {
                   <strong>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      style={{
-                        fontSize: "16px",
-                        paddingRight: "5px",
-                        display: "flex",
-                        gap: "5px",
-                        marginTop: "4px",
-                      }}
+                      style={{ fontSize: "16px", paddingRight: "5px" , display:"flex",gap:"5px", marginTop:"4px"}}
                     />
-                  </strong>{" "}
-                  <span
-                    style={{
-                      paddingLeft: "5px",
-                      fontFamily: "Poppins, sans-serif",
-                    }}
-                  >
-                    + 91 -{phone}
-                  </span>
+                  </strong>{" "}                  <span style={{paddingLeft:"5px", fontFamily: 'Poppins, sans-serif',}}>
+
+                  + 91 -{phone}</span>
                 </p>
                 <p
                   className="word2"
@@ -370,8 +344,8 @@ function FullResume() {
                         fontSize: "20px",
                         paddingRight: "10px",
                         marginTop: "0px",
-                        fontFamily: "Poppins, sans-serif",
-                        marginTop: "4px",
+                        fontFamily: 'Poppins, sans-serif',
+                        marginTop:"4px"
                       }}
                     />
                   </strong>{" "}
@@ -380,9 +354,10 @@ function FullResume() {
                       display: "inline-block",
                       maxWidth: "250px",
                       marginTop: "5px",
-                      fontFamily: "Poppins, sans-serif",
-                      marginTop: "4px",
+                      fontFamily: 'Poppins, sans-serif',
+                      marginTop:"4px"
                     }}
+                  
                   >
                     {address}
                   </span>
@@ -400,8 +375,8 @@ function FullResume() {
                         fontSize: "22px",
                         paddingRight: "10px",
                         marginTop: "0px",
-                        fontFamily: "Poppins, sans-serif",
-                        marginTop: "8px",
+                        fontFamily: 'Poppins, sans-serif',
+                        marginTop:"8px"
                       }}
                     />
                   </strong>{" "}
@@ -410,11 +385,11 @@ function FullResume() {
                       display: "inline-block",
                       maxWidth: "250px",
                       marginTop: "5px",
-                      fontFamily: "Poppins, sans-serif",
+                      fontFamily: 'Poppins, sans-serif',
                     }}
+                  
                   >
-                    LinkedIn: {linkedin}
-                  </span>
+                  LinkedIn: {linkedin}</span>
                 </p>
                 <p
                   className="word"
@@ -428,22 +403,21 @@ function FullResume() {
                         fontSize: "20px",
                         paddingRight: "10px",
                         marginTop: "0px",
-                        fontFamily: "Poppins, sans-serif",
-                        marginTop: "8px",
-                      }}
-                    />
+                        fontFamily: 'Poppins, sans-serif',
+                         marginTop:"8px"
+                      }}                    />
                   </strong>{" "}
                   <span
                     style={{
                       display: "inline-block",
                       maxWidth: "250px",
                       marginTop: "5px",
-                      fontFamily: "Poppins, sans-serif",
-                      marginTop: "8px",
+                      fontFamily: 'Poppins, sans-serif',
+                       marginTop:"8px"
                     }}
+                  
                   >
-                    GitHub: {github}
-                  </span>
+                  GitHub: {github}</span>
                 </p>
                 <p
                   className="word"
@@ -456,32 +430,28 @@ function FullResume() {
                       style={{
                         fontSize: "15px",
                         paddingRight: "10px",
-                        fontFamily: "Poppins, sans-serif",
-                        marginTop: "4px",
-                      }}
-                    />
+                        fontFamily: 'Poppins, sans-serif',
+                        marginTop:"4px",
+                      }}                    />
                   </strong>{" "}
                   <span
                     style={{
                       display: "inline-block",
                       maxWidth: "250px",
                       marginTop: "5px",
-                      fontFamily: "Poppins, sans-serif",
+                      fontFamily: 'Poppins, sans-serif',
                     }}
+                  
                   >
-                    Leetcode: {leetcode}
-                  </span>
+                  Leetcode: {leetcode}</span>
                 </p>
               </section>
 
               <section className="technical-skills-section" style={styles}>
-                <h2 className="resumeh2" style={styles}>
-                  Technical Skills
-                </h2>
+                <h2 className="resumeh2" style={styles}>Technical Skills</h2>
                 <ul className="resumeul" style={styles}>
                   {technicalSkills.map((skill, index) => (
-                    <li
-                      style={styles}
+                    <li style={styles}
                       className="resumeli"
                       key={index}
                       onClick={() => handleEdit("technicalSkills", index)}
@@ -493,13 +463,10 @@ function FullResume() {
               </section>
 
               <section className="soft-skills-section" style={styles}>
-                <h2 className="resumeh2" style={styles}>
-                  Soft Skills
-                </h2>
-                <ul className="resumeul" style={styles}>
+                <h2 className="resumeh2"style={styles}>Soft Skills</h2>
+                <ul className="resumeul"style={styles}>
                   {softSkills.map((skill, index) => (
-                    <li
-                      style={styles}
+                    <li style={styles}
                       className="resumeli"
                       key={index}
                       onClick={() => handleEdit("softSkills", index)}
@@ -511,13 +478,10 @@ function FullResume() {
               </section>
 
               <section className="extra-curricular-section" style={styles}>
-                <h2 className="resumeh2e" style={styles}>
-                  Extra-Curricular Activities
-                </h2>
+                <h2 className="resumeh2e" style={styles}>Extra-Curricular Activities</h2>
                 <ul className="resumeul" style={styles}>
                   {extracurricular.map((activity, index) => (
-                    <li
-                      style={styles}
+                    <li style={styles}
                       className="resumeli"
                       key={index}
                       onClick={() => handleEdit("extracurricular", index)}
@@ -529,11 +493,10 @@ function FullResume() {
               </section>
 
               <section className="interests-section" style={styles}>
-                <h2 className="resumeh2">Areas of Interest</h2>
+                <h2 className="resumeh2" >Areas of Interest</h2>
                 <ul className="resumeul" style={styles}>
                   {interests.map((interest, index) => (
-                    <li
-                      style={styles}
+                    <li style={styles}
                       className="resumeli"
                       key={index}
                       onClick={() => handleEdit("interests", index)}
@@ -548,11 +511,8 @@ function FullResume() {
             {/* Right Column */}
             <div className="right-column" style={{ width: "80%" }}>
               <section className="career-objective-section" style={styles}>
-                <h2 className="resumeh2car" style={styles}>
-                  Career Objective
-                </h2>
-                <p
-                  style={styles}
+                <h2 className="resumeh2car" style={styles}>Career Objective</h2>
+                <p style={styles}
                   className="car-para"
                   onClick={() => handleEdit("careerObjective")}
                 >
@@ -561,134 +521,79 @@ function FullResume() {
               </section>
 
               <section className="education-section" style={styles}>
-                <h2 className="resumeh2car" style={styles}>
-                  Education Background
-                </h2>
-                <p
-                  className="paragraph"
-                  onClick={() => handleEdit("college")}
-                  style={styles}
-                >
+                <h2 className="resumeh2car" style={styles}>Education Background</h2>
+                <p className="paragraph" onClick={() => handleEdit("college")} style={styles}>
                   <strong>{college}</strong>
                 </p>
-                <h5
-                  className="para"
-                  onClick={() => handleEdit("degree")}
-                  style={{
-                    fontFamily: "Poppins, sans-serif",
-                    fontStyle: "italic",
-                  }}
-                >
+                <h5 className="para" onClick={() => handleEdit("degree")}  style={{ fontFamily: 'Poppins, sans-serif', fontStyle: 'italic' }}>
                   {degree}
                 </h5>
-                <h5
-                  style={styles}
-                  className="para1"
-                  onClick={() => handleEdit("degree")}
-                >
+                <h5 style={styles} className="para1" onClick={() => handleEdit("degree")}>
                   {" "}
                   Pursuing with {cgpa} CGPA
                 </h5>
-                <p
-                  style={styles}
+                <p style={styles}
                   className="paragraph"
                   onClick={() => handleEdit("highschool")}
                 >
                   <strong>{highschool}</strong>
                 </p>
-                <h5
-                  style={{
-                    fontFamily: "Poppins, sans-serif",
-                    fontStyle: "italic",
-                  }}
-                  className="para"
-                  onClick={() => handleEdit("highschool1")}
-                >
+                <h5   style={{ fontFamily: 'Poppins, sans-serif', fontStyle: 'italic' }} className="para" onClick={() => handleEdit("highschool1")}>
                   {highschool1}
                 </h5>
-                <h5
-                  style={styles}
-                  className="para1"
-                  onClick={() => handleEdit("highschool2")}
-                >
-                  Completed with {highschool2}
+                <h5 style={styles} className="para1" onClick={() => handleEdit("highschool2")}>
+                Completed with {highschool2} 
                 </h5>
 
-                <p
-                  style={styles}
-                  className="paragraph"
-                  onClick={() => handleEdit("school")}
-                >
+                <p style={styles} className="paragraph" onClick={() => handleEdit("school")}>
                   <strong>{school}</strong>
                 </p>
-                <h5
-                  style={{
-                    fontFamily: "Poppins, sans-serif",
-                    fontStyle: "italic",
-                  }}
-                  className="para"
-                  onClick={() => handleEdit("school1")}
-                >
+                <h5  style={{ fontFamily: 'Poppins, sans-serif', fontStyle: 'italic' }} className="para" onClick={() => handleEdit("school1")}>
                   {school1}
                 </h5>
-                <h5
-                  style={styles}
-                  className="para1"
-                  onClick={() => handleEdit("school2")}
-                >
-                  Completed with {school2}
+                <h5 style={styles} className="para1" onClick={() => handleEdit("school2")}>
+                Completed with {school2} 
                 </h5>
               </section>
 
               <section className="internships-section" style={styles}>
-                <h2 className="resumeh2car" style={styles}>
-                  Internships/Workshops
-                </h2>
+                <h2 className="resumeh2car" style={styles}>Internships/Workshops</h2>
                 {internships.map((internship, index) => (
                   <div key={index}>
-                    <p
-                      style={styles}
+                    <p style={styles}
                       className="paragraph"
                       onClick={() => handleEditInternship(index, "name")}
                     >
                       <strong>{internship.name}</strong>
                     </p>
-                    <h5
-                      style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontStyle: "italic",
-                      }}
+                    <h5  style={{ fontFamily: 'Poppins, sans-serif', fontStyle: 'italic' }}
                       className="parain"
                       onClick={() => handleEditInternship(index, "description")}
                     >
                       {internship.description}
                     </h5>
-                    <p
-                      style={styles}
+                    <p  style={styles}
                       className="parain1"
                       onClick={() => handleEditInternship(index, "startDate")}
                     >
-                      {internship.startDate} - {internship.endDate}
+                        {internship.startDate} - {internship.endDate}
+                    
                     </p>
                   </div>
                 ))}
               </section>
 
               <section className="projects-section" style={styles}>
-                <h2 className="resumeh2car" style={styles}>
-                  Projects/Certifications
-                </h2>
+                <h2 className="resumeh2car" style={styles}>Projects/Certifications</h2>
                 {projects.map((project, index) => (
                   <div key={index}>
-                    <p
-                      style={styles}
+                    <p style={styles}
                       className="paragraph"
                       onClick={() => handleEditProject(index, "name")}
                     >
                       <strong>{project.name}</strong>
                     </p>
-                    <h5
-                      style={styles}
+                    <h5 style={styles}
                       className="para"
                       onClick={() => handleEditProject(index, "description")}
                     >
@@ -713,30 +618,28 @@ function FullResume() {
               : "Download Resume"}
           </button>
           <button
-            className="back-to-generate-button"
-            onClick={() => setShowConfirmBox(true)}
-          >
-            Back to Create New Resume
-          </button>
+        className="back-to-generate-button"
+        onClick={() => setShowConfirmBox(true)}
+      >
+        Back to Create New Resume
+      </button>
 
-          {showConfirmBox && (
-            <div className="confirm-overlay">
-              <div className="confirm-box">
-                <p>If you go back, you will need to enter all details again.</p>
-                <div className="confirm-buttons">
-                  <button className="confirm-btn" onClick={handleGoBack}>
-                    Go Back
-                  </button>
-                  <button
-                    className="cancel-btn"
-                    onClick={() => setShowConfirmBox(false)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+      {showConfirmBox && (
+  <div className="confirm-overlay">
+    <div className="confirm-box">
+      <p>If you go back, you will need to enter all details again.</p>
+      <div className="confirm-buttons">
+        <button className="confirm-btn" onClick={handleGoBack}>
+          Go Back
+        </button>
+        <button className="cancel-btn" onClick={() => setShowConfirmBox(false)}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
         </div>
       </div>
     </div>

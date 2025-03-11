@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate,Link } from "react-router-dom";
 import "./BasicDetails.css";
 import Dashboard from "./Dashboard";
-import { getAuth } from "firebase/auth";
 
 function BasicDetails() {
   const navigate = useNavigate();
   const [showDashboard, setShowDashboard] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const auth = getAuth();
   const [details, setDetails] = useState({
     name: "",
     department: "",
@@ -35,26 +33,15 @@ function BasicDetails() {
     internships: [],
     projects: [],
     profileImage: null,
-    userId: "",
-    userEmail: ""
+  
   });
   
   useEffect(() => {
-    const storedLoginState = localStorage.getItem("isLoggedIn");
-    if (storedLoginState === "true") {
-      setIsLoggedIn(true);
-      
-      // Get current user from Firebase auth
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        setDetails(prevDetails => ({
-          ...prevDetails,
-          userId: currentUser.uid,
-          userEmail: currentUser.email
-        }));
+      const storedLoginState = localStorage.getItem("isLoggedIn");
+      if (storedLoginState === "true") {
+        setIsLoggedIn(true);
       }
-    }
-  }, [auth]);
+    }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
