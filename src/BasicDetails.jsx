@@ -35,7 +35,6 @@ function BasicDetails() {
     internships: [],
     projects: [],
     profileImage: null,
-    // Add these fields to store user ID and email
     userId: "",
     userEmail: ""
   });
@@ -57,8 +56,6 @@ function BasicDetails() {
     }
   }, [auth]);
 
-  // Rest of the component remains the same...
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setDetails({ ...details, [name]: value });
@@ -133,16 +130,6 @@ function BasicDetails() {
     const storedLoginState = localStorage.getItem("isLoggedIn");
     if (storedLoginState === "true") {
       setIsLoggedIn(true);
-      
-      // Get current user from Firebase auth
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        setDetails(prevDetails => ({
-          ...prevDetails,
-          userId: currentUser.uid,
-          userEmail: currentUser.email
-        }));
-      }
     } else {
       setIsLoggedIn(false);
       navigate("/login");
@@ -245,28 +232,15 @@ function BasicDetails() {
       alert("Please upload a profile image.");
       return false;
     }
-    
-    // Make sure we have the user ID and email
-    if (!details.userId || !details.userEmail) {
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        setDetails(prevDetails => ({
-          ...prevDetails,
-          userId: currentUser.uid,
-          userEmail: currentUser.email
-        }));
-      } else {
-        alert("Unable to get user information. Please log in again.");
-        return false;
-      }
-    }
 
     return true;
   };
 
   const handleSubmit = () => {
     if (window.innerWidth < 768) {
+      // alert("For better visibility, please enable 'Desktop Site' in your browser settings.");
       alert("Please do not enable 'Desktop Site' in your browser settings to view your resume, If enabled means you can't download resume.");
+
     }
     
     if (validateFields()) {
