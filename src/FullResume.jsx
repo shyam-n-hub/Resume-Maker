@@ -18,8 +18,8 @@ import {
   getDownloadURL,
   updateMetadata,
 } from "firebase/storage";
-import { set, ref as dbRef } from "firebase/database";
-import { getAuth } from "firebase/auth";
+import { set, ref as dbRef, get } from "firebase/database";
+import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function FullResume() {
@@ -29,45 +29,126 @@ function FullResume() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [resumeData, setResumeData] = useState(null);
   const auth = getAuth();
-  const currentUser = auth.currentUser;
+  const [currentUser, setCurrentUser] = useState(auth.currentUser);
   const [showConfirmBox, setShowConfirmBox] = useState(false);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
+  // Set stronger persistence and handle auth state changes
   useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    
+    // Set persistent auth session
+    setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        console.log("Set persistence successful");
+      })
+      .catch((error) => {
+        console.error("Error setting persistence:", error);
+      });
+      
+    // Listen for auth state changes
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoadingAuth(false);
+      setCurrentUser(user);
+      
       if (!user) {
-        alert("User logged out. Please log in again.");
-        navigate("/login"); // Redirect to login page if user logs out
+        console.log("No authenticated user found");
+        // Try to recover resume data from sessionStorage before redirecting
+        const savedResumeData = sessionStorage.getItem('resumeData');
+        if (!savedResumeData) {
+          alert("Please log in to continue.");
+          navigate("/login", { state: { returnPath: '/fullresume' }});
+        }
+      } else {
+        console.log("User authenticated:", user.email);
+        // If resumeData doesn't exist yet, try to load from location state or session storage
+        if (!resumeData) {
+          loadResumeData();
+        }
       }
     });
   
     return () => unsubscribe(); // Cleanup listener on component unmount
   }, [navigate]);
   
-
-  useEffect(() => {
+  // Load resume data from various sources
+  const loadResumeData = () => {
+    // First try to get from location state
     if (location.state) {
       setResumeData(location.state);
+      // Save to session storage as backup
+      sessionStorage.setItem('resumeData', JSON.stringify(location.state));
+      return;
+    }
+    
+    // Then try to get from session storage
+    const savedData = sessionStorage.getItem('resumeData');
+    if (savedData) {
+      try {
+        setResumeData(JSON.parse(savedData));
+        return;
+      } catch (error) {
+        console.error("Error parsing saved resume data:", error);
+      }
+    }
+    
+    // If user is logged in, try to fetch from database
+    if (currentUser) {
+      const userRef = dbRef(database, `users/${currentUser.uid}/resumeData`);
+      get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          setResumeData(data);
+          sessionStorage.setItem('resumeData', JSON.stringify(data));
+        } else {
+          alert("No resume details found. Please fill in your details first.");
+          navigate("/basicdetails");
+        }
+      }).catch(error => {
+        console.error("Error fetching resume data:", error);
+        alert("Error loading your resume. Please try again.");
+      });
     } else {
+      // Last resort - if all else fails
       alert("No resume details found. Please fill in your details first.");
       navigate("/basicdetails");
     }
-  }, [location.state, navigate]);
+  };
+
+  // Save resumeData changes to both state, session storage and database
+  const saveResumeData = (newData) => {
+    setResumeData(newData);
+    sessionStorage.setItem('resumeData', JSON.stringify(newData));
+    
+    // Save to database if user is logged in
+    if (currentUser) {
+      const userRef = dbRef(database, `users/${currentUser.uid}/resumeData`);
+      set(userRef, newData).catch(error => {
+        console.error("Error saving resume data:", error);
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!isLoadingAuth && !resumeData) {
+      loadResumeData();
+    }
+  }, [isLoadingAuth, resumeData, location.state, navigate]);
 
   const handleEdit = (field, index = null) => {
     const isConfirmed = window.confirm("Are you sure you want to edit this?");
     if (isConfirmed) {
       const newValue = prompt("Enter new value:", resumeData[field]);
       if (newValue !== null) {
-        setResumeData((prevData) => {
-          if (index !== null) {
-            const updatedArray = [...prevData[field]];
-            updatedArray[index] = newValue;
-            return { ...prevData, [field]: updatedArray };
-          } else {
-            return { ...prevData, [field]: newValue };
-          }
-        });
+        const updatedData = {...resumeData};
+        if (index !== null) {
+          const updatedArray = [...updatedData[field]];
+          updatedArray[index] = newValue;
+          updatedData[field] = updatedArray;
+        } else {
+          updatedData[field] = newValue;
+        }
+        saveResumeData(updatedData);
       }
     }
   };
@@ -77,14 +158,14 @@ function FullResume() {
     if (confirmEdit) {
       const newValue = prompt("Enter new value:");
       if (newValue) {
-        setResumeData((prevData) => {
-          const updatedInternships = [...prevData.internships];
-          updatedInternships[index] = {
-            ...updatedInternships[index],
-            [field]: newValue,
-          };
-          return { ...prevData, internships: updatedInternships };
-        });
+        const updatedData = {...resumeData};
+        const updatedInternships = [...updatedData.internships];
+        updatedInternships[index] = {
+          ...updatedInternships[index],
+          [field]: newValue,
+        };
+        updatedData.internships = updatedInternships;
+        saveResumeData(updatedData);
       }
     }
   };
@@ -94,20 +175,24 @@ function FullResume() {
     if (confirmEdit) {
       const newValue = prompt("Enter new value:");
       if (newValue) {
-        setResumeData((prevData) => {
-          const updatedProjects = [...prevData.projects];
-          updatedProjects[index] = {
-            ...updatedProjects[index],
-            [field]: newValue,
-          };
-          return { ...prevData, projects: updatedProjects };
-        });
+        const updatedData = {...resumeData};
+        const updatedProjects = [...updatedData.projects];
+        updatedProjects[index] = {
+          ...updatedProjects[index],
+          [field]: newValue,
+        };
+        updatedData.projects = updatedProjects;
+        saveResumeData(updatedData);
       }
     }
   };
 
+  if (isLoadingAuth) {
+    return <div className="loading-container">Checking authentication...</div>;
+  }
+
   if (!resumeData) {
-    return <div>Loading resume details...</div>;
+    return <div className="loading-container">Loading resume details...</div>;
   }
 
   const {
@@ -141,6 +226,7 @@ function FullResume() {
   const uploadAndDownloadResume = async (pdfBlob) => {
     if (!currentUser) {
       alert("User not authenticated. Please log in.");
+      navigate("/login", { state: { returnPath: '/fullresume' }});
       return;
     }
 
@@ -194,35 +280,6 @@ function FullResume() {
     );
   };
 
-  // const generateAndUploadResume = () => {
-  //   const resumeElement = document.querySelector(".full-resume-container");
-  //   const scale = 2;
-  //   setLoading(true);
-
-  //   html2canvas(resumeElement, {
-  //     scale: scale,
-  //     useCORS: true,
-  //     ignoreElements: (el) => el.tagName === "BUTTON",
-  //   }).then((canvas) => {
-  //     const imgData = canvas.toDataURL("image/png");
-  //     const pdf = new jsPDF("p", "mm", "a4");
-  //     const imgWidth = 210;
-  //     const pageHeight = 297;
-  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-  //     pdf.addImage(
-  //       imgData,
-  //       "PNG",
-  //       0,
-  //       0,
-  //       imgWidth,
-  //       imgHeight > pageHeight ? pageHeight : imgHeight
-  //     );
-  //     const pdfBlob = pdf.output("blob");
-  //     uploadAndDownloadResume(pdfBlob);
-  //   });
-  // };
-
   const generateAndUploadResume = () => {
     const resumeElement = document.querySelector(".full-resume-container");
     const lastElement = document.querySelector(".vv"); // Ensure we capture up to this
@@ -266,6 +323,8 @@ function FullResume() {
   };
 
   const handleGoBack = () => {
+    // Clear session storage to prevent old data reappearing
+    sessionStorage.removeItem('resumeData');
     navigate("/basicdetails"); // Navigates back to BasicDetails
   };
 
@@ -618,28 +677,27 @@ function FullResume() {
               : "Download Resume"}
           </button>
           <button
-        className="back-to-generate-button"
-        onClick={() => setShowConfirmBox(true)}
-      >
-        Back to Create New Resume
-      </button>
+            className="back-to-generate-button"
+            onClick={() => setShowConfirmBox(true)}
+          >
+            Back to Create New Resume
+          </button>
 
-      {showConfirmBox && (
-  <div className="confirm-overlay">
-    <div className="confirm-box">
-      <p>If you go back, you will need to enter all details again.</p>
-      <div className="confirm-buttons">
-        <button className="confirm-btn" onClick={handleGoBack}>
-          Go Back
-        </button>
-        <button className="cancel-btn" onClick={() => setShowConfirmBox(false)}>
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+          {showConfirmBox && (
+            <div className="confirm-overlay">
+              <div className="confirm-box">
+                <p>If you go back, you will need to enter all details again.</p>
+                <div className="confirm-buttons">
+                  <button className="confirm-btn" onClick={handleGoBack}>
+                    Go Back
+                  </button>
+                  <button className="cancel-btn" onClick={() => setShowConfirmBox(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
