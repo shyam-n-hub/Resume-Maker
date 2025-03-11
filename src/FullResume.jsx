@@ -139,10 +139,10 @@ function FullResume() {
   } = resumeData;
 
   const uploadAndDownloadResume = async (pdfBlob) => {
-    // if (!currentUser) {
-    //   alert("User not authenticated. Please log in.");
-    //   return;
-    // }
+    if (!currentUser) {
+      alert("User not authenticated. Please log in.");
+      return;
+    }
 
     const userId = currentUser.uid;
     const userEmail = currentUser.email;
