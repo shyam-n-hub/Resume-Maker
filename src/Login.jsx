@@ -77,7 +77,7 @@ setPersistence(auth, browserLocalPersistence)
   return (
     <div className="loginbox">
       <form className="loginbox1" onSubmit={handleLogin}>
-        <h1 className="loginh1">Login</h1>
+        <h1 className="loginh1">Logimkn</h1>
 
         <input
           className="logininput"
