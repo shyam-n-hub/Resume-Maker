@@ -28,22 +28,7 @@ function FullResume() {
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [resumeData, setResumeData] = useState(null);
-  const auth = getAuth();
-  const currentUser = auth.currentUser;
   const [showConfirmBox, setShowConfirmBox] = useState(false);
-
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (!user) {
-        alert("User logged out. Please log in again.");
-        navigate("/login"); // Redirect to login page if user logs out
-      }
-    });
-  
-    return () => unsubscribe(); // Cleanup listener on component unmount
-  }, [navigate]);
-  
 
   useEffect(() => {
     if (location.state) {
@@ -136,16 +121,17 @@ function FullResume() {
     internships = [],
     projects = [],
     profileImage = null,
+    // Get the user ID and email from the passed state
+    userId = "",
+    userEmail = "",
   } = resumeData;
 
   const uploadAndDownloadResume = async (pdfBlob) => {
-    // if (!currentUser) {
-    //   alert("User not authenticated. Please log in.");
-    //   return;
-    // }
+    if (!userId || !userEmail) {
+      alert("User information is missing. Please return to the form and try again.");
+      return;
+    }
 
-    const userId = currentUser.uid;
-    const userEmail = currentUser.email;
     const storageRef = ref(storage, `resumes/${userEmail}.pdf`);
     const uploadTask = uploadBytesResumable(storageRef, pdfBlob, {
       contentType: "application/pdf",
@@ -193,35 +179,6 @@ function FullResume() {
       }
     );
   };
-
-  // const generateAndUploadResume = () => {
-  //   const resumeElement = document.querySelector(".full-resume-container");
-  //   const scale = 2;
-  //   setLoading(true);
-
-  //   html2canvas(resumeElement, {
-  //     scale: scale,
-  //     useCORS: true,
-  //     ignoreElements: (el) => el.tagName === "BUTTON",
-  //   }).then((canvas) => {
-  //     const imgData = canvas.toDataURL("image/png");
-  //     const pdf = new jsPDF("p", "mm", "a4");
-  //     const imgWidth = 210;
-  //     const pageHeight = 297;
-  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-  //     pdf.addImage(
-  //       imgData,
-  //       "PNG",
-  //       0,
-  //       0,
-  //       imgWidth,
-  //       imgHeight > pageHeight ? pageHeight : imgHeight
-  //     );
-  //     const pdfBlob = pdf.output("blob");
-  //     uploadAndDownloadResume(pdfBlob);
-  //   });
-  // };
 
   const generateAndUploadResume = () => {
     const resumeElement = document.querySelector(".full-resume-container");
