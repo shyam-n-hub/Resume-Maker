@@ -9,6 +9,7 @@ import {
   faPhone,
   faLocationDot,
   faCode,
+  faDesktop,
 } from "@fortawesome/free-solid-svg-icons";
 import { faLinkedin, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { storage, database } from "./firebase";
@@ -32,6 +33,25 @@ function FullResume() {
   const [currentUser, setCurrentUser] = useState(auth.currentUser);
   const [showConfirmBox, setShowConfirmBox] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const [isDesktopMode, setIsDesktopMode] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobileView = () => {
+      const width = window.innerWidth;
+      setIsMobileView(width < 768); // Common breakpoint for mobile devices
+    };
+
+    // Initial check
+    checkMobileView();
+
+    // Add event listener to update on resize
+    window.addEventListener('resize', checkMobileView);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobileView);
+  }, []);
 
   // Set stronger persistence and handle auth state changes
   useEffect(() => {
@@ -114,6 +134,52 @@ function FullResume() {
       navigate("/basicdetails");
     }
   };
+
+  // Switch to desktop view
+  const switchToDesktopView = () => {
+    if (isMobileView) {
+      // Set viewport meta tag to use desktop width
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.setAttribute('content', 'width=1024, initial-scale=0.5');
+      } else {
+        // Create viewport meta if it doesn't exist
+        const newViewport = document.createElement('meta');
+        newViewport.setAttribute('name', 'viewport');
+        newViewport.setAttribute('content', 'width=1024, initial-scale=0.5');
+        document.head.appendChild(newViewport);
+      }
+      
+      // Add class to body for additional styling
+      document.body.classList.add('desktop-mode');
+      
+      // Update state
+      setIsDesktopMode(true);
+      
+      // Store preference in localStorage
+      localStorage.setItem('preferDesktopView', 'true');
+    }
+  };
+  
+  // Switch back to mobile view
+  const switchToMobileView = () => {
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+    }
+    
+    document.body.classList.remove('desktop-mode');
+    setIsDesktopMode(false);
+    localStorage.setItem('preferDesktopView', 'false');
+  };
+
+  // Check for stored preference on component mount
+  useEffect(() => {
+    const preferDesktop = localStorage.getItem('preferDesktopView') === 'true';
+    if (preferDesktop && isMobileView) {
+      switchToDesktopView();
+    }
+  }, [isMobileView]);
 
   // Save resumeData changes to both state, session storage and database
   const saveResumeData = (newData) => {
@@ -334,6 +400,20 @@ function FullResume() {
 
   return (
     <div className="area">
+      {isMobileView && (
+        <div className="view-mode-toggle">
+          {isDesktopMode ? (
+            <button className="switch-view-btn" onClick={switchToMobileView}>
+              <FontAwesomeIcon icon={faPhone} className="view-icon" /> Switch to Mobile View
+            </button>
+          ) : (
+            <button className="switch-view-btn" onClick={switchToDesktopView}>
+              <FontAwesomeIcon icon={faDesktop} className="view-icon" /> Switch to Desktop View
+            </button>
+          )}
+        </div>
+      )}
+      
       <div>
         <div className="full-resume-container">
           <div className="resume-header">
