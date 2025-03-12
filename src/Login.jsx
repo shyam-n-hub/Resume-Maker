@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
-import { auth } from "./firebase";
-import { getAuth } from "firebase/auth";
+import React, { useState, useEffect } from "react";
+import { auth, database } from "./firebase";
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
-  confirmPasswordReset,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
 } from "firebase/auth";
+import { ref, get } from "firebase/database";
 import "./Login.css";
 
 function Login({ onLogin }) {
@@ -16,7 +18,9 @@ function Login({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
+  
   const adminEmails = [
     "abcd1234@gmail.com",
     "admin2@example.com",
@@ -24,27 +28,70 @@ function Login({ onLogin }) {
     "admin4@example.com",
   ];
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        setMessage("Login Successful! Redirecting...");
-        setTimeout(() => {
+  // Check if user is already logged in on component mount
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is already signed in, redirect appropriately
+        if (adminEmails.includes(user.email)) {
+          navigate("/admin-home");
+        } else {
+          navigate("/basicdetails");
+        }
+        
+        // If onLogin callback exists, call it
+        if (onLogin) {
           onLogin();
-          if (adminEmails.includes(email)) {
-            navigate("/admin-home");
-          } else {
-            navigate("/basicdetails");
-          }
-        }, 2000);
-      })
-      .catch((error) => {
-        setMessage("Incorrect email or password. Please try again.");
-        console.log(error);
-        alert(error);
-        setTimeout(() => setMessage(""), 4000);
-      });
+        }
+      }
+    });
+
+    // Cleanup subscription
+    return () => unsubscribe();
+  }, [navigate, onLogin, adminEmails]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+
+    try {
+      // First set persistence to ensure login survives page refreshes
+      await setPersistence(auth, browserLocalPersistence);
+      
+      // Then sign in
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Store the authentication token in localStorage for extra persistence
+      const token = await user.getIdToken();
+      localStorage.setItem('authToken', token);
+      
+      // Get user data from database and store in localStorage for quick access
+      const userRef = ref(database, `users/${user.uid}`);
+      const snapshot = await get(userRef);
+      
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        localStorage.setItem('userData', JSON.stringify(userData));
+      }
+      
+      setMessage("Login Successful! Redirecting...");
+      
+      setTimeout(() => {
+        if (onLogin) onLogin();
+        if (adminEmails.includes(email)) {
+          navigate("/admin-home");
+        } else {
+          navigate("/basicdetails");
+        }
+      }, 2000);
+    } catch (error) {
+      console.error("Login error:", error);
+      setMessage("Incorrect email or password. Please try again.");
+      setTimeout(() => setMessage(""), 4000);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleForgotPassword = () => {
@@ -57,6 +104,7 @@ function Login({ onLogin }) {
       return;
     }
 
+    setIsProcessing(true);
     sendPasswordResetEmail(auth, resetEmail)
       .then(() => {
         setMessage("Reset password link sent! Check your email.");
@@ -67,10 +115,11 @@ function Login({ onLogin }) {
         setMessage("Failed to send reset link. Please try again.");
         console.error("Error:", error);
         setTimeout(() => setMessage(""), 4000);
+      })
+      .finally(() => {
+        setIsProcessing(false);
       });
   };
-
-  const auth = getAuth();
 
   return (
     <div className="loginbox">
@@ -84,6 +133,7 @@ function Login({ onLogin }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          disabled={isProcessing}
         />
 
         <div className="password-container">
@@ -94,6 +144,7 @@ function Login({ onLogin }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={isProcessing}
           />
         </div>
         <div className="login-show">
@@ -102,6 +153,7 @@ function Login({ onLogin }) {
               type="checkbox"
               checked={showPassword}
               onChange={(e) => setShowPassword(e.target.checked)}
+              disabled={isProcessing}
             />
             Show Password
           </label>
@@ -109,8 +161,8 @@ function Login({ onLogin }) {
             Forgot Password?
           </p>
         </div>
-        <button type="submit" className="loginbutton">
-          Login
+        <button type="submit" className="loginbutton" disabled={isProcessing}>
+          {isProcessing ? "Processing..." : "Login"}
         </button>
 
         {message && (
@@ -124,7 +176,7 @@ function Login({ onLogin }) {
         )}
 
         <p className="signup-link">
-          Don’t have an account? <Link to="/signup">Create Account</Link>
+          Don't have an account? <Link to="/signup">Create Account</Link>
         </p>
       </form>
 
@@ -139,13 +191,19 @@ function Login({ onLogin }) {
               value={resetEmail}
               onChange={(e) => setResetEmail(e.target.value)}
               className="reset-email-input"
+              disabled={isProcessing}
             />
-            <button className="reset-button" onClick={handleResetPassword}>
-              Reset
+            <button 
+              className="reset-button" 
+              onClick={handleResetPassword}
+              disabled={isProcessing}
+            >
+              {isProcessing ? "Processing..." : "Reset"}
             </button>
             <button
               className="cancel-button"
               onClick={() => setShowResetModal(false)}
+              disabled={isProcessing}
             >
               Cancel
             </button>
