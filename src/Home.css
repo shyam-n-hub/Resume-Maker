@@ -39,7 +39,7 @@
   text-decoration: none;
   background-color: black;
   color: white;
-  padding: 4px 10px;
+  padding: 2px 5px;
   font-size: 18px;
   transition: background 0.3s ease-in-out;
   font-weight: 800;
@@ -85,7 +85,7 @@
   margin-left: 5px;
   text-decoration: none;
   color: white;
-  padding: 9px 12px;
+  padding: 8px 8px;
   font-size: 17px;
   border: white 2px solid;
   border-radius: 5px;

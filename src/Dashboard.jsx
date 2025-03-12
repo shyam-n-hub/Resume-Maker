@@ -19,84 +19,130 @@ function Dashboard({ closeDashboard, onLogout }) {
   const [loading, setLoading] = useState(true);
   const dashboardRef = useRef(null);
   const navigate = useNavigate();
+  const userListenerRef = useRef(null);
 
   useEffect(() => {
-    // Check for user in localStorage first to immediately display data
-    const cachedUserData = localStorage.getItem('userData');
-    if (cachedUserData) {
-      try {
-        const parsedData = JSON.parse(cachedUserData);
-        setUserData(parsedData);
-        setResumeUrl(parsedData.resumeLink || null);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error parsing cached user data:", error);
-      }
-    }
-
-    // Set up authentication listener
+    // Check if Firebase already has a user session
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        try {
-          // Set up real-time listener for user data
-          const userRef = dbRef(database, `users/${user.uid}`);
-          
-          // Use onValue instead of get for real-time updates
-          const userListener = onValue(userRef, (snapshot) => {
-            if (snapshot.exists()) {
-              const userInfo = snapshot.val();
-              const updatedUserData = {
-                name: userInfo.name || "User",
-                email: userInfo.email || user.email,
-                profileImage: userInfo.profileImage || "/default-image.jpg",
-                resumeLink: userInfo.resumeLink || null
-              };
-              
-              // Update state with fetched data
-              setUserData(updatedUserData);
-              setResumeUrl(userInfo.resumeLink || null);
-              
-              // Cache user data in localStorage
-              localStorage.setItem('userData', JSON.stringify(updatedUserData));
-              setLoading(false);
-            } else {
-              // If no user data exists, create default data from auth object
-              const defaultUserData = {
-                name: user.displayName || "User",
-                email: user.email,
-                profileImage: "/default-image.jpg",
-                resumeLink: null
-              };
-              setUserData(defaultUserData);
-              localStorage.setItem('userData', JSON.stringify(defaultUserData));
-              setLoading(false);
-            }
-          }, (error) => {
-            console.error("Error fetching user data:", error);
-            setLoading(false);
-          });
-          
-          // Return cleanup function to remove the listener
-          return () => userListener();
-        } catch (error) {
-          console.error("Error setting up user data listener:", error);
-          setLoading(false);
-        }
+        // User is signed in
+        fetchUserData(user.uid);
       } else {
-        // No user is signed in, clear cached data
-        localStorage.removeItem('userData');
-        setUserData({
-          name: "User",
-          email: "",
-          profileImage: "/default-image.jpg",
-        });
-        setResumeUrl(null);
-        setLoading(false);
+        // No user is signed in, check localStorage for last user token
+        const persistedAuthUser = localStorage.getItem('firebaseAuthUser');
+        
+        if (persistedAuthUser) {
+          try {
+            const userData = JSON.parse(persistedAuthUser);
+            // We have persistent data but no auth session
+            // Show cached data but mark as loading until we can verify
+            setUserData({
+              name: userData.name || "User",
+              email: userData.email || "",
+              profileImage: userData.profileImage || "/default-image.jpg",
+            });
+            setResumeUrl(userData.resumeLink || null);
+            
+            // Still mark as not loading since we're displaying data
+            setLoading(false);
+          } catch (error) {
+            console.error("Error parsing persisted auth user:", error);
+            clearUserData();
+          }
+        } else {
+          // No persisted data either
+          clearUserData();
+        }
       }
     });
-  
-    return () => unsubscribe();
+
+    // Clean up the auth listener when component unmounts
+    return () => {
+      unsubscribe();
+      // Also clean up any database listeners
+      if (userListenerRef.current) {
+        userListenerRef.current();
+      }
+    };
   }, []);
+
+  const fetchUserData = (userId) => {
+    try {
+      // Set up real-time listener for user data
+      const userRef = dbRef(database, `users/${userId}`);
+      
+      // Clean up previous listener if exists
+      if (userListenerRef.current) {
+        userListenerRef.current();
+      }
+      
+      // Use onValue for real-time updates
+      userListenerRef.current = onValue(userRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const userInfo = snapshot.val();
+          const updatedUserData = {
+            name: userInfo.name || "User",
+            email: userInfo.email || auth.currentUser?.email || "",
+            profileImage: userInfo.profileImage || "/default-image.jpg",
+            resumeLink: userInfo.resumeLink || null
+          };
+          
+          // Update state with fetched data
+          setUserData(updatedUserData);
+          setResumeUrl(userInfo.resumeLink || null);
+          
+          // Persist user data more robustly
+          localStorage.setItem('userData', JSON.stringify(updatedUserData));
+          localStorage.setItem('firebaseAuthUser', JSON.stringify(updatedUserData));
+          
+          setLoading(false);
+        } else {
+          // If no user data exists, create default data from auth object
+          const defaultUserData = {
+            name: auth.currentUser?.displayName || "User",
+            email: auth.currentUser?.email || "",
+            profileImage: "/default-image.jpg",
+            resumeLink: null
+          };
+          
+          setUserData(defaultUserData);
+          localStorage.setItem('userData', JSON.stringify(defaultUserData));
+          localStorage.setItem('firebaseAuthUser', JSON.stringify(defaultUserData));
+          
+          setLoading(false);
+        }
+      }, (error) => {
+        console.error("Error fetching user data:", error);
+        
+        // Try to use cached data if available
+        const cachedUserData = localStorage.getItem('userData');
+        if (cachedUserData) {
+          try {
+            setUserData(JSON.parse(cachedUserData));
+          } catch (e) {
+            console.error("Error parsing cached data:", e);
+          }
+        }
+        
+        setLoading(false);
+      });
+    } catch (error) {
+      console.error("Error setting up user data listener:", error);
+      setLoading(false);
+    }
+  };
+
+  const clearUserData = () => {
+    localStorage.removeItem('userData');
+    localStorage.removeItem('firebaseAuthUser');
+    setUserData({
+      name: "User",
+      email: "",
+      profileImage: "/default-image.jpg",
+    });
+    setResumeUrl(null);
+    setLoading(false);
+  };
   
   const handleClose = () => {
     if (dashboardRef.current) {
@@ -107,14 +153,23 @@ function Dashboard({ closeDashboard, onLogout }) {
 
   const handleLogout = () => {
     setIsLoggingOut(true);
+    
+    // Clean up any database listeners first
+    if (userListenerRef.current) {
+      userListenerRef.current();
+      userListenerRef.current = null;
+    }
+    
     signOut(auth)
       .then(() => {
-        // Clear local storage and session storage
+        // Clear all storage
         localStorage.removeItem('userData');
+        localStorage.removeItem('firebaseAuthUser');
         sessionStorage.clear();
   
-        // Ensure Firebase does not keep the session
+        // Clear Firebase auth cookies
         document.cookie = "firebase:authUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "firebase:session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   
         setIsLoggingOut(false);
         setShowLogoutConfirm(false);
@@ -123,7 +178,7 @@ function Dashboard({ closeDashboard, onLogout }) {
         setTimeout(() => {
           setShowSuccessMessage(false);
           handleClose();
-          onLogout();
+          if (onLogout) onLogout();
           navigate("/Home"); // Redirect to Home page after logout
         }, 1000);
       })
