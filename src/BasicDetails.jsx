@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate,Link } from "react-router-dom";
 import "./BasicDetails.css";
 import Dashboard from "./Dashboard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser} from "@fortawesome/free-solid-svg-icons";
 
 function BasicDetails() {
   const navigate = useNavigate();
@@ -49,13 +51,10 @@ function BasicDetails() {
   };
 
   const handleAddItem = (field) => {
-    let items = [];
-    for (let i = 0; i < 2; i++) {
-      let newItem = prompt(`Enter a ${field} (at least 2 required)`);
-      if (newItem) items.push(newItem);
-      else return alert(`You must enter at least 2 ${field}!`);
+    let newItem = prompt(`Enter a ${field}`);
+    if (newItem) {
+      setDetails({ ...details, [field]: [...details[field], newItem] });
     }
-    setDetails({ ...details, [field]: [...details[field], ...items] });
   };
    
 
@@ -74,39 +73,30 @@ function BasicDetails() {
   };
   
   const handleAddObjectItem = (field) => {
-    let newItems = [];
-  
     if (field === "internships") {
-      for (let i = 0; i < 2; i++) {
-        let name = prompt(`Enter the name for ${field} (at least 2 required)`);
-        let description = prompt(`Enter the description for ${field}`);
-        let startDate = prompt(`Enter the Starting Date for ${field} (YYYY-MM-DD)`);
-        let endDate = prompt(`Enter the Ending Date for ${field} (YYYY-MM-DD)`);
+      let name = prompt(`Enter the name for ${field}`);
+      let description = prompt(`Enter the description for ${field}`);
+      let startDate = prompt(`Enter the Starting Date for ${field} (YYYY-MM-DD)`);
+      let endDate = prompt(`Enter the Ending Date for ${field} (YYYY-MM-DD)`);
   
-        if (name && description && startDate && endDate) {
-          newItems.push({ name, description, startDate, endDate });
-        } else {
-          return alert(`You must enter at least 2 ${field} with complete details!`);
-        }
+      if (name && description && startDate && endDate) {
+        setDetails((prevDetails) => ({
+          ...prevDetails,
+          [field]: [...prevDetails[field], { name, description, startDate, endDate }],
+        }));
       }
     } else if (field === "projects") {
       let name = prompt("Enter the name for the project");
       let description = prompt("Enter the description for the project");
   
       if (name && description) {
-        newItems.push({ name, description }); // No date fields for projects
-      } else {
-        return alert("You must enter both a project name and description!");
+        setDetails((prevDetails) => ({
+          ...prevDetails,
+          [field]: [...prevDetails[field], { name, description }],
+        }));
       }
     }
-  
-    setDetails((prevDetails) => ({
-      ...prevDetails,
-      [field]: [...prevDetails[field], ...newItems],
-    }));
   };
-  
-
 
   useEffect(() => {
     checkLoginStatus();
@@ -185,7 +175,7 @@ function BasicDetails() {
       }
     }
 
-    if (details.technicalSkills.length < 0) {
+    if (details.technicalSkills.length < 3) {
       alert("Please add at least two technical skills.");
       return false;
     }
@@ -252,7 +242,7 @@ function BasicDetails() {
             </>
           ) : (
             <button onClick={() => setShowDashboard(!showDashboard)} className="profile-btn">
-              Profile
+                <FontAwesomeIcon icon={faUser} title="User" />
             </button>
           )}
         </nav>
@@ -446,7 +436,7 @@ function BasicDetails() {
             />
           </form>
 
-          <h3 style={{color:"black", margin:"10px 0px"}}>Technical Skills</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}} className="basich3">Technical Skills</h3>
           <button
             onClick={() => handleAddItem("technicalSkills")}
             className="bbutton"
@@ -459,7 +449,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3 style={{color:"black", margin:"10px 0px"}}>Soft Skills</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}} className="basich3">Soft Skills</h3>
           <button onClick={() => handleAddItem("softSkills")} className="bbutton">
             Add Skill
           </button>
@@ -469,7 +459,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3 style={{color:"black", margin:"10px 0px"}}>Extra-Curricular Activities</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}} className="basich3">Extra-Curricular Activities</h3>
           <button
             onClick={() => handleAddItem("extracurricular")}
             className="bbutton"
@@ -482,7 +472,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3 style={{color:"black", margin:"10px 0px"}}>Areas of Interest</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}} className="basich3">Areas of Interest</h3>
           <button onClick={() => handleAddItem("interests")} className="bbutton">
             Add Interest
           </button>
@@ -492,7 +482,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3 style={{color:"black", margin:"10px 0px"}}>Internships / Workshops</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}} className="basich3">Internships / Workshops</h3>
           <button
             onClick={() => handleAddObjectItem("internships")}className="bbutton" >
             Add Internship
@@ -506,7 +496,7 @@ function BasicDetails() {
             ))}
           </ul>
 
-          <h3 style={{color:"black", margin:"10px 0px"}}>Projects / Certifications</h3>
+          <h3 style={{color:"black", margin:"10px 0px"}}className="basich3">Projects / Certifications</h3>
           <button
             onClick={() => handleAddObjectItem("projects")}
             className="bbutton"

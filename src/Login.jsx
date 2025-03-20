@@ -19,6 +19,7 @@ function Login({ onLogin }) {
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
   
   const adminEmails = [
@@ -32,7 +33,19 @@ function Login({ onLogin }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is already signed in, redirect appropriately
+        // User is already signed in, store this info
+        localStorage.setItem('isLoggedIn', 'true');
+        
+        // Get user data from database and store in localStorage
+        const userRef = ref(database, `users/${user.uid}`);
+        get(userRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            localStorage.setItem('userData', JSON.stringify(userData));
+          }
+        });
+        
+        // Redirect appropriately
         if (adminEmails.includes(user.email)) {
           navigate("/admin-home");
         } else {
@@ -44,6 +57,7 @@ function Login({ onLogin }) {
           onLogin();
         }
       }
+      setCheckingAuth(false);
     });
 
     // Cleanup subscription
@@ -65,6 +79,7 @@ function Login({ onLogin }) {
       // Store the authentication token in localStorage for extra persistence
       const token = await user.getIdToken();
       localStorage.setItem('authToken', token);
+      localStorage.setItem('isLoggedIn', 'true');
       
       // Get user data from database and store in localStorage for quick access
       const userRef = ref(database, `users/${user.uid}`);
@@ -73,6 +88,7 @@ function Login({ onLogin }) {
       if (snapshot.exists()) {
         const userData = snapshot.val();
         localStorage.setItem('userData', JSON.stringify(userData));
+        localStorage.setItem('firebaseAuthUser', JSON.stringify(userData));
       }
       
       setMessage("Login Successful! Redirecting...");
@@ -120,6 +136,10 @@ function Login({ onLogin }) {
         setIsProcessing(false);
       });
   };
+
+  if (checkingAuth) {
+    return <div className="loading-container">Checking authentication status...</div>;
+  }
 
   return (
     <div className="loginbox">

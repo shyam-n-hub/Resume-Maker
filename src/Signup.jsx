@@ -1,8 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import "./Signup.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth, database } from "./firebase";
-import { createUserWithEmailAndPassword, setPersistence, browserLocalPersistence } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence,
+  onAuthStateChanged
+} from "firebase/auth";
 import { ref, set } from "firebase/database";
 
 function Signup({ onSignup }) {
@@ -12,9 +17,28 @@ function Signup({ onSignup }) {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
 
   const adminEmails = ["abcd1234@gmail.com", "admin2@example.com", "admin3@example.com", "admin4@example.com"];
+
+  // Check if user is already logged in on component mount
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is already signed in, redirect appropriately
+        if (adminEmails.includes(user.email)) {
+          navigate("/admin-home");
+        } else {
+          navigate("/basicdetails");
+        }
+      }
+      setCheckingAuth(false);
+    });
+
+    // Cleanup subscription
+    return () => unsubscribe();
+  }, [navigate, adminEmails]);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -44,11 +68,10 @@ function Signup({ onSignup }) {
       // Store the authentication token in localStorage for extra persistence
       const token = await user.getIdToken();
       localStorage.setItem('authToken', token);
+      localStorage.setItem('isLoggedIn', 'true');
       
       // Store user data in localStorage for quick access on page refresh
       localStorage.setItem('userData', JSON.stringify(userData));
-      
-      // Also store as firebaseAuthUser for extra persistence
       localStorage.setItem('firebaseAuthUser', JSON.stringify(userData));
       
       setMessage("Account Created Successfully! Redirecting...");
@@ -74,6 +97,10 @@ function Signup({ onSignup }) {
     }
   };
   
+  if (checkingAuth) {
+    return <div className="loading-container">Checking authentication status...</div>;
+  }
+
   return (
     <div className="signupbox">
       <form className="signupbox1" onSubmit={handleSignup}>

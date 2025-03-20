@@ -18,7 +18,7 @@ import {
   getDownloadURL,
   updateMetadata,
 } from "firebase/storage";
-import { set, ref as dbRef, get } from "firebase/database";
+import { set, ref as dbRef, get, update } from "firebase/database";
 import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -258,10 +258,17 @@ function FullResume() {
           const metadata = { customMetadata: { name, userEmail } };
           await updateMetadata(storageRef, metadata);
 
-          set(dbRef(database, `users/${userId}/resume`), {
+          // Update the resume info in the database
+          await set(dbRef(database, `users/${userId}/resume`), {
             downloadURL,
             name,
             userEmail,
+          });
+
+          // IMPORTANT: Also update the resumeLink in the main user record
+          // This is the key change needed to make the resume link appear in the profile
+          await update(dbRef(database, `users/${userId}`), {
+            resumeLink: downloadURL
           });
 
           alert("Resume uploaded successfully!");
@@ -402,7 +409,6 @@ function FullResume() {
                       style={{
                         fontSize: "20px",
                         paddingRight: "10px",
-                        marginTop: "0px",
                         fontFamily: 'Poppins, sans-serif',
                         marginTop:"4px"
                       }}
@@ -412,7 +418,6 @@ function FullResume() {
                     style={{
                       display: "inline-block",
                       maxWidth: "250px",
-                      marginTop: "5px",
                       fontFamily: 'Poppins, sans-serif',
                       marginTop:"4px"
                     }}
@@ -433,7 +438,6 @@ function FullResume() {
                       style={{
                         fontSize: "22px",
                         paddingRight: "10px",
-                        marginTop: "0px",
                         fontFamily: 'Poppins, sans-serif',
                         marginTop:"8px"
                       }}
@@ -461,7 +465,6 @@ function FullResume() {
                       style={{
                         fontSize: "20px",
                         paddingRight: "10px",
-                        marginTop: "0px",
                         fontFamily: 'Poppins, sans-serif',
                          marginTop:"8px"
                       }}                    />
@@ -470,9 +473,8 @@ function FullResume() {
                     style={{
                       display: "inline-block",
                       maxWidth: "250px",
-                      marginTop: "5px",
                       fontFamily: 'Poppins, sans-serif',
-                       marginTop:"8px"
+                      marginTop:"8px",
                     }}
                   
                   >
