@@ -196,32 +196,32 @@ function BasicDetails() {
       }
     }
 
-    if (details.technicalSkills.length < 0) {
-      alert("Please add at least two technical skills.");
+    if (details.technicalSkills.length < 3) {
+      alert("Please add at least three technical skills.");
       return false;
     }
 
-    if (details.softSkills.length < 0) {
-      alert("Please add at least two soft skills.");
+    if (details.softSkills.length < 3) {
+      alert("Please add at least three soft skills.");
       return false;
     }
 
-    if (details.extracurricular.length < 0) {
+    if (details.extracurricular.length < 2) {
       alert("Please add at least two extracurricular activities.");
       return false;
     }
 
-    if (details.interests.length < 0) {
+    if (details.interests.length < 2) {
       alert("Please add at least two areas of interest.");
       return false;
     }
 
-    if (details.internships.length < 0) {
-      alert("Please add at least two internships.");
+    if (details.internships.length < 3) {
+      alert("Please add at least three internships.");
       return false;
     }
 
-    if (details.projects.length < 0) {
+    if (details.projects.length < 2) {
       alert("Please add at least two projects.");
       return false;
     }
