@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate,Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./BasicDetails.css";
 import Dashboard from "./Dashboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser} from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
 
 function BasicDetails() {
   const navigate = useNavigate();
   const [showDashboard, setShowDashboard] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [details, setDetails] = useState({
     name: "",
     department: "",
@@ -23,11 +26,11 @@ function BasicDetails() {
     degree: "",
     cgpa: "",
     highschool: "",
-    highschool1:"",
-    highschool2:"",
+    highschool1: "",
+    highschool2: "",
     school: "",
-    school1:"",
-    school2:"",
+    school1: "",
+    school2: "",
     technicalSkills: [],
     softSkills: [],
     extracurricular: [],
@@ -35,15 +38,42 @@ function BasicDetails() {
     internships: [],
     projects: [],
     profileImage: null,
-  
   });
-  
+
+  // Use Firebase Auth state to determine login status
   useEffect(() => {
-      const storedLoginState = localStorage.getItem("isLoggedIn");
-      if (storedLoginState === "true") {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
         setIsLoggedIn(true);
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('uid', user.uid);
+      } else {
+        // If no Firebase user but we have localStorage data, recheck
+        const storedLoginState = localStorage.getItem("isLoggedIn");
+        const uid = localStorage.getItem("uid");
+        const token = localStorage.getItem("authToken");
+        
+        if (storedLoginState === "true" && uid && token) {
+          // We have local storage data indicating login, but Firebase doesn't recognize it
+          // This could happen if Firebase session expired but local storage wasn't cleared
+          console.log("Local storage indicates logged in, but Firebase doesn't recognize. Redirecting to login...");
+          handleLogout(); // Clear everything and redirect
+        } else {
+          setIsLoggedIn(false);
+        }
       }
-    }, []);
+      setIsAuthChecking(true);
+      
+      // After checking auth, verify if we should redirect
+      if (!user && !localStorage.getItem("isLoggedIn")) {
+        navigate("/login");
+      }
+      
+      setIsAuthChecking(false);
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,7 +86,6 @@ function BasicDetails() {
       setDetails({ ...details, [field]: [...details[field], newItem] });
     }
   };
-   
 
   const handleRemoveItem = (field, index) => {
     setDetails({
@@ -64,21 +93,21 @@ function BasicDetails() {
       [field]: details[field].filter((_, i) => i !== index),
     });
   };
-  
+
   const handleRemoveObjectItem = (field, index) => {
     setDetails((prevDetails) => ({
       ...prevDetails,
       [field]: prevDetails[field].filter((_, i) => i !== index),
     }));
   };
-  
+
   const handleAddObjectItem = (field) => {
     if (field === "internships") {
       let name = prompt(`Enter the name for ${field}`);
       let description = prompt(`Enter the description for ${field}`);
       let startDate = prompt(`Enter the Starting Date for ${field} (YYYY-MM-DD)`);
       let endDate = prompt(`Enter the Ending Date for ${field} (YYYY-MM-DD)`);
-  
+
       if (name && description && startDate && endDate) {
         setDetails((prevDetails) => ({
           ...prevDetails,
@@ -88,28 +117,13 @@ function BasicDetails() {
     } else if (field === "projects") {
       let name = prompt("Enter the name for the project");
       let description = prompt("Enter the description for the project");
-  
+
       if (name && description) {
         setDetails((prevDetails) => ({
           ...prevDetails,
           [field]: [...prevDetails[field], { name, description }],
         }));
       }
-    }
-  };
-
-  useEffect(() => {
-    checkLoginStatus();
-  }, []);
-
-  
-  const checkLoginStatus = () => {
-    const storedLoginState = localStorage.getItem("isLoggedIn");
-    if (storedLoginState === "true") {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-      navigate("/login");
     }
   };
 
@@ -125,17 +139,24 @@ function BasicDetails() {
   };
 
   const handleLogout = () => {
-    localStorage.setItem("isLoggedIn", "false");
+    // Clear all authentication related data
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("uid");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userData");
+    localStorage.removeItem("firebaseAuthUser");
+    
     setIsLoggedIn(false);
     setShowDashboard(false);
     navigate("/login");
   };
+
+  // Redirect if not logged in
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isAuthChecking && !isLoggedIn) {
       navigate("/login");
     }
-  }, [isLoggedIn, navigate]);
-
+  }, [isLoggedIn, navigate, isAuthChecking]);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -216,8 +237,13 @@ function BasicDetails() {
   const handleSubmit = () => {
     if (window.innerWidth < 768) {
       alert("For better visibility, please enable 'Desktop Site' in your browser settings.");
-  
-
+    }
+    
+    // Double check login status before proceeding
+    if (!isLoggedIn) {
+      alert("You need to be logged in to generate a resume.");
+      navigate("/login");
+      return;
     }
     
     if (validateFields()) {
@@ -226,6 +252,11 @@ function BasicDetails() {
       });
     }
   };
+
+  if (isAuthChecking) {
+    return <div className="loading-container">Checking authentication...</div>;
+  }
+
 
   return (
     <div className="basicheaderfirst">

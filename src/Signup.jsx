@@ -27,11 +27,18 @@ function Signup({ onSignup }) {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is already signed in, redirect appropriately
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('uid', user.uid);
+        
         if (adminEmails.includes(user.email)) {
           navigate("/admin-home");
         } else {
           navigate("/basicdetails");
         }
+      } else {
+        // Clear login status if no user is found
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('uid');
       }
       setCheckingAuth(false);
     });
@@ -69,6 +76,7 @@ function Signup({ onSignup }) {
       const token = await user.getIdToken();
       localStorage.setItem('authToken', token);
       localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('uid', user.uid);
       
       // Store user data in localStorage for quick access on page refresh
       localStorage.setItem('userData', JSON.stringify(userData));

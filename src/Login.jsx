@@ -35,6 +35,7 @@ function Login({ onLogin }) {
       if (user) {
         // User is already signed in, store this info
         localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('uid', user.uid);
         
         // Get user data from database and store in localStorage
         const userRef = ref(database, `users/${user.uid}`);
@@ -56,6 +57,10 @@ function Login({ onLogin }) {
         if (onLogin) {
           onLogin();
         }
+      } else {
+        // Clear login status if no user is found
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('uid');
       }
       setCheckingAuth(false);
     });
@@ -76,10 +81,11 @@ function Login({ onLogin }) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
-      // Store the authentication token in localStorage for extra persistence
+      // Store the authentication token and user ID in localStorage for extra persistence
       const token = await user.getIdToken();
       localStorage.setItem('authToken', token);
       localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('uid', user.uid);
       
       // Get user data from database and store in localStorage for quick access
       const userRef = ref(database, `users/${user.uid}`);
