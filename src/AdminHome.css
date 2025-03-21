@@ -1,144 +1,361 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* AdminHome.css - Modern Redesign */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #4361ee;
+  --primary-dark: #3a56d4;
+  --secondary-color: #7209b7;
+  --success-color: #38b000;
+  --warning-color: #f48c06;
+  --danger-color: #e5383b;
+  --light-color: #f8f9fa;
+  --dark-color: #212529;
+  --gray-color: #6c757d;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: #f5f7fa;
+  color: var(--dark-color);
 }
 
 .admin-container {
-  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
+/* Header Styling */
 .admin-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #2d3436;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
-  padding: 15px;
-  border-radius: 10px;
+  padding: 16px 32px;
   position: fixed;
   width: 100%;
   top: 0;
   left: 0;
   z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
 .admin-header h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.admin-header nav {
+  display: flex;
+  gap: 12px;
 }
 
 .admin-header nav button {
-  background-color: aliceblue;
-  border-radius: 5px;
-  padding: 8px 12px;
-  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius);
+  color: white;
+  font-weight: 500;
+  padding: 10px 16px;
+  font-size: 0.9rem;
   cursor: pointer;
-  margin-left: 10px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-header nav button:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
 }
 
 .logout-btn {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
+  background-color: rgba(229, 56, 59, 0.2) !important;
+  color: white !important;
+  border: 1px solid rgba(229, 56, 59, 0.3) !important;
 }
 
+.logout-btn:hover {
+  background-color: rgba(229, 56, 59, 0.35) !important;
+}
+
+/* Content Area */
 .admin-content {
   margin-top: 80px;
-  padding: 20px;
+  padding: 32px;
+  flex: 1;
 }
 
+/* Admin Home Specific */
+.admin-home-content {
+  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  padding: 32px;
+  background: linear-gradient(135deg, rgba(245, 247, 250, 0.9), rgba(255, 255, 255, 0.9));
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-home-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="%23f0f0f0" stroke-width="8"/></svg>');
+  background-size: 150px;
+  opacity: 0.3;
+  z-index: -1;
+}
+
+.admin-home-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 16px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.admin-home-description {
+  font-size: 1.3rem;
+  color: var(--gray-color);
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.dashboard-button {
+  padding: 16px 40px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
+}
+
+.dashboard-button:active {
+  transform: translateY(-1px);
+}
+
+/* Logout Confirmation */
+.ad-logout-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.ad-logout-confirm-box {
+  background: white;
+  padding: 28px 32px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
+  width: 90%;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.ad-logout-confirm-box p {
+  font-size: 1.25rem;
+  color: var(--dark-color);
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.ad-logout-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.ad-confirm-btn,
+.ad-cancel-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: var(--transition);
+  min-width: 120px;
+}
+
+.ad-confirm-btn {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.ad-confirm-btn:hover {
+  background-color: #d32f2f;
+  transform: translateY(-2px);
+}
+
+.ad-confirm-btn:disabled {
+  background-color: #e57373;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ad-cancel-btn {
+  background-color: #f1f3f5;
+  color: var(--dark-color);
+}
+
+.ad-cancel-btn:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
+}
+
+/* Logout Success Message */
+.ad-logout-success-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--success-color);
+  color: white;
+  padding: 16px 28px;
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 3000;
+  animation: fadeIn 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Tables */
 .admin-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   margin-top: 20px;
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  overflow: hidden;
 }
 
-.admin-table th, .admin-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
+.admin-table th,
+.admin-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
 }
 
 .admin-table th {
-  background-color: #4CAF50;
+  background-color: var(--primary-color);
   color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover td {
+  background-color: rgba(67, 97, 238, 0.05);
 }
 
 .admin-table td a {
-  color: blue;
+  color: var(--primary-color);
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
+  transition: var(--transition);
 }
-.ad-logout-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .ad-logout-confirm-box {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
-    min-width: 300px;
-  }
-  
-  .ad-logout-buttons {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .ad-confirm-btn,
-  .ad-cancel-btn {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .ad-confirm-btn {
-    background-color: red;
-    color: white;
-  }
-  
-  .ad-cancel-btn {
-    background-color: gray;
-    color: white;
-  }
-  
-  /* Logout Success Message */
-  .ad-logout-success-message {
-    position: absolute;
-    bottom: -60px; /* Positioned below the confirmation box */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #28a745;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-size: 14px;
+
+.admin-table td a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
     opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    transform: translateY(-10px);
   }
-  
-  .ad-logout-success-message.show {
+  to {
     opacity: 1;
-    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-header {
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 12px;
+    height: auto;
   }
   
+  .admin-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .admin-home-content {
+    margin-top: 120px;
+  }
+  
+  .admin-home-title {
+    font-size: 2.5rem;
+  }
+  
+  .admin-home-description {
+    font-size: 1.1rem;
+  }
+  
+  .dashboard-button {
+    padding: 14px 28px;
+    font-size: 1rem;
+  }
+}

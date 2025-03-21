@@ -180,27 +180,27 @@ function BasicDetails() {
       return false;
     }
 
-    if (details.softSkills.length < 0) {
+    if (details.softSkills.length < 3) {
       alert("Please add at least two soft skills.");
       return false;
     }
 
-    if (details.extracurricular.length < 0) {
+    if (details.extracurricular.length < 2) {
       alert("Please add at least two extracurricular activities.");
       return false;
     }
 
-    if (details.interests.length < 0) {
+    if (details.interests.length < 2) {
       alert("Please add at least two areas of interest.");
       return false;
     }
 
-    if (details.internships.length < 0) {
+    if (details.internships.length < 2) {
       alert("Please add at least two internships.");
       return false;
     }
 
-    if (details.projects.length < 0) {
+    if (details.projects.length < 2) {
       alert("Please add at least two projects.");
       return false;
     }
@@ -215,8 +215,8 @@ function BasicDetails() {
 
   const handleSubmit = () => {
     if (window.innerWidth < 768) {
-      // alert("For better visibility, please enable 'Desktop Site' in your browser settings.");
-      alert("Please do not enable 'Desktop Site' in your browser settings to view your resume, If enabled means you can't download resume.");
+      alert("For better visibility, please enable 'Desktop Site' in your browser settings.");
+  
 
     }
     

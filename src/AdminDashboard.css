@@ -1,146 +1,269 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f5f7fa;
+  color: #2d3748;
 }
 
 .admin1-container {
-    font-family: Arial, sans-serif;
-    padding: 20px;
+  min-height: 100vh;
+  padding: 0;
+  position: relative;
+}
+
+/* Header styling */
+.admin1-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #4a69bd 0%, #1e3799 100%);
+  color: white;
+  padding: 15px 30px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.admin1-header h1 {
+  font-weight: 600;
+  font-size: 24px;
+  letter-spacing: 0.5px;
+}
+
+.admin1-header nav {
+  display: flex;
+  gap: 15px;
+}
+
+.admin1-header nav button {
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.admin1-header nav button:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.logout-btn1 {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+  border: 1px solid rgba(239, 68, 68, 0.5) !important;
+  color: white !important;
+}
+
+.logout-btn1:hover {
+  background-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Content styling */
+.admin-content {
+  margin-top: 100px;
+  padding: 30px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-content h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 25px;
+  border-bottom: 3px solid #4a69bd;
+  padding-bottom: 10px;
+  display: inline-block;
+}
+
+/* Table styling */
+.admin-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 20px;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.admin-table th, 
+.admin-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-table th {
+  background-color: #4a69bd;
+  color: white;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover {
+  background-color: #f8fafc;
+}
+
+.dash-resume-link {
+  display: inline-block;
+  color: #4a69bd;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: rgba(74, 105, 189, 0.1);
+  transition: all 0.2s ease;
+}
+
+.dash-resume-link:hover {
+  background-color: rgba(74, 105, 189, 0.2);
+  transform: translateY(-2px);
+}
+
+.no-resume-text {
+  color: #a0aec0;
+  font-style: italic;
+}
+
+/* Logout confirmation overlay */
+.ad1-logout-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  backdrop-filter: blur(4px);
+}
+
+.ad1-logout-confirm-box {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 350px;
+}
+
+.ad1-logout-confirm-box p {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #2d3748;
+}
+
+.ad1-logout-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.ad1-confirm-btn,
+.ad1-cancel-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.ad1-confirm-btn {
+  background-color: #ef4444;
+  color: white;
+}
+
+.ad1-confirm-btn:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+}
+
+.ad1-cancel-btn {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+
+.ad1-cancel-btn:hover {
+  background-color: #cbd5e0;
+  transform: translateY(-2px);
+}
+
+/* Success message styling */
+.ad1-logout-success-message {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #10b981;
+  color: white;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .admin1-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #2d3436;
-    color: white;
+    flex-direction: column;
     padding: 15px;
-    border-radius: 10px;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1000;
   }
   
   .admin1-header h1 {
-    margin: 0;
-  }
-  
-  .admin1-header nav button {
-    background-color: aliceblue;
-    border-radius: 5px;
-    padding: 8px 12px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-left: 10px;
-  }
-  
-  .logout-btn1 {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
+    margin-bottom: 15px;
   }
   
   .admin-content {
-    margin-top: 80px;
-    padding: 20px;
+    margin-top: 140px;
+    padding: 15px;
   }
   
   .admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
   
-  .admin-table th, .admin-table td {
-    border: 2px solid #757373;
-    padding: 10px;
-    text-align: center;
+  .admin-table th, 
+  .admin-table td {
+    padding: 12px;
   }
-  
-  .admin-table th {
-    background-color: #4CAF50;
-    color: white;
-  }
-  
-  .admin-table td a {
-    color: blue;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-.ad1-logout-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .ad1-logout-confirm-box {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
-    min-width: 300px;
-  }
-  
-  .ad1-logout-buttons {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .ad1-confirm-btn,
-  .ad1-cancel-btn {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .ad1-confirm-btn {
-    background-color: red;
-    color: white;
-  }
-  
-  .ad1-cancel-btn {
-    background-color: gray;
-    color: white;
-  }
-  
-  /* Logout Success Message */
-  .ad1-logout-success-message {
-    position: absolute;
-    bottom: -60px; /* Positioned below the confirmation box */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #28a745;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-size: 14px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-  }
-  
-  .ad1-logout-success-message.show {
-    opacity: 1;
-    visibility: visible;
-  }
-  
+}
