@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ref as storageRef, getDownloadURL, uploadBytes } from "firebase/storage";
 import { ref as dbRef, get, onValue, update } from "firebase/database";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut, signInWithCustomToken } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { storage, auth, database } from "./firebase";
 import "./dashboard.css";
@@ -46,40 +46,77 @@ function Dashboard({ closeDashboard, onLogout }) {
 
   // Initialize and handle auth state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        console.log("Firebase Auth active user found in Dashboard:", user.uid);
         // User is signed in - set up database listener for this user
         setupUserDataListener(user.uid);
+        
+        // Store auth state in localStorage for persistence
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('uid', user.uid);
+        
+        // Get or refresh token if we don't have one
+        if (!localStorage.getItem('authToken')) {
+          try {
+            const token = await user.getIdToken();
+            localStorage.setItem('authToken', token);
+          } catch (error) {
+            console.error("Error getting auth token:", error);
+          }
+        }
       } else {
         // No authenticated user found - check localStorage for persisted data
-        const persistedUserData = localStorage.getItem('userData');
-        const persistedAuthToken = localStorage.getItem('authToken');
+        const persistedLoginState = localStorage.getItem('isLoggedIn');
+        const persistedUid = localStorage.getItem('uid');
+        const persistedToken = localStorage.getItem('authToken');
         
-        if (persistedUserData && persistedAuthToken) {
+        if (persistedLoginState === 'true' && persistedUid && persistedToken) {
+          console.log("Local storage indicates user is logged in, attempting to restore session");
+          
           try {
-            // Try to use persisted data
-            const userData = JSON.parse(persistedUserData);
-            setUserData({
-              name: userData.name || "User",
-              email: userData.email || "",
-              department: userData.department || "Department",
-              profileImage: userData.profileImage || "/default-image.jpg",
-            });
-            setResumeUrl(userData.resumeLink || null);
-            setLoading(false);
+            // Try to restore the Firebase auth session
+            await signInWithCustomToken(auth, persistedToken);
+            console.log("Session restored successfully");
+            
+            // After successful restoration, the auth state will change and trigger this effect again
           } catch (error) {
-            console.error("Error parsing persisted user data:", error);
-            clearUserData();
-            navigate("/login");
+            console.error("Error restoring auth session:", error);
+            
+            // Even if token restoration fails, we'll still try to load persisted user data
+            const persistedUserData = localStorage.getItem('userData');
+            
+            if (persistedUserData) {
+              try {
+                const userData = JSON.parse(persistedUserData);
+                setUserData({
+                  name: userData.name || "User",
+                  email: userData.email || "",
+                  department: userData.department || "Department",
+                  profileImage: userData.profileImage || "/default-image.jpg",
+                });
+                setResumeUrl(userData.resumeLink || null);
+                setLoading(false);
+              } catch (error) {
+                console.error("Error parsing persisted user data:", error);
+                clearUserData();
+                navigate("/login");
+              }
+            } else {
+              clearUserData();
+              navigate("/login");
+            }
           }
         } else {
           // No persisted data either - user is truly not logged in
+          console.log("No login data found in localStorage, redirecting to login");
           clearUserData();
           navigate("/login");
         }
       }
       
       setAuthInitialized(true);
+      setLoading(false);
     });
 
     return () => {
@@ -124,16 +161,18 @@ function Dashboard({ closeDashboard, onLogout }) {
             setLoading(false);
           } else {
             // No user data in database yet
-            const defaultUserData = {
-              name: auth.currentUser?.displayName || "User",
-              email: auth.currentUser?.email || "",
-              department: "Department",
-              profileImage: "/default-image.jpg",
-              resumeLink: null,
-            };
-            
-            setUserData(defaultUserData);
-            localStorage.setItem('userData', JSON.stringify(defaultUserData));
+            if (auth.currentUser) {
+              const defaultUserData = {
+                name: auth.currentUser.displayName || "User",
+                email: auth.currentUser.email || "",
+                department: "Department",
+                profileImage: "/default-image.jpg",
+                resumeLink: null,
+              };
+              
+              setUserData(defaultUserData);
+              localStorage.setItem('userData', JSON.stringify(defaultUserData));
+            }
             
             setLoading(false);
           }
@@ -167,6 +206,7 @@ function Dashboard({ closeDashboard, onLogout }) {
     localStorage.removeItem('firebaseAuthUser');
     localStorage.removeItem('authToken');
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('uid');
     
     setUserData({
       name: "User",
@@ -214,6 +254,11 @@ function Dashboard({ closeDashboard, onLogout }) {
       .catch((error) => {
         setIsLoggingOut(false);
         console.error("Error logging out: ", error);
+        
+        // Even if Firebase signout fails, clear local data
+        clearUserData();
+        if (onLogout) onLogout();
+        navigate("/Home");
       });
   };
 
@@ -245,18 +290,20 @@ function Dashboard({ closeDashboard, onLogout }) {
 
   const handleSaveProfile = async () => {
     try {
-      if (!auth.currentUser) {
-        console.error("No authenticated user found");
+      // Check for auth status
+      const uid = auth.currentUser?.uid || localStorage.getItem('uid');
+      
+      if (!uid) {
+        console.error("No user ID found for saving profile");
         return;
       }
 
-      const userId = auth.currentUser.uid;
-      const userRef = dbRef(database, `users/${userId}`);
+      const userRef = dbRef(database, `users/${uid}`);
       
       // First, handle the profile image upload if there's a new file
       let imageUrl = editedUserData.profileImage;
       if (profileImageFile) {
-        const imageRef = storageRef(storage, `profileImages/${userId}`);
+        const imageRef = storageRef(storage, `profileImages/${uid}`);
         await uploadBytes(imageRef, profileImageFile);
         imageUrl = await getDownloadURL(imageRef);
       }
