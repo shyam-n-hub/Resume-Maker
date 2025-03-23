@@ -11,6 +11,8 @@ function AdminDashboard() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalResumes, setTotalResumes] = useState(0);
 
   useEffect(() => {
     // Fetch all users from Firebase
@@ -18,18 +20,33 @@ function AdminDashboard() {
     onValue(usersRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
+        // Count total users
+        const userCount = Object.keys(data).length;
+        setTotalUsers(userCount);
+        
+        // Count users with resumes
+        let resumeCount = 0;
+        
         const userList = Object.entries(data)
-          .map(([userId, user]) => ({
-            id: userId,
-            name: user.resume?.name || "N/A",
-            email: user.resume?.userEmail || "N/A",
-            resumeName: user.resume?.name
-              ? `${user.resume.name}_Resume.pdf`
-              : "N/A",
-            resumeURL: user.resume?.downloadURL || null,
-          }))
+          .map(([userId, user]) => {
+            // Check if user has a resume and count it
+            if (user.resume?.downloadURL) {
+              resumeCount++;
+            }
+            
+            return {
+              id: userId,
+              name: user.resume?.name || "N/A",
+              email: user.resume?.userEmail || "N/A",
+              resumeName: user.resume?.name
+                ? `${user.resume.name}_Resume.pdf`
+                : "N/A",
+              resumeURL: user.resume?.downloadURL || null,
+            };
+          })
           .filter((user) => user.name !== "N/A" && user.email !== "N/A"); // Remove empty users
 
+        setTotalResumes(resumeCount);
         setUsers(userList);
       }
     });
@@ -72,6 +89,29 @@ function AdminDashboard() {
           </button>
         </nav>
       </header>
+
+      {/* Analytics Cards */}
+      <div className="analytics-container">
+        <div className="analytics-card">
+          <div className="analytics-icon users-icon">
+            <i className="fas fa-users"></i>
+          </div>
+          <div className="analytics-info">
+            <h3>Total Users</h3>
+            <div className="analytics-count">{totalUsers}</div>
+          </div>
+        </div>
+        
+        <div className="analytics-card">
+          <div className="analytics-icon resumes-icon">
+            <i className="fas fa-file-alt"></i>
+          </div>
+          <div className="analytics-info">
+            <h3>Resumes Generated</h3>
+            <div className="analytics-count">{totalResumes}</div>
+          </div>
+        </div>
+      </div>
 
       {/* Logout Confirmation Box */}
       {showLogoutConfirm && (
