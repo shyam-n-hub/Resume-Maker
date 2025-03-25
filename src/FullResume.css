@@ -18,7 +18,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 800px;
+  width: 794px;
   margin: auto;
   font-family: "Josefin Sans", serif;
   background-color: white;
@@ -27,6 +27,7 @@
   margin-top: 50px;
   font-family: 'Poppins', sans-serif;
   border: white 10px solid;
+  height: 1123px;
 }
 
 .resume-header {

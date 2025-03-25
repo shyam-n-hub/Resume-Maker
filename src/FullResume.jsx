@@ -288,46 +288,69 @@ function FullResume() {
   };
 
   const generateAndUploadResume = () => {
-    const resumeElement = document.querySelector(".full-resume-container");
-    const lastElement = document.querySelector(".vv"); // Ensure we capture up to this
+  const resumeElement = document.querySelector(".full-resume-container");
+  const lastElement = document.querySelector(".vv");
 
-    if (!resumeElement || !lastElement) {
-      alert("Error: Resume container or last section not found.");
-      return;
+  if (!resumeElement || !lastElement) {
+    alert("Error: Resume container or last section not found.");
+    return;
+  }
+
+  setLoading(true);
+
+  // Dynamically calculate the exact height up to `.vv` (including its border)
+  const resumeHeight =
+    lastElement.offsetTop +
+    lastElement.offsetHeight -
+    resumeElement.offsetTop;
+
+  html2canvas(resumeElement, {
+    scale: 3, // Increased scale for better quality
+    useCORS: true,
+    logging: false,
+    ignoreElements: (el) => el.tagName === "BUTTON",
+    height: resumeHeight, // Capture only up to `.vv`
+    backgroundColor: '#ffffff', // Ensure white background
+    allowTaint: true, // Allow cross-origin images
+    scrollX: 0,
+    scrollY: -window.scrollY
+  })
+  .then((canvas) => {
+    const imgData = canvas.toDataURL("image/jpeg", 1.0); // High-quality image
+    const pdf = new jsPDF({
+      orientation: "p",
+      unit: "mm",
+      format: "a4",
+      compress: true
+    });
+
+    const imgWidth = 210; // A4 width in mm
+    const pageHeight = 297; // A4 height in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    // Add first page
+    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight, "", "FAST");
+    heightLeft -= pageHeight;
+
+    // Add additional pages if content is longer
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight, "", "FAST");
+      heightLeft -= pageHeight;
     }
 
-    setLoading(true);
-
-    // Dynamically calculate the exact height up to `.vv` (including its border)
-    const resumeHeight =
-      lastElement.offsetTop +
-      lastElement.offsetHeight -
-      resumeElement.offsetTop;
-
-    html2canvas(resumeElement, {
-      scale: 3, // High-quality scaling
-      useCORS: true,
-      logging: false,
-      ignoreElements: (el) => el.tagName === "BUTTON",
-      height: resumeHeight, // Capture only up to `.vv`
-    })
-      .then((canvas) => {
-        const imgData = canvas.toDataURL("image/jpeg", 1.0); // High-quality image
-        const pdf = new jsPDF("p", "mm", "a4");
-
-        const imgWidth = 210;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight, "", "FAST");
-
-        const pdfBlob = pdf.output("blob");
-        uploadAndDownloadResume(pdfBlob);
-      })
-      .catch((error) => {
-        console.error("Error generating PDF:", error);
-        alert("Failed to generate the resume. Try again.");
-      });
-  };
+    const pdfBlob = pdf.output("blob");
+    uploadAndDownloadResume(pdfBlob);
+  })
+  .catch((error) => {
+    console.error("Error generating PDF:", error);
+    alert("Failed to generate the resume. Try again.");
+    setLoading(false);
+  });
+};
 
   const handleGoBack = () => {
     // Clear session storage to prevent old data reappearing
@@ -378,7 +401,7 @@ function FullResume() {
                   <strong>
                     <FontAwesomeIcon
                       icon={faEnvelope}
-                      style={{ fontSize: "18px", paddingRight: "5px",display:"flex",gap:"5px", marginTop:"4px" }}
+                      style={{ fontSize: "15px", paddingRight: "5px",display:"flex",gap:"5px", marginTop:"2px" }}
                     />
                   </strong>{" "}
                   <span style={{paddingLeft:"5px", fontFamily: 'Poppins, sans-serif',}}>
@@ -392,7 +415,7 @@ function FullResume() {
                   <strong>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      style={{ fontSize: "16px", paddingRight: "5px" , display:"flex",gap:"5px", marginTop:"4px"}}
+                      style={{ fontSize: "13px", paddingRight: "5px" , display:"flex",gap:"5px", marginTop:"2px"}}
                     />
                   </strong>{" "}                  <span style={{paddingLeft:"5px", fontFamily: 'Poppins, sans-serif',}}>
 
@@ -407,10 +430,10 @@ function FullResume() {
                     <FontAwesomeIcon
                       icon={faLocationDot}
                       style={{
-                        fontSize: "20px",
+                        fontSize: "17px",
                         paddingRight: "10px",
                         fontFamily: 'Poppins, sans-serif',
-                        marginTop:"4px"
+                        marginTop:"2px"
                       }}
                     />
                   </strong>{" "}
@@ -436,10 +459,10 @@ function FullResume() {
                     <FontAwesomeIcon
                       icon={faLinkedin}
                       style={{
-                        fontSize: "22px",
+                        fontSize: "19px",
                         paddingRight: "10px",
                         fontFamily: 'Poppins, sans-serif',
-                        marginTop:"8px"
+                        marginTop:"5px"
                       }}
                     />
                   </strong>{" "}
@@ -463,10 +486,10 @@ function FullResume() {
                     <FontAwesomeIcon
                       icon={faGithub}
                       style={{
-                        fontSize: "20px",
+                        fontSize: "18px",
                         paddingRight: "10px",
                         fontFamily: 'Poppins, sans-serif',
-                         marginTop:"8px"
+                         marginTop:"5px"
                       }}                    />
                   </strong>{" "}
                   <span
@@ -489,10 +512,10 @@ function FullResume() {
                     <FontAwesomeIcon
                       icon={faCode}
                       style={{
-                        fontSize: "15px",
+                        fontSize: "16px",
                         paddingRight: "10px",
                         fontFamily: 'Poppins, sans-serif',
-                        marginTop:"4px",
+                        marginTop:"2px",
                       }}                    />
                   </strong>{" "}
                   <span
