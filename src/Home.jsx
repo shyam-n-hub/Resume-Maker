@@ -5,7 +5,7 @@ import "./Home.css";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faHouse, faEdit, faDownload, faSignInAlt } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faHouse, faEdit, faDownload, faSignInAlt, faEye } from "@fortawesome/free-solid-svg-icons";
 
 function Home() {
   const navigate = useNavigate();
@@ -13,6 +13,7 @@ function Home() {
   const [showDashboard, setShowDashboard] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userChecked, setUserChecked] = useState(false);
+  const [showResumePreview, setShowResumePreview] = useState(false);
 
   useEffect(() => {
     // Listen for auth state changes
@@ -58,6 +59,17 @@ function Home() {
     }
   };
 
+  const toggleResumePreview = () => {
+    setShowResumePreview(!showResumePreview);
+  };
+
+  // Close preview when clicking outside
+  const closePreview = (e) => {
+    if (e.target.classList.contains('preview-overlay')) {
+      setShowResumePreview(false);
+    }
+  };
+
   return (
     <>
       <header className="header">
@@ -92,13 +104,23 @@ function Home() {
           <p className="home-description">
             This Resume Maker helps you create a professional resume with ease.
           </p>
-          <button 
-            className="get-started-btn" 
-            onClick={handleGetStarted}
-            disabled={loading}
-          >
-            {loading ? "Loading..." : "Get Started"}
-          </button>
+          <div className="actions-container">
+            <button 
+              className="get-started-btn" 
+              onClick={handleGetStarted}
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Get Started"}
+            </button>
+            <button 
+              className="preview-btn" 
+              onClick={toggleResumePreview}
+              disabled={loading}
+            >
+              <FontAwesomeIcon icon={faEye} className="preview-icon" />
+              Preview Resume
+            </button>
+          </div>
         </div>
 
         {/* Step-by-Step Guide */}
@@ -119,7 +141,33 @@ function Home() {
             </div>
           </div>
         </div>
+
+        {/* Sample Resume Preview Button */}
+        <div className="preview-button-container">
+          <button 
+            className="floating-preview-btn"
+            onClick={toggleResumePreview}
+          >
+            <FontAwesomeIcon icon={faEye} className="preview-icon" />
+            {/* <span>See Resume Template</span> */}
+          </button>
+        </div>
       </div>
+
+      {/* Resume Preview Modal */}
+      {showResumePreview && (
+        <div className="preview-overlay" onClick={closePreview}>
+          <div className="preview-modal">
+            <button className="close-preview" onClick={toggleResumePreview}>×</button>
+            <img src="./resumeformat.png" className="formatimg"></img>
+            <div className="preview-actions">
+              <button className="get-started-btn" onClick={handleGetStarted}>
+                Create Your Resume Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

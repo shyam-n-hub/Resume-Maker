@@ -132,6 +132,7 @@ body {
   transition: transform 0.3s ease;
   position: relative;
   overflow: hidden;
+  margin-top: 0px;
 }
 
 .home-container-details::before {
@@ -461,5 +462,302 @@ body {
 
   .step-icon {
     font-size: 30px;
+  }
+}
+
+
+/* Previous CSS remains the same */
+
+/* Resume Preview Modal */
+.preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(5px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.preview-modal {
+  background: linear-gradient(135deg, #e6f0fa 0%, #d0e1f9 100%);
+  border-radius: 15px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.formatimg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  padding: 20px;
+  object-fit: contain;
+}
+
+.close-preview {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: #333;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.close-preview:hover {
+  transform: scale(1.2);
+  color: #4361ee;
+}
+
+.preview-actions {
+  padding: 20px 30px 30px;
+  display: flex;
+  justify-content: center;
+  background: white;
+  border-top: 1px solid #eee;
+}
+
+/* Get Started Button (for preview modal) */
+.preview-actions .get-started-btn {
+  padding: 10px 15px;
+  background: linear-gradient(90deg, #4361ee, #3f37c9);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+  letter-spacing: 1px;
+}
+
+.preview-actions .get-started-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 25px rgba(67, 97, 238, 0.4);
+}
+
+/* Preview Button */
+.preview-btn {
+  padding: 10px;
+  background: white;
+  color: #4361ee;
+  border: 2px solid #4361ee;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(67, 97, 238, 0.15);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.preview-btn:hover {
+  background: rgba(67, 97, 238, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2);
+  background: #4361ee;
+  color: white;
+  border: 2px solid white;
+}
+
+.preview-icon {
+  font-size: 1.2rem;
+}
+
+/* Floating Preview Button */
+.preview-button-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 100;
+}
+
+.floating-preview-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: linear-gradient(90deg, #4361ee, #3f37c9);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px rgba(67, 97, 238, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(67, 97, 238, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(67, 97, 238, 0);
+  }
+}
+
+.floating-preview-btn:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(67, 97, 238, 0.5);
+  animation: none;
+}
+
+.floating-preview-btn .preview-icon {
+  font-size: 1.1rem;
+}
+
+/* Media Queries for Preview Modal and Image */
+@media (max-width: 1024px) {
+  .preview-modal {
+    max-width: 90%;
+  }
+  
+  .formatimg {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .preview-overlay {
+    padding: 15px;
+  }
+  
+  .preview-modal {
+    max-width: 95%;
+  }
+  
+  .formatimg {
+    padding: 15px;
+  }
+  
+  .preview-actions {
+    padding: 15px 20px 20px;
+  }
+  
+  .preview-actions .get-started-btn {
+    padding: 12px 30px;
+    font-size: 1rem;
+  }
+  
+  .floating-preview-btn span {
+    display: none;
+  }
+  
+  .floating-preview-btn {
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+  }
+  
+  .preview-button-container {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .preview-overlay {
+    padding: 10px;
+  }
+  
+  .preview-modal {
+    max-height: 95vh;
+    border-radius: 10px;
+  }
+  
+  .formatimg {
+    padding: 10px;
+  }
+  
+  .close-preview {
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+  }
+  
+  .preview-actions {
+    padding: 15px;
+  }
+  
+  .preview-actions .get-started-btn {
+    padding: 10px 25px;
+    font-size: 0.9rem;
+    width: 100%;
+  }
+  .preview-actions .get-started-btn {
+    background: linear-gradient(90deg, #4361ee, #3f37c9);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+    letter-spacing: 1px;
+    padding: 6px 10px;
+    width: auto;
+  }
+  .preview-btn {
+    padding: 5px;
+    background: white;
+    color: #4361ee;
+    border: 2px solid #4361ee;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(67, 97, 238, 0.15);
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: auto;
+    margin-top: 20px;
   }
 }
