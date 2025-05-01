@@ -223,6 +223,7 @@ function FullResume() {
     profileImage = null,
   } = resumeData;
 
+  // Improved PDF generation function with font awesome icon fixes
   const uploadAndDownloadResume = async (pdfBlob) => {
     if (!currentUser) {
       alert("User not authenticated. Please log in.");
@@ -232,7 +233,9 @@ function FullResume() {
 
     const userId = currentUser.uid;
     const userEmail = currentUser.email;
-    const storageRef = ref(storage, `resumes/${userEmail}.pdf`);
+    const fileName = `${name.replace(/\s+/g, '_')}_Resume_${Date.now()}.pdf`;
+    const storageRef = ref(storage, `resumes/${userId}/${fileName}`);
+    
     const uploadTask = uploadBytesResumable(storageRef, pdfBlob, {
       contentType: "application/pdf",
     });
@@ -240,8 +243,7 @@ function FullResume() {
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setUploadProgress(progress);
         console.log(`Upload is ${progress}% done`);
       },
@@ -255,7 +257,13 @@ function FullResume() {
           const downloadURL = await getDownloadURL(storageRef);
           console.log("Resume successfully uploaded at:", downloadURL);
 
-          const metadata = { customMetadata: { name, userEmail } };
+          const metadata = { 
+            customMetadata: { 
+              name, 
+              userEmail,
+              createdAt: new Date().toISOString()
+            } 
+          };
           await updateMetadata(storageRef, metadata);
 
           // Update the resume info in the database
@@ -263,20 +271,21 @@ function FullResume() {
             downloadURL,
             name,
             userEmail,
+            fileName,
+            createdAt: new Date().toISOString()
           });
 
-          // IMPORTANT: Also update the resumeLink in the main user record
-          // This is the key change needed to make the resume link appear in the profile
+          // Update the resumeLink in the main user record
           await update(dbRef(database, `users/${userId}`), {
             resumeLink: downloadURL
           });
 
-          alert("Resume uploaded successfully!");
+          alert("Resume generated and uploaded successfully!");
 
           // Trigger the browser download
           const downloadLink = document.createElement("a");
           downloadLink.href = URL.createObjectURL(pdfBlob);
-          downloadLink.download = `${name}_Resume.pdf`;
+          downloadLink.download = fileName;
           downloadLink.click();
         } catch (error) {
           console.error("Error updating metadata: ", error);
@@ -287,70 +296,154 @@ function FullResume() {
     );
   };
 
+  // Improved PDF generation method with better icon rendering
   const generateAndUploadResume = () => {
-  const resumeElement = document.querySelector(".full-resume-container");
-  const lastElement = document.querySelector(".vv");
-
-  if (!resumeElement || !lastElement) {
-    alert("Error: Resume container or last section not found.");
-    return;
-  }
-
-  setLoading(true);
-
-  // Dynamically calculate the exact height up to `.vv` (including its border)
-  const resumeHeight =
-    lastElement.offsetTop +
-    lastElement.offsetHeight -
-    resumeElement.offsetTop;
-
-  html2canvas(resumeElement, {
-    scale: 3, // Increased scale for better quality
-    useCORS: true,
-    logging: false,
-    ignoreElements: (el) => el.tagName === "BUTTON",
-    height: resumeHeight, // Capture only up to `.vv`
-    backgroundColor: '#ffffff', // Ensure white background
-    allowTaint: true, // Allow cross-origin images
-    scrollX: 0,
-    scrollY: -window.scrollY
-  })
-  .then((canvas) => {
-    const imgData = canvas.toDataURL("image/jpeg", 1.0); // High-quality image
-    const pdf = new jsPDF({
-      orientation: "p",
-      unit: "mm",
-      format: "a4",
-      compress: true
-    });
-
-    const imgWidth = 210; // A4 width in mm
-    const pageHeight = 297; // A4 height in mm
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    // Add first page
-    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight, "", "FAST");
-    heightLeft -= pageHeight;
-
-    // Add additional pages if content is longer
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight, "", "FAST");
-      heightLeft -= pageHeight;
+    const resumeElement = document.querySelector(".full-resume-container");
+    if (!resumeElement) {
+      alert("Error: Resume content not found.");
+      return;
     }
 
-    const pdfBlob = pdf.output("blob");
-    uploadAndDownloadResume(pdfBlob);
-  })
-  .catch((error) => {
-    console.error("Error generating PDF:", error);
-    alert("Failed to generate the resume. Try again.");
-    setLoading(false);
-  });
-};
+    setLoading(true);
+    
+    // Hide edit buttons during capture
+    document.querySelectorAll('.full-resume-container button').forEach(btn => {
+      btn.style.display = 'none';
+    });
+    
+    // Apply special class for PDF generation to fix icon rendering
+    document.querySelectorAll('.full-resume-container .svg-inline--fa').forEach(icon => {
+      icon.classList.add('pdf-icon-fix');
+    });
+    
+    // Calculate exact height up to the end of content
+    const lastElement = document.querySelector(".vv");
+    const resumeHeight = lastElement ? 
+      (lastElement.offsetTop + lastElement.offsetHeight - resumeElement.offsetTop) : 
+      resumeElement.scrollHeight;
+
+    const originalBackgroundColor = resumeElement.style.backgroundColor;
+    resumeElement.style.backgroundColor = '#ffffff'; // Set white background for capture
+    
+    // Advanced html2canvas options for better quality and font rendering
+    html2canvas(resumeElement, {
+      scale: 3, // Higher scale for better quality but not too high to cause distortion
+      useCORS: true,
+      logging: false,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      height: resumeHeight,
+      scrollX: 0,
+      scrollY: -window.scrollY,
+      ignoreElements: (element) => {
+        // Ignore any buttons or interactive elements
+        return element.tagName === 'BUTTON' || 
+               element.className === 'back-to-generate-button' || 
+               element.className === 'btn';
+      },
+      onclone: (clonedDoc) => {
+        // Important: Fix icons in the cloned document
+        const clonedElem = clonedDoc.querySelector('.full-resume-container');
+        if (clonedElem) {
+          // Hide buttons
+          clonedElem.querySelectorAll('button').forEach(btn => btn.style.display = 'none');
+          
+          // Fix Font Awesome icon rendering - replace with more reliable equivalent if needed
+          clonedElem.querySelectorAll('.svg-inline--fa').forEach(icon => {
+            // Ensure icons have fixed dimensions
+            icon.style.width = '1em';
+            icon.style.height = '1em';
+            icon.style.verticalAlign = 'middle';
+            icon.style.display = 'inline-block';
+            
+            // Force viewBox to maintain proportions
+            if (!icon.getAttribute('viewBox')) {
+              icon.setAttribute('viewBox', '0 0 512 512');
+            }
+            
+            // Ensure path scaling is correct
+            icon.querySelectorAll('path').forEach(path => {
+              path.style.fill = 'currentColor';
+            });
+          });
+        }
+      }
+    })
+    .then((canvas) => {
+      // Restore original state
+      resumeElement.style.backgroundColor = originalBackgroundColor;
+      document.querySelectorAll('.full-resume-container button').forEach(btn => {
+        btn.style.display = '';
+      });
+      document.querySelectorAll('.svg-inline--fa').forEach(icon => {
+        icon.classList.remove('pdf-icon-fix');
+      });
+      
+      // Create a high-quality PDF
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      
+      // Create A4 sized PDF (210mm × 297mm)
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true,
+        precision: 16 // Higher precision
+      });
+
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      // Set PDF properties
+      pdf.setProperties({
+        title: `${name} - Resume`,
+        subject: 'Resume',
+        author: name,
+        keywords: 'resume, cv, job application',
+        creator: 'Resume Maker App'
+      });
+
+      // Add image to PDF with optimal settings
+      let heightLeft = imgHeight;
+      let position = 0;
+      
+      // Add first page
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, null, 'FAST', 0);
+      heightLeft -= pageHeight;
+      
+      // Add additional pages if needed
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, null, 'FAST', 0);
+        heightLeft -= pageHeight;
+      }
+      
+      // Set to optimize the PDF file size (between 1-2MB as requested)
+      const pdfOutput = pdf.output('blob', {
+        compression: 'MEDIUM', // Lower compression for better quality
+        precision: 4
+      });
+      
+      uploadAndDownloadResume(pdfOutput);
+    })
+    .catch((error) => {
+      console.error("Error generating PDF:", error);
+      
+      // Restore original state
+      resumeElement.style.backgroundColor = originalBackgroundColor;
+      document.querySelectorAll('.full-resume-container button').forEach(btn => {
+        btn.style.display = '';
+      });
+      document.querySelectorAll('.svg-inline--fa').forEach(icon => {
+        icon.classList.remove('pdf-icon-fix');
+      });
+      
+      alert("Failed to generate the resume. Please try again.");
+      setLoading(false);
+    });
+  };
 
   const handleGoBack = () => {
     // Clear session storage to prevent old data reappearing
@@ -358,8 +451,20 @@ function FullResume() {
     navigate("/basicdetails"); // Navigates back to BasicDetails
   };
 
+  // Common style properties for consistent fonts
   const styles = {
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "'Times New Roman', Times, serif",
+  };
+
+  // Icon styles to ensure proper rendering in PDF
+  const iconStyles = {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "16px",
+    height: "16px",
+    marginRight: "8px",
+    verticalAlign: "middle",
   };
 
   return (
@@ -398,56 +503,64 @@ function FullResume() {
                   onClick={() => handleEdit("email")}
                   style={styles}
                 >
-                  <strong>
+                  <div className="icon-container" style={{ display: "flex", alignItems: "center" }}>
                     <FontAwesomeIcon
                       icon={faEnvelope}
-                      style={{ fontSize: "15px", paddingRight: "5px",display:"flex",gap:"5px", marginTop:"2px" }}
+                      style={{
+                        ...iconStyles,
+                        fontSize: "14px",
+                      }}
+                      fixedWidth
                     />
-                  </strong>{" "}
-                  <span style={{paddingLeft:"5px", fontFamily: 'Poppins, sans-serif',}}>
-                  {email}</span>
+                    <span style={{ paddingLeft: "5px" }}>
+                      {email}
+                    </span>
+                  </div>
                 </p>
                 <p
                   className="word"
                   onClick={() => handleEdit("phone")}
                   style={styles}
                 >
-                  <strong>
+                  <div className="icon-container" style={{ display: "flex", alignItems: "center" }}>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      style={{ fontSize: "13px", paddingRight: "5px" , display:"flex",gap:"5px", marginTop:"2px"}}
+                      style={{
+                        ...iconStyles,
+                        fontSize: "14px",
+                      }}
+                      fixedWidth
                     />
-                  </strong>{" "}                  <span style={{paddingLeft:"5px", fontFamily: 'Poppins, sans-serif',}}>
-
-                  + 91 -{phone}</span>
+                    <span style={{ paddingLeft: "5px" }}>
+                      + 91 - {phone}
+                    </span>
+                  </div>
                 </p>
                 <p
                   className="word2"
                   onClick={() => handleEdit("address")}
                   style={styles}
                 >
-                  <strong>
+                  <div className="icon-container" style={{ display: "flex", alignItems: "flex-start" }}>
                     <FontAwesomeIcon
                       icon={faLocationDot}
                       style={{
-                        fontSize: "17px",
-                        paddingRight: "10px",
-                        fontFamily: 'Poppins, sans-serif',
-                        marginTop:"2px"
+                        ...iconStyles,
+                        fontSize: "14px",
+                        marginTop: "4px",
                       }}
+                      fixedWidth
                     />
-                  </strong>{" "}
-                  <span
-                    style={{
-                      display: "inline-block",
-                      maxWidth: "250px",
-                      fontFamily: 'Poppins, sans-serif',
-                      marginTop:"4px"
-                    }}
-                  
-                  >
-                    {address}
-                  </span>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        maxWidth: "250px",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      {address}
+                    </span>
+                  </div>
                 </p>
 
                 <p
@@ -455,79 +568,75 @@ function FullResume() {
                   onClick={() => handleEdit("linkedin")}
                   style={styles}
                 >
-                  <strong>
+                  <div className="icon-container" style={{ display: "flex", alignItems: "center" }}>
                     <FontAwesomeIcon
                       icon={faLinkedin}
                       style={{
-                        fontSize: "19px",
-                        paddingRight: "10px",
-                        fontFamily: 'Poppins, sans-serif',
-                        marginTop:"5px"
+                        ...iconStyles,
+                        fontSize: "14px",
                       }}
+                      fixedWidth
                     />
-                  </strong>{" "}
-                  <span
-                    style={{
-                      display: "inline-block",
-                      maxWidth: "250px",
-                      marginTop: "5px",
-                      fontFamily: 'Poppins, sans-serif',
-                    }}
-                  
-                  >
-                  LinkedIn: {linkedin}</span>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        maxWidth: "250px",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      LinkedIn: {linkedin}
+                    </span>
+                  </div>
                 </p>
                 <p
                   className="word"
                   onClick={() => handleEdit("github")}
                   style={styles}
                 >
-                  <strong>
+                  <div className="icon-container" style={{ display: "flex", alignItems: "center" }}>
                     <FontAwesomeIcon
                       icon={faGithub}
                       style={{
-                        fontSize: "18px",
-                        paddingRight: "10px",
-                        fontFamily: 'Poppins, sans-serif',
-                         marginTop:"5px"
-                      }}                    />
-                  </strong>{" "}
-                  <span
-                    style={{
-                      display: "inline-block",
-                      maxWidth: "250px",
-                      fontFamily: 'Poppins, sans-serif',
-                      marginTop:"8px",
-                    }}
-                  
-                  >
-                  GitHub: {github}</span>
+                        ...iconStyles,
+                        fontSize: "14px",
+                      }}
+                      fixedWidth
+                    />
+                    <span
+                      style={{
+                        display: "inline-block",
+                        maxWidth: "250px",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      GitHub: {github}
+                    </span>
+                  </div>
                 </p>
                 <p
                   className="word"
                   onClick={() => handleEdit("leetcode")}
                   style={styles}
                 >
-                  <strong>
+                  <div className="icon-container" style={{ display: "flex", alignItems: "center" }}>
                     <FontAwesomeIcon
                       icon={faCode}
                       style={{
-                        fontSize: "16px",
-                        paddingRight: "10px",
-                        fontFamily: 'Poppins, sans-serif',
-                        marginTop:"2px",
-                      }}                    />
-                  </strong>{" "}
-                  <span
-                    style={{
-                      display: "inline-block",
-                      maxWidth: "250px",
-                      marginTop: "5px",
-                      fontFamily: 'Poppins, sans-serif',
-                    }}
-                  
-                  >
-                  Leetcode: {leetcode}</span>
+                        ...iconStyles,
+                        fontSize: "14px",
+                      }}
+                      fixedWidth
+                    />
+                    <span
+                      style={{
+                        display: "inline-block",
+                        maxWidth: "250px",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      Leetcode: {leetcode}
+                    </span>
+                  </div>
                 </p>
               </section>
 
@@ -536,6 +645,7 @@ function FullResume() {
                 <ul className="resumeul" style={styles}>
                   {technicalSkills.map((skill, index) => (
                     <li style={styles}
+                      id="ul-li"
                       className="resumeli"
                       key={index}
                       onClick={() => handleEdit("technicalSkills", index)}
@@ -551,6 +661,7 @@ function FullResume() {
                 <ul className="resumeul"style={styles}>
                   {softSkills.map((skill, index) => (
                     <li style={styles}
+                    id="ul-li"
                       className="resumeli"
                       key={index}
                       onClick={() => handleEdit("softSkills", index)}
@@ -566,6 +677,7 @@ function FullResume() {
                 <ul className="resumeul" style={styles}>
                   {extracurricular.map((activity, index) => (
                     <li style={styles}
+                    id="ul-li"
                       className="resumeli"
                       key={index}
                       onClick={() => handleEdit("extracurricular", index)}
@@ -581,6 +693,7 @@ function FullResume() {
                 <ul className="resumeul" style={styles}>
                   {interests.map((interest, index) => (
                     <li style={styles}
+                    id="ul-li"
                       className="resumeli"
                       key={index}
                       onClick={() => handleEdit("interests", index)}
@@ -606,37 +719,33 @@ function FullResume() {
 
               <section className="education-section" style={styles}>
                 <h2 className="resumeh2car" style={styles}>Education Background</h2>
-                <p className="paragraph" onClick={() => handleEdit("college")} style={styles}>
-                  <strong>{college}</strong>
-                </p>
-                <h5 className="para" onClick={() => handleEdit("degree")}  style={{ fontFamily: 'Poppins, sans-serif', fontStyle: 'italic' }}>
-                  {degree}
+                
+                <h3 className="para" onClick={() => handleEdit("degree")} >{degree} 
+                </h3>
+
+                <h4 id="para1" onClick={() => handleEdit("college") } style={styles}> <strong>{college}</strong>
+                </h4>
+
+                <h5 style={styles} className="para1" onClick={() => handleEdit("cgpa")}>{" "}Pursuing with {cgpa} CGPA
                 </h5>
-                <h5 style={styles} className="para1" onClick={() => handleEdit("degree")}>
-                  {" "}
-                  Pursuing with {cgpa} CGPA
-                </h5>
-                <p style={styles}
-                  className="paragraph"
-                  onClick={() => handleEdit("highschool")}
-                >
-                  <strong>{highschool}</strong>
-                </p>
-                <h5   style={{ fontFamily: 'Poppins, sans-serif', fontStyle: 'italic' }} className="para" onClick={() => handleEdit("highschool1")}>
-                  {highschool1}
-                </h5>
-                <h5 style={styles} className="para1" onClick={() => handleEdit("highschool2")}>
-                Completed with {highschool2} 
+                
+                <h3   className="para" onClick={() => handleEdit("highschool1")}>{highschool1}
+                </h3>
+
+                <h4 style={{fontStyle:"normal"} } id="para1" onClick={() => handleEdit("highschool")}><strong>{highschool}</strong>
+                </h4>
+
+                <h5 style={styles} className="para1" onClick={() => handleEdit("highschool2")}>Completed with {highschool2}
                 </h5>
 
-                <p style={styles} className="paragraph" onClick={() => handleEdit("school")}>
-                  <strong>{school}</strong>
-                </p>
-                <h5  style={{ fontFamily: 'Poppins, sans-serif', fontStyle: 'italic' }} className="para" onClick={() => handleEdit("school1")}>
-                  {school1}
-                </h5>
-                <h5 style={styles} className="para1" onClick={() => handleEdit("school2")}>
-                Completed with {school2} 
+                
+                <h3  className="para" onClick={() => handleEdit("school1")}>{school1}
+                </h3>
+
+                <h4 style={styles} id="para1" onClick={() => handleEdit("school")}><strong>{school}</strong>
+                </h4>
+
+                <h5 style={styles} className="para1" onClick={() => handleEdit("school2")}>Completed with {school2}
                 </h5>
               </section>
 
@@ -645,12 +754,12 @@ function FullResume() {
                 {internships.map((internship, index) => (
                   <div key={index}>
                     <p style={styles}
-                      className="paragraph"
+                      className="para"
                       onClick={() => handleEditInternship(index, "name")}
                     >
                       <strong>{internship.name}</strong>
                     </p>
-                    <h5  style={{ fontFamily: 'Poppins, sans-serif', fontStyle: 'italic' }}
+                    <h5  
                       className="parain"
                       onClick={() => handleEditInternship(index, "description")}
                     >
@@ -672,13 +781,13 @@ function FullResume() {
                 {projects.map((project, index) => (
                   <div key={index}>
                     <p style={styles}
-                      className="paragraph"
+                      className="parapro"
                       onClick={() => handleEditProject(index, "name")}
                     >
                       <strong>{project.name}</strong>
                     </p>
                     <h5 style={styles}
-                      className="para"
+                      className="parapro1"
                       onClick={() => handleEditProject(index, "description")}
                     >
                       {project.description}

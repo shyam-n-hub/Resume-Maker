@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 
 
 .area {
@@ -7,9 +7,10 @@
   box-sizing: border-box;
   margin: 0;
   padding: 30px 0;
-  font-family: 'Poppins', sans-serif;
   position: relative;
   overflow-x: hidden;
+  font-family: 'Times New Roman', Times, serif;
+
 }
 
 
@@ -20,14 +21,14 @@
   justify-content: center;
   width: 794px;
   margin: auto;
-  font-family: "Josefin Sans", serif;
   background-color: white;
   height: auto;
   overflow: hidden;
   margin-top: 50px;
-  font-family: 'Poppins', sans-serif;
   border: white 10px solid;
   height: 1123px;
+  font-family: 'Times New Roman', Times, serif;
+
 }
 
 .resume-header {
@@ -74,13 +75,14 @@
 /* Left-aligned text for all cases */
 .header-name {
   font-size: 34px;
-  font-weight: 800;
+  font-weight: 400;
   text-transform: uppercase;
   color: white;
-  font-family: 'Poppins', sans-serif;
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: normal;
+  font-family: 'Times New Roman', Times, serif;
+
 }
 
 .header-subname {
@@ -88,11 +90,12 @@
   font-weight: 400;
   text-transform: uppercase;
   color: white;
-  font-family: 'Poppins', sans-serif;
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: normal;
   margin-top: 5px;
+  font-family: 'Times New Roman', Times, serif;
+
 }
 
 .resume-logo {
@@ -124,7 +127,7 @@
   flex: 4; /* 30% width */
   border-right: 1px solid rgb(22, 21, 21);
   padding: 30px;
-  font-size: 1.1em;
+  font-size: 15px;
   margin-top: 40px;
   width: 30%;
   margin-bottom: 30px;
@@ -136,9 +139,11 @@
   display: inline-block;
   position: relative;
   padding-bottom: 4px;
-  font-size: 20px;
-  font-weight: 790;
-  font-family: 'Poppins', sans-serif;
+  font-size: 19px;
+  font-weight: 900;
+  font-family: 'Times New Roman', Times, serif;
+  margin-top: 10px;
+
 }
 .resumeh2::after{
   content: "";
@@ -157,8 +162,9 @@
   position: relative;
   padding-bottom: 4px;
   font-size: 20px;
-  font-weight: 790;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Times New Roman', Times, serif;
+  margin-top: 10px;
+
 }
 .resumeh2e::after{
   content: "";
@@ -179,7 +185,8 @@
   padding-bottom: 4px;
   font-size: 20px;
   font-weight: 790;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Times New Roman', Times, serif;
+
 }
 .resumeh2car::after{
   content: "";
@@ -192,11 +199,12 @@
   left: 0;
 }
 .contact-section {
-  font-family: 'Poppins', sans-serif;
   font-size: 14px;
   margin: 0px 0px;
   font-weight: 400;
   margin-left: 3px;
+  font-family: 'Times New Roman', Times, serif;
+
 }
 
 .word, .word2 {
@@ -207,6 +215,7 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   margin: 4px 0px;
+  font-size: 15px;
 }
 
 .word strong, .word2 strong {
@@ -226,17 +235,20 @@
 
 .resumeul {
   list-style-type: none;
-  margin-top: 20px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 410;
+  margin-top: 10px;
+  font-size: 15px;
+  margin-left: 10px;
+
 }
 .resumeul .resumeli{
-  
   padding: 2px;
   padding-left: 0px;
+  font-size: 15px;
 }
-
+#ul-li{
+  font-size: 16px;
+  letter-spacing: 0.7px;
+}
 .resumeul .resumeli::before {
   content: "•  ";
   color: black;
@@ -248,7 +260,7 @@
 .right-column {
   flex: 6;
   margin-left: 10px;
-  font-size: 18px;
+  font-size: 15px;
   word-wrap: break-word;
   padding: 20px;
   width: 70%;
@@ -259,10 +271,12 @@
   word-wrap: break-word;
   text-align: justify;
   margin-top: 10px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 400;
   margin-bottom: 10px;
+  font-family: 'Times New Roman', Times, serif;
+  letter-spacing: 0.3px;
+
 }
 /* .career-objective-section .car-para {
   width: 90%; 
@@ -281,62 +295,97 @@
   text-align: justify;
 }
 
+.para{
 
-
-.paragraph{
-  font-size: 14px;
+  font-size: 16px;
   margin: 0;
   padding: 0;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 900;
+  margin-top: 8px;
 }
 
-.para{
-  font-size: 13px;
+/* #paragra{
+  font-size: 15px;
   padding: 0;
   margin: 0;
   margin-left: 20px;
-  font-weight: 500;
+  font-family: 'Times New Roman', Times, serif;
+} */
+
+#para1{
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+  margin-left: 12px;
+  font-weight: 100;
+  margin-top: 3px;
 }
 
 .para1{
-  font-size: 13px;
+  font-size: 16px;
   padding: 0;
   margin: 0;
-  margin-left: 20px;
+  margin-left: 13px;
   font-weight: 500;
-  margin-bottom: 10px;
+  margin-top: 3px;
 }
 
+
 .parain{
-  font-size: 13px;
+  font-size: 16px;
   padding: 0;
   margin: 0;
-  margin-left: 20px;
+  margin-left: 12px;
   font-weight: 500;
-  margin-top: 0;
+  margin-top: 3px;
 }
 
 .parain1{
-  font-size: 13px;
+  font-size: 16px;
   padding: 0;
   margin: 0;
-  margin-left: 20px;
+  margin-left: 13px;
   font-weight: 500;
+  margin-top: 3px;
 }
 
-.education-section .paragraph::before {
+.parapro{
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 900;
+  margin-top: 8px;
+}
+.parapro1{
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+  margin-left: 13px;
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+.education-section{
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 100;
+}
+
+.education-section .para::before {
   content: "• ";
   color: #1c191a;
   font-weight: 900;
   font-size: 20px;
 }
 
-.projects-section .paragraph::before {
+.projects-section .parapro::before {
   content: "• ";
   color: #1c191a;
   font-weight: 900;
   font-size: 20px;}
 
-.internships-section .paragraph::before {
+.internships-section .para::before {
   content: "• ";
   color: #1c191a;
   font-weight: 900;
