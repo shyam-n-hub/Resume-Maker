@@ -189,42 +189,42 @@ function BasicDetails() {
       "school2",
     ];
 
-    // for (const field of requiredFields) {
-    //   if (!details[field]) {
-    //     alert(`Please fill in the ${field} field.`);
-    //     return false;
-    //   }
-    // }
+    for (const field of requiredFields) {
+      if (!details[field]) {
+        alert(`Please fill in the ${field} field.`);
+        return false;
+      }
+    }
 
-    // if (details.technicalSkills.length < 3) {
-    //   alert("Please add at least three technical skills.");
-    //   return false;
-    // }
+    if (details.technicalSkills.length < 3) {
+      alert("Please add at least three technical skills.");
+      return false;
+    }
 
-    // if (details.softSkills.length < 3) {
-    //   alert("Please add at least three soft skills.");
-    //   return false;
-    // }
+    if (details.softSkills.length < 3) {
+      alert("Please add at least three soft skills.");
+      return false;
+    }
 
-    // if (details.extracurricular.length < 2) {
-    //   alert("Please add at least two extracurricular activities.");
-    //   return false;
-    // }
+    if (details.extracurricular.length < 2) {
+      alert("Please add at least two extracurricular activities.");
+      return false;
+    }
 
-    // if (details.interests.length < 2) {
-    //   alert("Please add at least two areas of interest.");
-    //   return false;
-    // }
+    if (details.interests.length < 2) {
+      alert("Please add at least two areas of interest.");
+      return false;
+    }
 
-    // if (details.internships.length < 3) {
-    //   alert("Please add at least three internships.");
-    //   return false;
-    // }
+    if (details.internships.length < 3) {
+      alert("Please add at least three internships.");
+      return false;
+    }
 
-    // if (details.projects.length < 2) {
-    //   alert("Please add at least two projects.");
-    //   return false;
-    // }
+    if (details.projects.length < 2) {
+      alert("Please add at least two projects.");
+      return false;
+    }
 
     if (!details.profileImage) {
       alert("Please upload a profile image.");
