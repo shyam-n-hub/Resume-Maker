@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { ref as storageRef, getDownloadURL, uploadBytes } from "firebase/storage";
-import { ref as dbRef, get, onValue, update } from "firebase/database";
+import { ref as storageRef, getDownloadURL, uploadBytes, uploadBytesResumable, updateMetadata } from "firebase/storage";
+import { ref as dbRef, get, onValue, update, set } from "firebase/database";
 import { onAuthStateChanged, signOut, signInWithCustomToken } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { storage, auth, database } from "./firebase";
@@ -8,6 +8,8 @@ import "./dashboard.css";
 
 function Dashboard({ closeDashboard, onLogout }) {
   const [resumeUrl, setResumeUrl] = useState(null);
+  const [resumeType, setResumeType] = useState(null); // 'generated' or 'manual'
+  const [resumeFileName, setResumeFileName] = useState(null);
   const [userData, setUserData] = useState({
     name: "User",
     email: "",
@@ -25,8 +27,14 @@ function Dashboard({ closeDashboard, onLogout }) {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showAboutUs, setShowAboutUs] = useState(false);
   
+  // Resume upload states
+  const [isUploadingResume, setIsUploadingResume] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [showResumeOptions, setShowResumeOptions] = useState(false);
+  
   const dashboardRef = useRef(null);
   const fileInputRef = useRef(null);
+  const resumeFileInputRef = useRef(null);
   const userListenerRef = useRef(null);
   const navigate = useNavigate();
 
@@ -96,6 +104,8 @@ function Dashboard({ closeDashboard, onLogout }) {
                   profileImage: userData.profileImage || "/default-image.jpg",
                 });
                 setResumeUrl(userData.resumeLink || null);
+                setResumeType(userData.resumeType || null);
+                setResumeFileName(userData.resumeFileName || null);
                 setLoading(false);
               } catch (error) {
                 console.error("Error parsing persisted user data:", error);
@@ -149,11 +159,15 @@ function Dashboard({ closeDashboard, onLogout }) {
               department: userInfo.department || "Department",
               profileImage: userInfo.profileImage || "/default-image.jpg",
               resumeLink: userInfo.resumeLink || null,
+              resumeType: userInfo.resumeType || null,
+              resumeFileName: userInfo.resumeFileName || null,
             };
             
             // Update state with fetched data
             setUserData(updatedUserData);
             setResumeUrl(userInfo.resumeLink || null);
+            setResumeType(userInfo.resumeType || null);
+            setResumeFileName(userInfo.resumeFileName || null);
             
             // Persist to localStorage for quick access and offline support
             localStorage.setItem('userData', JSON.stringify(updatedUserData));
@@ -168,6 +182,8 @@ function Dashboard({ closeDashboard, onLogout }) {
                 department: "Department",
                 profileImage: "/default-image.jpg",
                 resumeLink: null,
+                resumeType: null,
+                resumeFileName: null,
               };
               
               setUserData(defaultUserData);
@@ -184,7 +200,11 @@ function Dashboard({ closeDashboard, onLogout }) {
           const cachedUserData = localStorage.getItem('userData');
           if (cachedUserData) {
             try {
-              setUserData(JSON.parse(cachedUserData));
+              const userData = JSON.parse(cachedUserData);
+              setUserData(userData);
+              setResumeUrl(userData.resumeLink || null);
+              setResumeType(userData.resumeType || null);
+              setResumeFileName(userData.resumeFileName || null);
               setLoading(false);
             } catch (e) {
               console.error("Error parsing cached data:", e);
@@ -215,6 +235,8 @@ function Dashboard({ closeDashboard, onLogout }) {
       profileImage: "/default-image.jpg",
     });
     setResumeUrl(null);
+    setResumeType(null);
+    setResumeFileName(null);
     setLoading(false);
   };
   
@@ -335,12 +357,128 @@ function Dashboard({ closeDashboard, onLogout }) {
     }
   };
 
+  const handleResumeFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      if (file.type !== 'application/pdf') {
+        alert('Please select a PDF file only.');
+        return;
+      }
+      
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size should be less than 10MB.');
+        return;
+      }
+      
+      uploadManualResume(file);
+    }
+  };
+
+  const uploadManualResume = async (file) => {
+    const uid = auth.currentUser?.uid || localStorage.getItem('uid');
+    
+    if (!uid) {
+      alert("Please log in to upload resume.");
+      return;
+    }
+
+    setIsUploadingResume(true);
+    setUploadProgress(0);
+
+    try {
+      const fileName = `${userData.name.replace(/\s+/g, '_')}_Manual_Resume_${Date.now()}.pdf`;
+      const resumeStorageRef = storageRef(storage, `resumes/${uid}/${fileName}`);
+      
+      const uploadTask = uploadBytesResumable(resumeStorageRef, file, {
+        contentType: "application/pdf",
+      });
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress(progress);
+        },
+        (error) => {
+          console.error("Error uploading resume: ", error);
+          alert("Upload failed. Please try again.");
+          setIsUploadingResume(false);
+        },
+        async () => {
+          try {
+            const downloadURL = await getDownloadURL(resumeStorageRef);
+            
+            // Add metadata
+            const metadata = { 
+              customMetadata: { 
+                name: userData.name, 
+                userEmail: userData.email,
+                createdAt: new Date().toISOString(),
+                type: 'manual'
+              } 
+            };
+            await updateMetadata(resumeStorageRef, metadata);
+
+            // Update the resume info in the database
+            await set(dbRef(database, `users/${uid}/resume`), {
+              downloadURL,
+              name: userData.name,
+              userEmail: userData.email,
+              fileName,
+              createdAt: new Date().toISOString(),
+              type: 'manual'
+            });
+
+            // Update the user record with new resume info
+            await update(dbRef(database, `users/${uid}`), {
+              resumeLink: downloadURL,
+              resumeType: 'manual',
+              resumeFileName: file.name
+            });
+
+            // Update local state
+            setResumeUrl(downloadURL);
+            setResumeType('manual');
+            setResumeFileName(file.name);
+            
+            alert("Resume uploaded successfully!");
+            setShowResumeOptions(false);
+          } catch (error) {
+            console.error("Error updating resume metadata: ", error);
+            alert("Upload completed but there was an error updating metadata.");
+          } finally {
+            setIsUploadingResume(false);
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error starting resume upload:", error);
+      alert("Failed to start upload. Please try again.");
+      setIsUploadingResume(false);
+    }
+  };
+
+  const triggerResumeFileInput = () => {
+    resumeFileInputRef.current.click();
+  };
+
   const toggleAboutUs = () => {
     setShowAboutUs(!showAboutUs);
   };
 
   const triggerFileInput = () => {
     fileInputRef.current.click();
+  };
+
+  const handleResumeAction = () => {
+    setShowResumeOptions(true);
+  };
+
+  const handleGenerateNewResume = () => {
+    navigate("/basicdetails");
+    setShowResumeOptions(false);
   };
   
   return (
@@ -371,28 +509,41 @@ function Dashboard({ closeDashboard, onLogout }) {
             </div>
             
             <div className="action-buttons">
-            <button className="action-btn follow-btn" onClick={handleEditProfile}>
+              <button className="action-btn follow-btn" onClick={handleEditProfile}>
                 Edit Profile
-              </button>              </div>
-            
-        
+              </button>
+            </div>
             
             <div className="profile-actions">
-              
-              
               <button className="profile-action-btn about-btn" onClick={toggleAboutUs}>
                 About Us
               </button>
               
-              {resumeUrl ? (
-                <a className="profile-action-btn resume-btn" href={resumeUrl} target="_blank" rel="noopener noreferrer">
-                  View Updated Resume
-                </a>
-              ) : (
-                <button className="profile-action-btn resume-btn disabled">
-                  No Resume Available
+              {/* Enhanced Resume Section */}
+              <div className="resume-section">
+                {resumeUrl ? (
+                  <div className="resume-info">
+                    <a className="profile-action-btn resume-btn" href={resumeUrl} target="_blank" rel="noopener noreferrer">
+                      View Resume ({resumeType === 'manual' ? 'Uploaded' : 'Generated'})
+                    </a>
+                    {resumeFileName && resumeType === 'manual' && (
+                      <p className="resume-filename">File: {resumeFileName}</p>
+                    )}
+                  </div>
+                ) : (
+                  <button className="profile-action-btn resume-btn disabled">
+                    No Resume Available
+                  </button>
+                )}
+                
+                <button 
+                  className="profile-action-btn resume-manage-btn" 
+                  onClick={handleResumeAction}
+                  disabled={isUploadingResume}
+                >
+                  {isUploadingResume ? `Uploading... ${Math.round(uploadProgress)}%` : 'Manage Resume'}
                 </button>
-              )}
+              </div>
               
               <button
                 onClick={() => setShowLogoutConfirm(true)} 
@@ -402,6 +553,45 @@ function Dashboard({ closeDashboard, onLogout }) {
                 Logout
               </button>
             </div>
+
+            {/* Resume Options Modal */}
+            {showResumeOptions && (
+              <div className="resume-options-overlay">
+                <div className="resume-options-box">
+                  <h3>Resume Options</h3>
+                  <div className="resume-option-buttons">
+                    <button 
+                      className="option-btn upload-btn" 
+                      onClick={triggerResumeFileInput}
+                      disabled={isUploadingResume}
+                    >
+                      Upload Resume (PDF)
+                    </button>
+                    <button 
+                      className="option-btn generate-btn" 
+                      onClick={handleGenerateNewResume}
+                    >
+                      Generate New Resume
+                    </button>
+                    <button 
+                      className="option-btn cancel-btn" 
+                      onClick={() => setShowResumeOptions(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Hidden file inputs */}
+            <input
+              type="file"
+              ref={resumeFileInputRef}
+              onChange={handleResumeFileChange}
+              accept=".pdf"
+              style={{ display: 'none' }}
+            />
 
             {showAboutUs && (
               <div className="about-us-panel">
@@ -525,9 +715,9 @@ function Dashboard({ closeDashboard, onLogout }) {
         )}
 
         <div className="footer-content">
-        <p className="copyright">Developed by <a href="https://www.linkedin.com/in/shyam--n/" className="develop-a">IoT Engineer</a></p>
-        <p className="copyright1" style={{flexDirection:"row"}}><a href="https://rapcodetechsolutions.netlify.app/" className="develop-aa"><img src="Frame - Copy (2).png" style={{width:"15px",height:"15px",display:"flex",margin:"auto",flexDirection:"row"}} alt="RapCode Logo"></img>RapCode Tech Solutions</a></p>
-      </div>
+          <p className="copyright">Developed by <a href="https://www.linkedin.com/in/shyam--n/" className="develop-a">IoT Engineer</a></p>
+          {/* <p className="copyright1" style={{flexDirection:"row"}}><a href="https://rapcodetechsolutions.netlify.app/" className="develop-aa"><img src="Frame - Copy (2).png" style={{width:"15px",height:"15px",display:"flex",margin:"auto",flexDirection:"row"}} alt="RapCode Logo"></img>RapCode Tech Solutions</a></p> */}
+        </div>
       </div>
     </div>
   );
