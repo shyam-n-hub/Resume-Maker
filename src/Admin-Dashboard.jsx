@@ -36,8 +36,9 @@ function AdminDashboard() {
             
             return {
               id: userId,
-              name: user.resume?.name || "N/A",
-              email: user.resume?.userEmail || "N/A",
+              name: user.resume?.name || user.name || "N/A",
+              email: user.resume?.userEmail || user.email || "N/A",
+              department: user.department || "N/A", // Added department field
               resumeName: user.resume?.name
                 ? `${user.resume.name}_Resume.pdf`
                 : "N/A",
@@ -152,6 +153,7 @@ function AdminDashboard() {
             <tr>
               <th>Name</th>
               <th>Email</th>
+              <th>Department</th>
               <th>Resume Name</th>
               <th>Resume Link</th>
             </tr>
@@ -162,6 +164,7 @@ function AdminDashboard() {
                 <tr key={index}>
                   <td>{user.name}</td>
                   <td>{user.email}</td>
+                  <td>{user.department}</td>
                   <td>{user.resumeName}</td>
                   <td>
                     {user.resumeURL ? (
@@ -183,7 +186,7 @@ function AdminDashboard() {
               ))
             ) : (
               <tr>
-                <td colSpan="4">No resumes found</td>
+                <td colSpan="5">No resumes found</td>
               </tr>
             )}
           </tbody>
