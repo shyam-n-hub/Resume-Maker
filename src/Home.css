@@ -31,7 +31,7 @@ body {
 .header h1 {
   margin: 0;
   color: white;
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -153,7 +153,7 @@ body {
 
 /* Main Title */
 .home-title {
-  font-size: 3.5rem;
+  font-size: 2.1rem;
   color: #2b2d42;
   color: linear-gradient(90deg, #4361ee, #3f37c9);
   margin-bottom: 20px;
@@ -167,7 +167,7 @@ body {
 
 /* Subtitle */
 .home-description {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: #555b6e;
   text-align: center;
   max-width: 600px;
@@ -182,7 +182,7 @@ body {
   color: white;
   border: none;
   border-radius: 30px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -233,7 +233,7 @@ body {
 }
 
 .steps-title {
-  font-size: 2.2rem;
+  font-size: 2rem;
   margin-bottom: 30px;
   color: #2b2d42;
   font-weight: 700;
@@ -344,7 +344,7 @@ body {
   }
 
   .home-title {
-    font-size: 2.8rem;
+    font-size: 2rem;
   }
 
   .home-description {
@@ -396,7 +396,7 @@ body {
   }
 
   .home-title {
-    font-size: 2.2rem;
+    font-size: 1rem;
   }
 
   .home-description {
@@ -445,7 +445,7 @@ body {
   }
 
   .home-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 
   .home-container-details {
@@ -453,7 +453,7 @@ body {
   }
 
   .steps-title {
-    font-size: 1.6rem;
+    font-size: 1rem;
   }
 
   .step {
@@ -573,7 +573,7 @@ body {
   color: #4361ee;
   border: 2px solid #4361ee;
   border-radius: 30px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
