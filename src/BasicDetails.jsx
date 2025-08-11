@@ -16,7 +16,9 @@ function BasicDetails() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [details, setDetails] = useState({
+  
+  // Default state with guaranteed arrays
+  const defaultDetails = {
     name: "",
     department: "",
     phone: "",
@@ -42,7 +44,9 @@ function BasicDetails() {
     internships: [],
     projects: [],
     profileImage: null,
-  });
+  };
+
+  const [details, setDetails] = useState(defaultDetails);
 
   // Use Firebase Auth state to determine login status
   useEffect(() => {
@@ -87,6 +91,20 @@ function BasicDetails() {
     return () => unsubscribe();
   }, [navigate]);
 
+  // Function to ensure arrays are always arrays
+  const ensureArrayFields = (data) => {
+    const arrayFields = ['technicalSkills', 'softSkills', 'extracurricular', 'interests', 'internships', 'projects'];
+    const safeData = { ...defaultDetails, ...data };
+    
+    arrayFields.forEach(field => {
+      if (!Array.isArray(safeData[field])) {
+        safeData[field] = [];
+      }
+    });
+    
+    return safeData;
+  };
+
   // Function to load user data from Firebase
   const loadUserDataFromFirebase = async (userId) => {
     try {
@@ -97,12 +115,18 @@ function BasicDetails() {
       if (snapshot.exists()) {
         const userData = snapshot.val();
         console.log("Loaded user data from Firebase:", userData);
-        setDetails(userData);
+        
+        // Ensure all array fields are properly initialized
+        const safeUserData = ensureArrayFields(userData);
+        setDetails(safeUserData);
       } else {
         console.log("No user data found in Firebase, using default values");
+        setDetails(defaultDetails);
       }
     } catch (error) {
       console.error("Error loading user data from Firebase:", error);
+      // On error, ensure we have safe defaults
+      setDetails(defaultDetails);
     } finally {
       setIsLoading(false);
     }
@@ -116,8 +140,10 @@ function BasicDetails() {
     }
 
     try {
+      // Ensure arrays are safe before saving
+      const safeDetails = ensureArrayFields(userDetails);
       const userRef = ref(database, `users/${currentUser.uid}/basicDetails`);
-      await set(userRef, userDetails);
+      await set(userRef, safeDetails);
       console.log("User data saved to Firebase successfully");
     } catch (error) {
       console.error("Error saving user data to Firebase:", error);
@@ -138,7 +164,8 @@ function BasicDetails() {
   const handleAddItem = (field) => {
     let newItem = prompt(`Enter a ${field}`);
     if (newItem) {
-      const newDetails = { ...details, [field]: [...details[field], newItem] };
+      const currentArray = Array.isArray(details[field]) ? details[field] : [];
+      const newDetails = { ...details, [field]: [...currentArray, newItem] };
       setDetails(newDetails);
 
       // Save to Firebase
@@ -149,9 +176,10 @@ function BasicDetails() {
   };
 
   const handleRemoveItem = (field, index) => {
+    const currentArray = Array.isArray(details[field]) ? details[field] : [];
     const newDetails = {
       ...details,
-      [field]: details[field].filter((_, i) => i !== index),
+      [field]: currentArray.filter((_, i) => i !== index),
     };
     setDetails(newDetails);
 
@@ -163,9 +191,10 @@ function BasicDetails() {
 
   const handleRemoveObjectItem = (field, index) => {
     setDetails((prevDetails) => {
+      const currentArray = Array.isArray(prevDetails[field]) ? prevDetails[field] : [];
       const newDetails = {
         ...prevDetails,
-        [field]: prevDetails[field].filter((_, i) => i !== index),
+        [field]: currentArray.filter((_, i) => i !== index),
       };
 
       // Save to Firebase
@@ -188,10 +217,11 @@ function BasicDetails() {
 
       if (name && description && startDate && endDate) {
         setDetails((prevDetails) => {
+          const currentArray = Array.isArray(prevDetails[field]) ? prevDetails[field] : [];
           const newDetails = {
             ...prevDetails,
             [field]: [
-              ...prevDetails[field],
+              ...currentArray,
               { name, description, startDate, endDate },
             ],
           };
@@ -210,9 +240,10 @@ function BasicDetails() {
 
       if (name && description) {
         setDetails((prevDetails) => {
+          const currentArray = Array.isArray(prevDetails[field]) ? prevDetails[field] : [];
           const newDetails = {
             ...prevDetails,
-            [field]: [...prevDetails[field], { name, description }],
+            [field]: [...currentArray, { name, description }],
           };
 
           // Save to Firebase
@@ -302,32 +333,39 @@ function BasicDetails() {
       }
     }
 
-    if (details.technicalSkills.length < 3) {
+    const technicalSkills = Array.isArray(details.technicalSkills) ? details.technicalSkills : [];
+    const softSkills = Array.isArray(details.softSkills) ? details.softSkills : [];
+    const extracurricular = Array.isArray(details.extracurricular) ? details.extracurricular : [];
+    const interests = Array.isArray(details.interests) ? details.interests : [];
+    const internships = Array.isArray(details.internships) ? details.internships : [];
+    const projects = Array.isArray(details.projects) ? details.projects : [];
+
+    if (technicalSkills.length < 3) {
       alert("Please add at least three technical skills.");
       return false;
     }
 
-    if (details.softSkills.length < 3) {
+    if (softSkills.length < 3) {
       alert("Please add at least three soft skills.");
       return false;
     }
 
-    if (details.extracurricular.length < 2) {
+    if (extracurricular.length < 2) {
       alert("Please add at least two extracurricular activities.");
       return false;
     }
 
-    if (details.interests.length < 2) {
+    if (interests.length < 2) {
       alert("Please add at least two areas of interest.");
       return false;
     }
 
-    if (details.internships.length < 3) {
+    if (internships.length < 3) {
       alert("Please add at least three internships.");
       return false;
     }
 
-    if (details.projects.length < 2) {
+    if (projects.length < 2) {
       alert("Please add at least two projects.");
       return false;
     }
@@ -388,6 +426,9 @@ function BasicDetails() {
       </div>
     );
   }
+
+  // Safe array access for rendering
+  const safeDetails = ensureArrayFields(details);
 
   return (
     <div className="basicheaderfirst">
@@ -661,7 +702,7 @@ function BasicDetails() {
             Add Skill
           </button>
           <ul>
-            {details.technicalSkills.map((skill, i) => (
+            {safeDetails.technicalSkills.map((skill, i) => (
               <li key={i} className="bbutton-li">
                 {skill}
                 <span
@@ -687,7 +728,7 @@ function BasicDetails() {
             Add Skill
           </button>
           <ul>
-            {details.softSkills.map((skill, i) => (
+            {safeDetails.softSkills.map((skill, i) => (
               <li key={i} className="bbutton-li">
                 {skill}{" "}
                 <span
@@ -713,7 +754,7 @@ function BasicDetails() {
             Add Activity
           </button>
           <ul>
-            {details.extracurricular.map((activity, i) => (
+            {safeDetails.extracurricular.map((activity, i) => (
               <li key={i} className="bbutton-li">
                 {activity}
                 <span
@@ -739,7 +780,7 @@ function BasicDetails() {
             Add Interest
           </button>
           <ul>
-            {details.interests.map((interest, i) => (
+            {safeDetails.interests.map((interest, i) => (
               <li key={i} className="bbutton-li">
                 {interest}
                 <span
@@ -765,7 +806,7 @@ function BasicDetails() {
             Add Internship
           </button>
           <ul>
-            {details.internships.map((internship, i) => (
+            {safeDetails.internships.map((internship, i) => (
               <li key={i} className="bbutton-li">
                 <strong>{internship.name}</strong>: {internship.description}{" "}
                 <br />
@@ -795,7 +836,7 @@ function BasicDetails() {
             Add Project
           </button>
           <ul>
-            {details.projects.map((project, i) => (
+            {safeDetails.projects.map((project, i) => (
               <li key={i} className="bbutton-li">
                 <strong>{project.name}</strong>: {project.description}
                 <span
