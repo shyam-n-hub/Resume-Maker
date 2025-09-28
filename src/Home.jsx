@@ -168,6 +168,31 @@ function Home() {
           </div>
         </div>
       )}
+
+<div className="footer-content">
+  <p className="copyright">
+    © {new Date().getFullYear()} All Rights Reserved | Developed by{" "}
+    <a 
+      href="https://www.linkedin.com/in/shyam--n/" 
+      className="develop-a" 
+      target="_blank" 
+      rel="noopener noreferrer"
+    >
+      IoT Engineer
+    </a>
+  </p>
+  
+  <p className="footer-links">
+    <a href="/privacy-policy" className="footer-link">Privacy Policy</a> | 
+    <a href="/terms-of-service" className="footer-link">Terms of Service</a> | 
+    <a href="/contact" className="footer-link">Contact</a>
+  </p>
+
+  <p className="footer-note">
+    Made with ❤️ using React | Hosted on Netlify
+  </p>
+</div>
+
     </>
   );
 }

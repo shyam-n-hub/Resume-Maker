@@ -506,13 +506,16 @@ function Dashboard({ closeDashboard, onLogout }) {
                 <p className="profile-email">{userData.email}</p>
                 <p className="profile-department">{userData.department}</p>
               </div>
-            </div>
-            
-            <div className="action-buttons">
+
+              <div className="action-buttons">
               <button className="action-btn follow-btn" onClick={handleEditProfile}>
                 Edit Profile
               </button>
             </div>
+            
+            </div>
+            
+            
             
             <div className="profile-actions">
               <button className="profile-action-btn about-btn" onClick={toggleAboutUs}>

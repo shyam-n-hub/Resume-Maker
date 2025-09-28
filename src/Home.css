@@ -761,3 +761,58 @@ body {
     margin-top: 20px;
   }
 }
+
+
+
+```css
+.footer-content {
+  margin-top: auto;
+  padding: 24px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+  background: var(--background-color);
+}
+
+.copyright {
+  margin-bottom: 8px;
+}
+
+.develop-a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.develop-a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* Footer Links */
+.footer-links {
+  margin: 8px 0;
+}
+
+.footer-link {
+  color: var(--text-muted);
+  margin: 0 8px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+/* Footer Note */
+.footer-note {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: var(--text-light);
+  opacity: 0.8;
+}
+```

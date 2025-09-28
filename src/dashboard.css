@@ -220,8 +220,11 @@
   display: flex;
   gap: 12px;
   margin-bottom: 32px;
-  width: 100%;
+  width: fit-content;
   justify-content: center;
+  margin: auto;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .action-btn {
@@ -253,11 +256,13 @@
 
 /* Profile Actions */
 .profile-actions {
-  width: 100%;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-bottom: auto;
+  margin: auto;
+  margin-bottom: 20px;
 }
 
 .profile-action-btn {
