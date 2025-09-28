@@ -41,8 +41,8 @@
 }
 
 .profile-pic {
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
   border-radius: 35px;
   margin-left: 13px;
   margin-top: 90px;
@@ -127,7 +127,7 @@
   border-right: 1px solid rgb(22, 21, 21);
   padding: 30px;
   font-size: 15px;
-  margin-top: 40px;
+  margin-top: 20px;
   width: 30%;
   margin-bottom: 30px;
 }
@@ -199,10 +199,10 @@
 }
 .contact-section {
   font-size: 14px;
-  margin: 0px 0px;
   font-weight: 400;
   margin-left: 3px;
   font-family: 'Times New Roman', Times, serif;
+  margin-bottom: 10px;
 
 }
 
@@ -234,18 +234,20 @@
 
 .resumeul {
   list-style-type: none;
-  margin-top: 10px;
+  margin-top: 15px;
   font-size: 15px;
   margin-left: 10px;
+  margin-bottom: 5px;
 
 }
 .resumeul .resumeli{
   padding: 2px;
   padding-left: 0px;
-  font-size: 15px;
+  font-size: 18px;
+  margin-bottom: 5px;
 }
 #ul-li{
-  font-size: 16px;
+  font-size: 17px;
   letter-spacing: 0.7px;
 }
 .resumeul .resumeli::before {
@@ -289,7 +291,7 @@
 } */
 
 .internships-section, .projects-section {
-  margin-top: 20px;
+  margin-top: 10px;
   word-wrap: break-word;
   text-align: justify;
 }
@@ -300,7 +302,7 @@
   margin: 0;
   padding: 0;
   font-family: 'Times New Roman', Times, serif;
-  font-weight: 900;
+  font-weight: 500;
   margin-top: 8px;
 }
 
@@ -354,7 +356,7 @@
   margin: 0;
   padding: 0;
   font-family: 'Times New Roman', Times, serif;
-  font-weight: 900;
+  font-weight: 500;
   margin-top: 8px;
 }
 .parapro1{

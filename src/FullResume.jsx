@@ -512,7 +512,7 @@ function FullResume() {
                       }}
                       fixedWidth
                     />
-                    <span style={{ paddingLeft: "5px" }}>
+                    <span style={{ paddingLeft: "5px", margin:"7px 0px 3px 0px" }}>
                       {email}
                     </span>
                   </div>
@@ -531,7 +531,7 @@ function FullResume() {
                       }}
                       fixedWidth
                     />
-                    <span style={{ paddingLeft: "5px" }}>
+                    <span style={{ paddingLeft: "5px", margin:"4px 0px 3px 0px"  }}>
                       + 91 - {phone}
                     </span>
                   </div>
@@ -556,6 +556,7 @@ function FullResume() {
                         display: "inline-block",
                         maxWidth: "250px",
                         paddingLeft: "5px",
+                        margin:"3px 0px 3px 0px" 
                       }}
                     >
                       {address}
@@ -582,6 +583,7 @@ function FullResume() {
                         display: "inline-block",
                         maxWidth: "250px",
                         paddingLeft: "5px",
+                        margin:"4px 0px 3px 0px" 
                       }}
                     >
                       LinkedIn: {linkedin}
@@ -598,7 +600,7 @@ function FullResume() {
                       icon={faGithub}
                       style={{
                         ...iconStyles,
-                        fontSize: "14px",
+                        fontSize: "15px",
                       }}
                       fixedWidth
                     />
@@ -607,6 +609,7 @@ function FullResume() {
                         display: "inline-block",
                         maxWidth: "250px",
                         paddingLeft: "5px",
+                        margin:"4px 0px 3px 0px" 
                       }}
                     >
                       GitHub: {github}
@@ -623,7 +626,7 @@ function FullResume() {
                       icon={faCode}
                       style={{
                         ...iconStyles,
-                        fontSize: "14px",
+                        fontSize: "15px",
                       }}
                       fixedWidth
                     />
