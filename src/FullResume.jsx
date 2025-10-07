@@ -453,8 +453,9 @@ function FullResume() {
 
   // Common style properties for consistent fonts
   const styles = {
-    fontFamily: "'Times New Roman', Times, serif",
-  };
+  fontFamily: "'Calibri', 'Helvetica', 'Arial', sans-serif",
+};
+
 
   // Icon styles to ensure proper rendering in PDF
   const iconStyles = {
@@ -512,7 +513,7 @@ function FullResume() {
                       }}
                       fixedWidth
                     />
-                    <span style={{ paddingLeft: "5px", margin:"7px 0px 3px 0px" }}>
+                    <span style={{ paddingLeft: "5px", margin:"7px 0px 3px 0px", fontSize: "17px" }}>
                       {email}
                     </span>
                   </div>
@@ -531,7 +532,7 @@ function FullResume() {
                       }}
                       fixedWidth
                     />
-                    <span style={{ paddingLeft: "5px", margin:"4px 0px 3px 0px"  }}>
+                    <span style={{ paddingLeft: "5px", margin:"4px 0px 3px 0px", fontSize: "17px"  }}>
                       + 91 - {phone}
                     </span>
                   </div>
@@ -556,7 +557,7 @@ function FullResume() {
                         display: "inline-block",
                         maxWidth: "250px",
                         paddingLeft: "5px",
-                        margin:"3px 0px 3px 0px" 
+                        margin:"3px 0px 3px 0px" , fontSize: "17px"
                       }}
                     >
                       {address}
@@ -583,7 +584,7 @@ function FullResume() {
                         display: "inline-block",
                         maxWidth: "250px",
                         paddingLeft: "5px",
-                        margin:"4px 0px 3px 0px" 
+                        margin:"4px 0px 3px 0px" , fontSize: "17px"
                       }}
                     >
                       LinkedIn: {linkedin}
@@ -609,7 +610,7 @@ function FullResume() {
                         display: "inline-block",
                         maxWidth: "250px",
                         paddingLeft: "5px",
-                        margin:"4px 0px 3px 0px" 
+                        margin:"4px 0px 3px 0px" , fontSize: "17px"
                       }}
                     >
                       GitHub: {github}
@@ -634,7 +635,7 @@ function FullResume() {
                       style={{
                         display: "inline-block",
                         maxWidth: "250px",
-                        paddingLeft: "5px",
+                        paddingLeft: "5px", fontSize: "17px"
                       }}
                     >
                       Leetcode: {leetcode}
@@ -644,7 +645,7 @@ function FullResume() {
               </section>
 
               <section className="technical-skills-section" style={styles}>
-                <h2 className="resumeh2" style={styles}>Technical Skills</h2>
+                <h2 className="resumeh2tech" style={styles}>Technical Skills</h2>
                 <ul className="resumeul" style={styles}>
                   {technicalSkills.map((skill, index) => (
                     <li style={styles}
@@ -660,7 +661,7 @@ function FullResume() {
               </section>
 
               <section className="soft-skills-section" style={styles}>
-                <h2 className="resumeh2"style={styles}>Soft Skills</h2>
+                <h2 className="resumeh2soft"style={styles}>Soft Skills</h2>
                 <ul className="resumeul"style={styles}>
                   {softSkills.map((skill, index) => (
                     <li style={styles}
@@ -726,30 +727,30 @@ function FullResume() {
                 <h3 className="para" onClick={() => handleEdit("degree")} >{degree} 
                 </h3>
 
-                <h4 id="para1" onClick={() => handleEdit("college") } style={styles}> <strong>{college}</strong>
+                <h4 className="para1" onClick={() => handleEdit("college") } style={styles}> {college}
                 </h4>
 
-                <h5 style={styles} className="para1" onClick={() => handleEdit("cgpa")}>{" "}Pursuing with {cgpa} CGPA
-                </h5>
+                <h4 style={styles} className="para1" onClick={() => handleEdit("cgpa")}>{" "}Pursuing with {cgpa} CGPA
+                </h4>
                 
                 <h3   className="para" onClick={() => handleEdit("highschool1")}>{highschool1}
                 </h3>
 
-                <h4 style={{fontStyle:"normal"} } id="para1" onClick={() => handleEdit("highschool")}><strong>{highschool}</strong>
+                <h4 style={{fontStyle:"normal"} } className="para1" onClick={() => handleEdit("highschool")}>{highschool}
                 </h4>
 
-                <h5 style={styles} className="para1" onClick={() => handleEdit("highschool2")}>Completed with {highschool2}
-                </h5>
+                <h4 style={styles} className="para1" onClick={() => handleEdit("highschool2")}>Completed with {highschool2}
+                </h4>
 
                 
                 <h3  className="para" onClick={() => handleEdit("school1")}>{school1}
                 </h3>
 
-                <h4 style={styles} id="para1" onClick={() => handleEdit("school")}><strong>{school}</strong>
+                <h4 style={styles} className="para1" onClick={() => handleEdit("school")}>{school}
                 </h4>
 
-                <h5 style={styles} className="para1" onClick={() => handleEdit("school2")}>Completed with {school2}
-                </h5>
+                <h4 style={styles} className="para1" onClick={() => handleEdit("school2")}>Completed with {school2}
+                </h4>
               </section>
 
               <section className="internships-section" style={styles}>
@@ -768,19 +769,20 @@ function FullResume() {
                     >
                       {internship.description}
                     </h5>
-                    <p  style={styles}
-                      className="parain1"
-                      onClick={() => handleEditInternship(index, "startDate")}
-                    >
-                        {internship.startDate} - {internship.endDate}
-                    
-                    </p>
+                    {internship.date && (
+                      <p style={styles}
+                        className="parain1"
+                        onClick={() => handleEditInternship(index, "date")}
+                      >
+                        {internship.date}
+                      </p>
+                    )}
                   </div>
                 ))}
               </section>
 
               <section className="projects-section" style={styles}>
-                <h2 className="resumeh2car" style={styles}>Projects/Certifications</h2>
+                <h2 className="resumeh2pro" style={styles}>Projects/Certifications</h2>
                 {projects.map((project, index) => (
                   <div key={index}>
                     <p style={styles}

@@ -210,19 +210,18 @@ function BasicDetails() {
     if (field === "internships") {
       let name = prompt(`Enter the name for ${field}`);
       let description = prompt(`Enter the description for ${field}`);
-      let startDate = prompt(
-        `Enter the Starting Date for ${field} (YYYY-MM-DD)`
+      let date = prompt(
+        `Enter the date (e.g., "Jan 2024", "2024-01 to 2024-03", "March 2024", or any format you prefer)`
       );
-      let endDate = prompt(`Enter the Ending Date for ${field} (YYYY-MM-DD)`);
 
-      if (name && description && startDate && endDate) {
+      if (name && description) {
         setDetails((prevDetails) => {
           const currentArray = Array.isArray(prevDetails[field]) ? prevDetails[field] : [];
           const newDetails = {
             ...prevDetails,
             [field]: [
               ...currentArray,
-              { name, description, startDate, endDate },
+              { name, description, date: date || "" },
             ],
           };
 
@@ -360,13 +359,13 @@ function BasicDetails() {
       return false;
     }
 
-    if (internships.length < 3) {
-      alert("Please add at least three internships.");
+    if (internships.length < 1) {
+      alert("Please add at least three internships / workshops.");
       return false;
     }
 
-    if (projects.length < 2) {
-      alert("Please add at least two projects.");
+    if (projects.length < 1) {
+      alert("Please add at least two projects / certifications.");
       return false;
     }
 
@@ -809,10 +808,12 @@ function BasicDetails() {
             {safeDetails.internships.map((internship, i) => (
               <li key={i} className="bbutton-li">
                 <strong>{internship.name}</strong>: {internship.description}{" "}
-                <br />
-                <em>
-                  {internship.startDate} - {internship.endDate}
-                </em>
+                {internship.date && (
+                  <>
+                    <br />
+                    <em>{internship.date}</em>
+                  </>
+                )}
                 <span
                   className="remove"
                   onClick={() => handleRemoveObjectItem("internships", i)}
