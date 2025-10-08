@@ -53,7 +53,6 @@ function FullResume() {
       
       if (!user) {
         console.log("No authenticated user found");
-        // Try to recover resume data from sessionStorage before redirecting
         const savedResumeData = sessionStorage.getItem('resumeData');
         if (!savedResumeData) {
           alert("Please log in to continue.");
@@ -61,27 +60,22 @@ function FullResume() {
         }
       } else {
         console.log("User authenticated:", user.email);
-        // If resumeData doesn't exist yet, try to load from location state or session storage
         if (!resumeData) {
           loadResumeData();
         }
       }
     });
   
-    return () => unsubscribe(); // Cleanup listener on component unmount
+    return () => unsubscribe();
   }, [navigate]);
   
-  // Load resume data from various sources
   const loadResumeData = () => {
-    // First try to get from location state
     if (location.state) {
       setResumeData(location.state);
-      // Save to session storage as backup
       sessionStorage.setItem('resumeData', JSON.stringify(location.state));
       return;
     }
     
-    // Then try to get from session storage
     const savedData = sessionStorage.getItem('resumeData');
     if (savedData) {
       try {
@@ -92,7 +86,6 @@ function FullResume() {
       }
     }
     
-    // If user is logged in, try to fetch from database
     if (currentUser) {
       const userRef = dbRef(database, `users/${currentUser.uid}/resumeData`);
       get(userRef).then((snapshot) => {
@@ -109,18 +102,15 @@ function FullResume() {
         alert("Error loading your resume. Please try again.");
       });
     } else {
-      // Last resort - if all else fails
       alert("No resume details found. Please fill in your details first.");
       navigate("/basicdetails");
     }
   };
 
-  // Save resumeData changes to both state, session storage and database
   const saveResumeData = (newData) => {
     setResumeData(newData);
     sessionStorage.setItem('resumeData', JSON.stringify(newData));
     
-    // Save to database if user is logged in
     if (currentUser) {
       const userRef = dbRef(database, `users/${currentUser.uid}/resumeData`);
       set(userRef, newData).catch(error => {
@@ -223,7 +213,6 @@ function FullResume() {
     profileImage = null,
   } = resumeData;
 
-  // Improved PDF generation function with font awesome icon fixes
   const uploadAndDownloadResume = async (pdfBlob) => {
     if (!currentUser) {
       alert("User not authenticated. Please log in.");
@@ -266,7 +255,6 @@ function FullResume() {
           };
           await updateMetadata(storageRef, metadata);
 
-          // Update the resume info in the database
           await set(dbRef(database, `users/${userId}/resume`), {
             downloadURL,
             name,
@@ -275,14 +263,12 @@ function FullResume() {
             createdAt: new Date().toISOString()
           });
 
-          // Update the resumeLink in the main user record
           await update(dbRef(database, `users/${userId}`), {
             resumeLink: downloadURL
           });
 
           alert("Resume generated and uploaded successfully!");
 
-          // Trigger the browser download
           const downloadLink = document.createElement("a");
           downloadLink.href = URL.createObjectURL(pdfBlob);
           downloadLink.download = fileName;
@@ -296,7 +282,7 @@ function FullResume() {
     );
   };
 
-  // Improved PDF generation method with better icon rendering
+  // IMPROVED PDF GENERATION - Fixed multi-page support
   const generateAndUploadResume = () => {
     const resumeElement = document.querySelector(".full-resume-container");
     if (!resumeElement) {
@@ -311,57 +297,48 @@ function FullResume() {
       btn.style.display = 'none';
     });
     
-    // Apply special class for PDF generation to fix icon rendering
-    document.querySelectorAll('.full-resume-container .svg-inline--fa').forEach(icon => {
-      icon.classList.add('pdf-icon-fix');
-    });
+    // Temporarily remove fixed height to capture full content
+    const originalHeight = resumeElement.style.height;
+    resumeElement.style.height = 'auto';
     
-    // Calculate exact height up to the end of content
-    const lastElement = document.querySelector(".vv");
-    const resumeHeight = lastElement ? 
-      (lastElement.offsetTop + lastElement.offsetHeight - resumeElement.offsetTop) : 
-      resumeElement.scrollHeight;
-
     const originalBackgroundColor = resumeElement.style.backgroundColor;
-    resumeElement.style.backgroundColor = '#ffffff'; // Set white background for capture
+    resumeElement.style.backgroundColor = '#ffffff';
     
-    // Advanced html2canvas options for better quality and font rendering
+    // Use scrollHeight to get the actual full height of content
+    const fullHeight = resumeElement.scrollHeight;
+    
     html2canvas(resumeElement, {
-      scale: 3, // Higher scale for better quality but not too high to cause distortion
+      scale: 2.5, // Good balance between quality and file size
       useCORS: true,
       logging: false,
       allowTaint: true,
       backgroundColor: '#ffffff',
-      height: resumeHeight,
+      height: fullHeight,
+      windowHeight: fullHeight,
       scrollX: 0,
       scrollY: -window.scrollY,
       ignoreElements: (element) => {
-        // Ignore any buttons or interactive elements
-        return element.tagName === 'BUTTON' || 
-               element.className === 'back-to-generate-button' || 
-               element.className === 'btn';
+        return element.tagName === 'BUTTON';
       },
       onclone: (clonedDoc) => {
-        // Important: Fix icons in the cloned document
         const clonedElem = clonedDoc.querySelector('.full-resume-container');
         if (clonedElem) {
-          // Hide buttons
+          // Remove height constraint in cloned document
+          clonedElem.style.height = 'auto';
+          clonedElem.style.minHeight = 'auto';
+          
           clonedElem.querySelectorAll('button').forEach(btn => btn.style.display = 'none');
           
-          // Fix Font Awesome icon rendering - replace with more reliable equivalent if needed
           clonedElem.querySelectorAll('.svg-inline--fa').forEach(icon => {
-            // Ensure icons have fixed dimensions
             icon.style.width = '1em';
             icon.style.height = '1em';
             icon.style.verticalAlign = 'middle';
             icon.style.display = 'inline-block';
             
-            // Force viewBox to maintain proportions
             if (!icon.getAttribute('viewBox')) {
               icon.setAttribute('viewBox', '0 0 512 512');
             }
             
-            // Ensure path scaling is correct
             icon.querySelectorAll('path').forEach(path => {
               path.style.fill = 'currentColor';
             });
@@ -371,29 +348,28 @@ function FullResume() {
     })
     .then((canvas) => {
       // Restore original state
+      resumeElement.style.height = originalHeight;
       resumeElement.style.backgroundColor = originalBackgroundColor;
       document.querySelectorAll('.full-resume-container button').forEach(btn => {
         btn.style.display = '';
       });
-      document.querySelectorAll('.svg-inline--fa').forEach(icon => {
-        icon.classList.remove('pdf-icon-fix');
-      });
       
-      // Create a high-quality PDF
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
       
-      // Create A4 sized PDF (210mm × 297mm)
+      // A4 dimensions in mm
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4',
-        compress: true,
-        precision: 16 // Higher precision
+        compress: true
       });
 
-      const imgWidth = 210; // A4 width in mm
-      const pageHeight = 297; // A4 height in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const pdfWidth = 210; // A4 width
+      const pdfHeight = 297; // A4 height
+      
+      // Calculate image dimensions to fit PDF width
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
       
       // Set PDF properties
       pdf.setProperties({
@@ -404,40 +380,38 @@ function FullResume() {
         creator: 'Resume Maker App'
       });
 
-      // Add image to PDF with optimal settings
+      // Add pages dynamically based on content height
       let heightLeft = imgHeight;
       let position = 0;
+      let pageCount = 0;
       
       // Add first page
-      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, null, 'FAST', 0);
-      heightLeft -= pageHeight;
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, null, 'FAST');
+      heightLeft -= pdfHeight;
+      pageCount++;
       
-      // Add additional pages if needed
+      // Add additional pages if content exceeds one page
       while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
+        position = -(pdfHeight * pageCount);
         pdf.addPage();
-        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, null, 'FAST', 0);
-        heightLeft -= pageHeight;
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, null, 'FAST');
+        heightLeft -= pdfHeight;
+        pageCount++;
       }
       
-      // Set to optimize the PDF file size (between 1-2MB as requested)
-      const pdfOutput = pdf.output('blob', {
-        compression: 'MEDIUM', // Lower compression for better quality
-        precision: 4
-      });
+      console.log(`Generated PDF with ${pageCount} page(s)`);
       
+      const pdfOutput = pdf.output('blob');
       uploadAndDownloadResume(pdfOutput);
     })
     .catch((error) => {
       console.error("Error generating PDF:", error);
       
       // Restore original state
+      resumeElement.style.height = originalHeight;
       resumeElement.style.backgroundColor = originalBackgroundColor;
       document.querySelectorAll('.full-resume-container button').forEach(btn => {
         btn.style.display = '';
-      });
-      document.querySelectorAll('.svg-inline--fa').forEach(icon => {
-        icon.classList.remove('pdf-icon-fix');
       });
       
       alert("Failed to generate the resume. Please try again.");
@@ -446,18 +420,14 @@ function FullResume() {
   };
 
   const handleGoBack = () => {
-    // Clear session storage to prevent old data reappearing
     sessionStorage.removeItem('resumeData');
-    navigate("/basicdetails"); // Navigates back to BasicDetails
+    navigate("/basicdetails");
   };
 
-  // Common style properties for consistent fonts
   const styles = {
-  fontFamily: "'Calibri', 'Helvetica', 'Arial', sans-serif",
-};
+    fontFamily: "'Calibri', 'Helvetica', 'Arial', sans-serif",
+  };
 
-
-  // Icon styles to ensure proper rendering in PDF
   const iconStyles = {
     display: "inline-flex",
     alignItems: "center",
