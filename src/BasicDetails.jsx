@@ -17,7 +17,6 @@ function BasicDetails() {
   const [currentUser, setCurrentUser] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   
-  // Default state with guaranteed arrays
   const defaultDetails = {
     name: "",
     department: "",
@@ -48,7 +47,6 @@ function BasicDetails() {
 
   const [details, setDetails] = useState(defaultDetails);
 
-  // Use Firebase Auth state to determine login status
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -56,22 +54,17 @@ function BasicDetails() {
         setCurrentUser(user);
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("uid", user.uid);
-
-        // Load user data from Firebase
         loadUserDataFromFirebase(user.uid);
       } else {
-        // If no Firebase user but we have localStorage data, recheck
         const storedLoginState = localStorage.getItem("isLoggedIn");
         const uid = localStorage.getItem("uid");
         const token = localStorage.getItem("authToken");
 
         if (storedLoginState === "true" && uid && token) {
-          // We have local storage data indicating login, but Firebase doesn't recognize it
-          // This could happen if Firebase session expired but local storage wasn't cleared
           console.log(
             "Local storage indicates logged in, but Firebase doesn't recognize. Redirecting to login..."
           );
-          handleLogout(); // Clear everything and redirect
+          handleLogout();
         } else {
           setIsLoggedIn(false);
           setCurrentUser(null);
@@ -79,7 +72,6 @@ function BasicDetails() {
       }
       setIsAuthChecking(true);
 
-      // After checking auth, verify if we should redirect
       if (!user && !localStorage.getItem("isLoggedIn")) {
         navigate("/login");
       }
@@ -91,7 +83,6 @@ function BasicDetails() {
     return () => unsubscribe();
   }, [navigate]);
 
-  // Function to ensure arrays are always arrays
   const ensureArrayFields = (data) => {
     const arrayFields = ['technicalSkills', 'softSkills', 'extracurricular', 'interests', 'internships', 'projects'];
     const safeData = { ...defaultDetails, ...data };
@@ -105,7 +96,6 @@ function BasicDetails() {
     return safeData;
   };
 
-  // Function to load user data from Firebase
   const loadUserDataFromFirebase = async (userId) => {
     try {
       setIsLoading(true);
@@ -115,8 +105,6 @@ function BasicDetails() {
       if (snapshot.exists()) {
         const userData = snapshot.val();
         console.log("Loaded user data from Firebase:", userData);
-        
-        // Ensure all array fields are properly initialized
         const safeUserData = ensureArrayFields(userData);
         setDetails(safeUserData);
       } else {
@@ -125,14 +113,12 @@ function BasicDetails() {
       }
     } catch (error) {
       console.error("Error loading user data from Firebase:", error);
-      // On error, ensure we have safe defaults
       setDetails(defaultDetails);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Function to save user data to Firebase
   const saveUserDataToFirebase = async (userDetails) => {
     if (!currentUser) {
       console.error("No current user found");
@@ -140,7 +126,6 @@ function BasicDetails() {
     }
 
     try {
-      // Ensure arrays are safe before saving
       const safeDetails = ensureArrayFields(userDetails);
       const userRef = ref(database, `users/${currentUser.uid}/basicDetails`);
       await set(userRef, safeDetails);
@@ -155,7 +140,6 @@ function BasicDetails() {
     const newDetails = { ...details, [name]: value };
     setDetails(newDetails);
 
-    // Save to Firebase on every change (debounced approach would be better for production)
     if (currentUser) {
       saveUserDataToFirebase(newDetails);
     }
@@ -168,7 +152,6 @@ function BasicDetails() {
       const newDetails = { ...details, [field]: [...currentArray, newItem] };
       setDetails(newDetails);
 
-      // Save to Firebase
       if (currentUser) {
         saveUserDataToFirebase(newDetails);
       }
@@ -183,7 +166,6 @@ function BasicDetails() {
     };
     setDetails(newDetails);
 
-    // Save to Firebase
     if (currentUser) {
       saveUserDataToFirebase(newDetails);
     }
@@ -197,7 +179,6 @@ function BasicDetails() {
         [field]: currentArray.filter((_, i) => i !== index),
       };
 
-      // Save to Firebase
       if (currentUser) {
         saveUserDataToFirebase(newDetails);
       }
@@ -225,7 +206,6 @@ function BasicDetails() {
             ],
           };
 
-          // Save to Firebase
           if (currentUser) {
             saveUserDataToFirebase(newDetails);
           }
@@ -245,7 +225,6 @@ function BasicDetails() {
             [field]: [...currentArray, { name, description }],
           };
 
-          // Save to Firebase
           if (currentUser) {
             saveUserDataToFirebase(newDetails);
           }
@@ -264,7 +243,6 @@ function BasicDetails() {
         const newDetails = { ...details, profileImage: reader.result };
         setDetails(newDetails);
 
-        // Save to Firebase
         if (currentUser) {
           saveUserDataToFirebase(newDetails);
         }
@@ -274,7 +252,6 @@ function BasicDetails() {
   };
 
   const handleLogout = () => {
-    // Clear all authentication related data
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("uid");
     localStorage.removeItem("authToken");
@@ -287,7 +264,6 @@ function BasicDetails() {
     navigate("/login");
   };
 
-  // Redirect if not logged in
   useEffect(() => {
     if (!isAuthChecking && !isLoggedIn) {
       navigate("/login");
@@ -310,9 +286,6 @@ function BasicDetails() {
       "phone",
       "email",
       "address",
-      "linkedin",
-      "github",
-      "leetcode",
       "careerObjective",
       "college",
       "degree",
@@ -360,12 +333,12 @@ function BasicDetails() {
     }
 
     if (internships.length < 1) {
-      alert("Please add at least three internships / workshops.");
+      alert("Please add at least one internship / workshop.");
       return false;
     }
 
     if (projects.length < 1) {
-      alert("Please add at least two projects / certifications.");
+      alert("Please add at least one project / certification.");
       return false;
     }
 
@@ -384,7 +357,6 @@ function BasicDetails() {
       );
     }
 
-    // Double check login status before proceeding
     if (!isLoggedIn) {
       alert("You need to be logged in to generate a resume.");
       navigate("/login");
@@ -392,18 +364,16 @@ function BasicDetails() {
     }
 
     if (validateFields()) {
-      // Start loading state
       setIsGenerating(true);
 
       try {
-        // Save final data to Firebase before navigating
         if (currentUser) {
           await saveUserDataToFirebase(details);
           console.log("Final data saved to Firebase before navigation");
         }
 
-        // Simulate processing time (you can remove this in production)
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Reduced timeout for faster navigation
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         navigate("/fullresume", {
           state: { ...details },
@@ -412,7 +382,6 @@ function BasicDetails() {
         console.error("Error saving final data:", error);
         alert("Error saving data. Please try again.");
       } finally {
-        // Stop loading state
         setIsGenerating(false);
       }
     }
@@ -426,7 +395,6 @@ function BasicDetails() {
     );
   }
 
-  // Safe array access for rendering
   const safeDetails = ensureArrayFields(details);
 
   return (
@@ -489,7 +457,6 @@ function BasicDetails() {
           <form>
             <h2 className="bheader">Enter Your Details</h2>
             <label style={{ color: "Black" }}>
-              {" "}
               Choose Your Profile Image:
               <input
                 type="file"
@@ -558,32 +525,29 @@ function BasicDetails() {
             <input
               type="text"
               name="linkedin"
-              placeholder="LinkedIn (Id or Link)"
+              placeholder="LinkedIn (Id or Link) - Optional"
               value={details.linkedin}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
-              required
             />
             <input
               type="text"
               name="github"
-              placeholder="GitHub (Id or Link)"
+              placeholder="GitHub (Id or Link) - Optional"
               value={details.github}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
-              required
             />
             <input
               type="text"
               name="leetcode"
-              placeholder="Leetcode (Id or Link)"
+              placeholder="Leetcode (Id or Link) - Optional"
               value={details.leetcode}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               className="binput"
-              required
             />
 
             <textarea
@@ -802,7 +766,7 @@ function BasicDetails() {
             onClick={() => handleAddObjectItem("internships")}
             className="bbutton"
           >
-            Add Internship
+            Add Internship / Workshop
           </button>
           <ul>
             {safeDetails.internships.map((internship, i) => (

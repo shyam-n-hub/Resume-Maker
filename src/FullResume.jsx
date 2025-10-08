@@ -33,11 +33,9 @@ function FullResume() {
   const [showConfirmBox, setShowConfirmBox] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
-  // Set stronger persistence and handle auth state changes
   useEffect(() => {
     const auth = getAuth();
     
-    // Set persistent auth session
     setPersistence(auth, browserSessionPersistence)
       .then(() => {
         console.log("Set persistence successful");
@@ -46,7 +44,6 @@ function FullResume() {
         console.error("Error setting persistence:", error);
       });
       
-    // Listen for auth state changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoadingAuth(false);
       setCurrentUser(user);
@@ -191,9 +188,9 @@ function FullResume() {
     phone = "N/A",
     email = "N/A",
     address = "N/A",
-    linkedin = "N/A",
-    github = "N/A",
-    leetcode = "N/A",
+    linkedin = "",
+    github = "",
+    leetcode = "",
     careerObjective = "No objective provided",
     college = "N/A",
     degree = "N/A",
@@ -212,6 +209,11 @@ function FullResume() {
     projects = [],
     profileImage = null,
   } = resumeData;
+
+  // Check if social links exist
+  const hasLinkedin = linkedin && linkedin.trim() !== "";
+  const hasGithub = github && github.trim() !== "";
+  const hasLeetcode = leetcode && leetcode.trim() !== "";
 
   const uploadAndDownloadResume = async (pdfBlob) => {
     if (!currentUser) {
@@ -282,7 +284,6 @@ function FullResume() {
     );
   };
 
-  // IMPROVED PDF GENERATION - Fixed multi-page support
   const generateAndUploadResume = () => {
     const resumeElement = document.querySelector(".full-resume-container");
     if (!resumeElement) {
@@ -292,23 +293,20 @@ function FullResume() {
 
     setLoading(true);
     
-    // Hide edit buttons during capture
     document.querySelectorAll('.full-resume-container button').forEach(btn => {
       btn.style.display = 'none';
     });
     
-    // Temporarily remove fixed height to capture full content
     const originalHeight = resumeElement.style.height;
     resumeElement.style.height = 'auto';
     
     const originalBackgroundColor = resumeElement.style.backgroundColor;
     resumeElement.style.backgroundColor = '#ffffff';
     
-    // Use scrollHeight to get the actual full height of content
     const fullHeight = resumeElement.scrollHeight;
     
     html2canvas(resumeElement, {
-      scale: 2.5, // Good balance between quality and file size
+      scale: 2.5,
       useCORS: true,
       logging: false,
       allowTaint: true,
@@ -323,7 +321,6 @@ function FullResume() {
       onclone: (clonedDoc) => {
         const clonedElem = clonedDoc.querySelector('.full-resume-container');
         if (clonedElem) {
-          // Remove height constraint in cloned document
           clonedElem.style.height = 'auto';
           clonedElem.style.minHeight = 'auto';
           
@@ -347,7 +344,6 @@ function FullResume() {
       }
     })
     .then((canvas) => {
-      // Restore original state
       resumeElement.style.height = originalHeight;
       resumeElement.style.backgroundColor = originalBackgroundColor;
       document.querySelectorAll('.full-resume-container button').forEach(btn => {
@@ -356,7 +352,6 @@ function FullResume() {
       
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
       
-      // A4 dimensions in mm
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -364,14 +359,12 @@ function FullResume() {
         compress: true
       });
 
-      const pdfWidth = 210; // A4 width
-      const pdfHeight = 297; // A4 height
+      const pdfWidth = 210;
+      const pdfHeight = 297;
       
-      // Calculate image dimensions to fit PDF width
       const imgWidth = pdfWidth;
       const imgHeight = (canvas.height * pdfWidth) / canvas.width;
       
-      // Set PDF properties
       pdf.setProperties({
         title: `${name} - Resume`,
         subject: 'Resume',
@@ -380,17 +373,14 @@ function FullResume() {
         creator: 'Resume Maker App'
       });
 
-      // Add pages dynamically based on content height
       let heightLeft = imgHeight;
       let position = 0;
       let pageCount = 0;
       
-      // Add first page
       pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, null, 'FAST');
       heightLeft -= pdfHeight;
       pageCount++;
       
-      // Add additional pages if content exceeds one page
       while (heightLeft > 0) {
         position = -(pdfHeight * pageCount);
         pdf.addPage();
@@ -407,7 +397,6 @@ function FullResume() {
     .catch((error) => {
       console.error("Error generating PDF:", error);
       
-      // Restore original state
       resumeElement.style.height = originalHeight;
       resumeElement.style.backgroundColor = originalBackgroundColor;
       document.querySelectorAll('.full-resume-container button').forEach(btn => {
@@ -535,83 +524,91 @@ function FullResume() {
                   </div>
                 </p>
 
-                <p
-                  className="word"
-                  onClick={() => handleEdit("linkedin")}
-                  style={styles}
-                >
-                  <div className="icon-container" style={{ display: "flex", alignItems: "center" }}>
-                    <FontAwesomeIcon
-                      icon={faLinkedin}
-                      style={{
-                        ...iconStyles,
-                        fontSize: "14px",
-                      }}
-                      fixedWidth
-                    />
-                    <span
-                      style={{
-                        display: "inline-block",
-                        maxWidth: "250px",
-                        paddingLeft: "5px",
-                        margin:"4px 0px 3px 0px" , fontSize: "17px"
-                      }}
-                    >
-                      LinkedIn: {linkedin}
-                    </span>
-                  </div>
-                </p>
-                <p
-                  className="word"
-                  onClick={() => handleEdit("github")}
-                  style={styles}
-                >
-                  <div className="icon-container" style={{ display: "flex", alignItems: "center" }}>
-                    <FontAwesomeIcon
-                      icon={faGithub}
-                      style={{
-                        ...iconStyles,
-                        fontSize: "15px",
-                      }}
-                      fixedWidth
-                    />
-                    <span
-                      style={{
-                        display: "inline-block",
-                        maxWidth: "250px",
-                        paddingLeft: "5px",
-                        margin:"4px 0px 3px 0px" , fontSize: "17px"
-                      }}
-                    >
-                      GitHub: {github}
-                    </span>
-                  </div>
-                </p>
-                <p
-                  className="word"
-                  onClick={() => handleEdit("leetcode")}
-                  style={styles}
-                >
-                  <div className="icon-container" style={{ display: "flex", alignItems: "center" }}>
-                    <FontAwesomeIcon
-                      icon={faCode}
-                      style={{
-                        ...iconStyles,
-                        fontSize: "15px",
-                      }}
-                      fixedWidth
-                    />
-                    <span
-                      style={{
-                        display: "inline-block",
-                        maxWidth: "250px",
-                        paddingLeft: "5px", fontSize: "17px"
-                      }}
-                    >
-                      Leetcode: {leetcode}
-                    </span>
-                  </div>
-                </p>
+                {hasLinkedin && (
+                  <p
+                    className="word"
+                    onClick={() => handleEdit("linkedin")}
+                    style={styles}
+                  >
+                    <div className="icon-container" style={{ display: "flex", alignItems: "center" }}>
+                      <FontAwesomeIcon
+                        icon={faLinkedin}
+                        style={{
+                          ...iconStyles,
+                          fontSize: "14px",
+                        }}
+                        fixedWidth
+                      />
+                      <span
+                        style={{
+                          display: "inline-block",
+                          maxWidth: "250px",
+                          paddingLeft: "5px",
+                          margin:"4px 0px 3px 0px" , fontSize: "17px"
+                        }}
+                      >
+                        LinkedIn: {linkedin}
+                      </span>
+                    </div>
+                  </p>
+                )}
+                
+                {hasGithub && (
+                  <p
+                    className="word"
+                    onClick={() => handleEdit("github")}
+                    style={styles}
+                  >
+                    <div className="icon-container" style={{ display: "flex", alignItems: "center" }}>
+                      <FontAwesomeIcon
+                        icon={faGithub}
+                        style={{
+                          ...iconStyles,
+                          fontSize: "15px",
+                        }}
+                        fixedWidth
+                      />
+                      <span
+                        style={{
+                          display: "inline-block",
+                          maxWidth: "250px",
+                          paddingLeft: "5px",
+                          margin:"4px 0px 3px 0px" , fontSize: "17px"
+                        }}
+                      >
+                        GitHub: {github}
+                      </span>
+                    </div>
+                  </p>
+                )}
+                
+                {hasLeetcode && (
+                  <p
+                    className="word"
+                    onClick={() => handleEdit("leetcode")}
+                    style={styles}
+                  >
+                    <div className="icon-container" style={{ display: "flex", alignItems: "center" }}>
+                      <FontAwesomeIcon
+                        icon={faCode}
+                        style={{
+                          ...iconStyles,
+                          fontSize: "15px",
+                        }}
+                        fixedWidth
+                      />
+                      <span
+                        style={{
+                          display: "inline-block",
+                          maxWidth: "250px",
+                          paddingLeft: "5px", fontSize: "17px"
+                        }}
+                      >
+                        Leetcode: {leetcode}
+                      </span>
+                    </div>
+                  </p>
+                )}
               </section>
 
               <section className="technical-skills-section" style={styles}>
