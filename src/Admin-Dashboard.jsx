@@ -13,12 +13,15 @@ function AdminDashboard() {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalResumes, setTotalResumes] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Fetch all users from Firebase
     const usersRef = ref(database, "users");
-    onValue(usersRef, (snapshot) => {
+    
+    const unsubscribe = onValue(usersRef, (snapshot) => {
       const data = snapshot.val();
+      
       if (data) {
         // Count total users
         const userCount = Object.keys(data).length;
@@ -27,30 +30,64 @@ function AdminDashboard() {
         // Count users with resumes
         let resumeCount = 0;
         
-        const userList = Object.entries(data)
-          .map(([userId, user]) => {
-            // Check if user has a resume and count it
-            if (user.resume?.downloadURL) {
-              resumeCount++;
-            }
-            
-            return {
-              id: userId,
-              name: user.resume?.name || user.name || "N/A",
-              email: user.resume?.userEmail || user.email || "N/A",
-              department: user.department || "N/A", // Added department field
-              resumeName: user.resume?.name
-                ? `${user.resume.name}_Resume.pdf`
-                : "N/A",
-              resumeURL: user.resume?.downloadURL || null,
-            };
-          })
-          .filter((user) => user.name !== "N/A" && user.email !== "N/A"); // Remove empty users
+        const userList = Object.entries(data).map(([userId, user]) => {
+          // Check if user has a resume and count it
+          const hasResume = user.resume?.downloadURL || user.resumeLink;
+          if (hasResume) {
+            resumeCount++;
+          }
+          
+          // Get resume information from either location
+          const resumeName = user.resume?.name || user.name || "N/A";
+          const resumeURL = user.resume?.downloadURL || user.resumeLink || null;
+          const resumeType = user.resumeType || user.resume?.type || null;
+          const resumeFileName = user.resumeFileName || 
+                                 (user.resume?.fileName ? user.resume.fileName : 
+                                 (resumeName !== "N/A" ? `${resumeName}_Resume.pdf` : "N/A"));
+          
+          return {
+            id: userId,
+            name: user.name || "N/A",
+            email: user.email || "N/A",
+            department: user.department || "N/A",
+            resumeName: resumeFileName,
+            resumeURL: resumeURL,
+            resumeType: resumeType,
+            hasResume: hasResume,
+            createdAt: user.createdAt || user.resume?.createdAt || null,
+          };
+        });
+
+        // Sort users: users with resumes first, then by creation date
+        userList.sort((a, b) => {
+          // First sort by resume status
+          if (a.hasResume && !b.hasResume) return -1;
+          if (!a.hasResume && b.hasResume) return 1;
+          
+          // Then sort by creation date if available
+          if (a.createdAt && b.createdAt) {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          }
+          
+          return 0;
+        });
 
         setTotalResumes(resumeCount);
         setUsers(userList);
+        setLoading(false);
+      } else {
+        // No users found
+        setUsers([]);
+        setTotalUsers(0);
+        setTotalResumes(0);
+        setLoading(false);
       }
+    }, (error) => {
+      console.error("Error fetching users:", error);
+      setLoading(false);
     });
+
+    return () => unsubscribe();
   }, []);
 
   const handleLogout = () => {
@@ -82,7 +119,7 @@ function AdminDashboard() {
           <button onClick={() => navigate("/admin-home")}>Admin Home</button>
           <button onClick={() => navigate("/admin-dashboard")}>Admin Dashboard</button>
           <button
-            onClick={() => setShowLogoutConfirm(true)}  // Show confirmation box
+            onClick={() => setShowLogoutConfirm(true)}
             className="logout-btn1"
             style={{ color: "black" }}
           >
@@ -147,50 +184,78 @@ function AdminDashboard() {
 
       {/* Admin Dashboard Content */}
       <div className="admin-content">
-        <h1>Registered Users & Resumes</h1>
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Department</th>
-              <th>Resume Name</th>
-              <th>Resume Link</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.length > 0 ? (
-              users.map((user, index) => (
-                <tr key={index}>
-                  <td>{user.name}</td>
-                  <td>{user.email}</td>
-                  <td>{user.department}</td>
-                  <td>{user.resumeName}</td>
-                  <td>
-                    {user.resumeURL ? (
-                      <a
-                        className="dash-resume-link"
-                        href={user.resumeURL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        View Resume
-                      </a>
-                    ) : (
-                      <span className="no-resume-text">
-                        No resume uploaded yet
+        <h1>All Registered Users</h1>
+        
+        {loading ? (
+          <div className="loading-container">
+            <p>Loading users...</p>
+          </div>
+        ) : (
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Resume Status</th>
+                <th>Resume Name</th>
+                <th>Resume Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.length > 0 ? (
+                users.map((user, index) => (
+                  <tr key={user.id}>
+                    <td>{index + 1}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>{user.department}</td>
+                    <td>
+                      <span className={user.hasResume ? "status-badge status-active" : "status-badge status-inactive"}>
+                        {user.hasResume ? "✓ Available" : "✗ Not Available"}
                       </span>
-                    )}
+                    </td>
+                    <td>
+                      {user.resumeName !== "N/A" ? (
+                        <span>
+                          {user.resumeName}
+                          {user.resumeType && (
+                            <span className="resume-type-badge">
+                              ({user.resumeType === 'manual' ? 'Uploaded' : 'Generated'})
+                            </span>
+                          )}
+                        </span>
+                      ) : (
+                        <span className="no-resume-text">-</span>
+                      )}
+                    </td>
+                    <td>
+                      {user.resumeURL ? (
+                        <a
+                          className="dash-resume-link"
+                          href={user.resumeURL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          View Resume
+                        </a>
+                      ) : (
+                        <span className="no-resume-text">-</span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
+                    No users found in the database
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5">No resumes found</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
