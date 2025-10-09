@@ -189,8 +189,8 @@ function BasicDetails() {
 
   const handleAddObjectItem = (field) => {
     if (field === "internships") {
-      let name = prompt(`Enter the name for ${field}`);
-      let description = prompt(`Enter the description for ${field}`);
+      let name = prompt("Enter the name for internship / workshop");
+      let description = prompt("Enter the description for internship / workshop");
       let date = prompt(
         `Enter the date (e.g., "Jan 2024", "2024-01 to 2024-03", "March 2024", or any format you prefer)`
       );
@@ -214,8 +214,8 @@ function BasicDetails() {
         });
       }
     } else if (field === "projects") {
-      let name = prompt("Enter the name for the project");
-      let description = prompt("Enter the description for the project");
+      let name = prompt("Enter the name for the project / certification");
+      let description = prompt("Enter the description for the project / certification");
 
       if (name && description) {
         setDetails((prevDetails) => {
@@ -312,33 +312,33 @@ function BasicDetails() {
     const internships = Array.isArray(details.internships) ? details.internships : [];
     const projects = Array.isArray(details.projects) ? details.projects : [];
 
-    if (technicalSkills.length < 3) {
-      alert("Please add at least three technical skills.");
+    if (technicalSkills.length < 1) {
+      alert("Please add atleast one technical skills.");
       return false;
     }
 
-    if (softSkills.length < 3) {
-      alert("Please add at least three soft skills.");
+    if (softSkills.length < 1) {
+      alert("Please add atleast one soft skills.");
       return false;
     }
 
-    if (extracurricular.length < 2) {
-      alert("Please add at least two extracurricular activities.");
+    if (extracurricular.length < 1) {
+      alert("Please add atleast one extracurricular activities.");
       return false;
     }
 
-    if (interests.length < 2) {
-      alert("Please add at least two areas of interest.");
+    if (interests.length < 1) {
+      alert("Please add atleast one areas of interest.");
       return false;
     }
 
     if (internships.length < 1) {
-      alert("Please add at least one internship / workshop.");
+      alert("Please add atleast one internship / workshop.");
       return false;
     }
 
     if (projects.length < 1) {
-      alert("Please add at least one project / certification.");
+      alert("Please add atleast one project / certification.");
       return false;
     }
 
@@ -485,7 +485,7 @@ function BasicDetails() {
             <input
               type="text"
               name="department"
-              placeholder="Department"
+              placeholder="Department (eg: IT Engineer)"
               value={details.department}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
@@ -525,7 +525,7 @@ function BasicDetails() {
             <input
               type="text"
               name="linkedin"
-              placeholder="LinkedIn (Id or Link) - Optional"
+              placeholder="LinkedIn (Id) - Optional"
               value={details.linkedin}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
@@ -534,7 +534,7 @@ function BasicDetails() {
             <input
               type="text"
               name="github"
-              placeholder="GitHub (Id or Link) - Optional"
+              placeholder="GitHub (Id) - Optional"
               value={details.github}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
@@ -543,7 +543,7 @@ function BasicDetails() {
             <input
               type="text"
               name="leetcode"
-              placeholder="Leetcode (Id or Link) - Optional"
+              placeholder="Leetcode (Id) - Optional"
               value={details.leetcode}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
@@ -573,7 +573,7 @@ function BasicDetails() {
             <input
               type="text"
               name="degree"
-              placeholder="Degree (College)"
+              placeholder="Degree (eg: B.E  Computer Science Engineering)"
               value={details.degree}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
@@ -593,7 +593,7 @@ function BasicDetails() {
             <input
               type="text"
               name="highschool"
-              placeholder="Name Of The School"
+              placeholder="Name Of The HSC School"
               value={details.highschool}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
@@ -623,7 +623,7 @@ function BasicDetails() {
             <input
               type="text"
               name="school"
-              placeholder="Name Of The School"
+              placeholder="Name Of The SSLC School"
               value={details.school}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
@@ -798,7 +798,7 @@ function BasicDetails() {
             onClick={() => handleAddObjectItem("projects")}
             className="bbutton"
           >
-            Add Project
+            Add Projects / Certifications
           </button>
           <ul>
             {safeDetails.projects.map((project, i) => (
