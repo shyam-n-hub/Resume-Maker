@@ -1,6 +1,6 @@
 /* Main Container */
 .basicheaderfirst {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   background: linear-gradient(135deg, #141e30, #243b55);
   min-height: 100vh;
   margin: 0;
@@ -11,6 +11,7 @@
 
 /* Header */
 .headerh {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,6 +26,7 @@
 
 /* Header Title */
 .headerh h1 {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   margin: 0;
   color: #fff;
   font-size: 28px;
@@ -35,6 +37,7 @@
 
 /* Navigation */
 .nav {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: flex;
   align-items: center;
   gap: 15px;
@@ -42,6 +45,7 @@
 
 /* Navigation Links */
 .nav a, .nav-home {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   text-decoration: none;
   color: #fff;
   font-weight: 600;
@@ -60,6 +64,7 @@
 
 /* Profile Button */
 .profile-btn {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -81,6 +86,7 @@
 
 /* Form Container */
 .basicheader {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   width: 65%;
   max-width: 900px;
   margin: 40px auto;
@@ -105,6 +111,7 @@
 
 /* Form Header */
 .bheader {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   text-align: center;
   font-size: 32px;
   font-weight: 700;
@@ -130,6 +137,7 @@
 .binput[type="text"],
 .binput[type="email"],
 textarea.careerobjective {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   width: 100%;
   padding: 14px 16px;
   margin-bottom: 20px;
@@ -153,6 +161,7 @@ textarea.careerobjective:focus {
 
 /* Profile Image Section */
 label[for="profileImage"] {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: block;
   margin-bottom: 20px;
   color: #333;
@@ -160,6 +169,7 @@ label[for="profileImage"] {
 }
 
 .profileinput {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   margin: 10px 0;
   border: none;
   width: 100%;
@@ -185,6 +195,7 @@ label[for="profileImage"] {
 
 /* Section Headers */
 .basich3 {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   color: #333;
   margin: 25px 0 15px;
   padding-bottom: 8px;
@@ -195,6 +206,7 @@ label[for="profileImage"] {
 
 /* Buttons */
 .bbutton {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   background: linear-gradient(90deg, #ff7e5f, #feb47b);
   color: white;
   padding: 10px 16px;
@@ -216,12 +228,14 @@ label[for="profileImage"] {
 
 /* List Items */
 ul {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   list-style-type: none;
   padding-left: 0;
   margin-top: 10px;
 }
 
 .bbutton-li {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -241,6 +255,7 @@ ul {
 
 /* Remove Button */
 .remove {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   background-color: #ff5252;
   color: white;
   border: none;
@@ -268,6 +283,7 @@ textarea.careerobjective {
 
 /* Generate Button */
 .generate-button {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: block;
   width: 80%;
   max-width: 300px;
@@ -293,11 +309,13 @@ textarea.careerobjective {
 
 /* Experience/Project Items */
 li strong {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   font-weight: 600;
   color: #555;
 }
 
 li em {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   font-style: italic;
   color: #777;
   font-size: 14px;
@@ -485,6 +503,7 @@ li em {
 
 /* Loading Container */
 .loading-container {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -498,7 +517,6 @@ li em {
   backdrop-filter: blur(5px);
   z-index: 9999;
   color: white;
-  font-family: 'Arial', sans-serif;
 }
 
 /* Loading Spinner */
@@ -520,6 +538,7 @@ li em {
 
 /* Loading Text */
 .loading-text {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   font-size: 18px;
   font-weight: 500;
   margin-bottom: 10px;
@@ -528,6 +547,7 @@ li em {
 
 /* Loading Subtitle */
 .loading-subtitle {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   font-size: 14px;
   opacity: 0.8;
   text-align: center;
@@ -689,4 +709,19 @@ li em {
 @keyframes rotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* Global font-family override for all elements */
+* {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif !important;
+}
+
+/* Specific overrides for form elements */
+input, textarea, button, select {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif !important;
+}
+
+/* Override for placeholder text */
+::placeholder {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif !important;
 }

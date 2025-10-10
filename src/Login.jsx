@@ -26,7 +26,7 @@ function Login({ onLogin }) {
   
   const adminEmails = [
     "shyam44n@gmail.com",
-    "admin2@example.com",
+    "sabarinathanr2022@gmail.com",
     "admin3@example.com",
     "admin4@example.com",
   ];

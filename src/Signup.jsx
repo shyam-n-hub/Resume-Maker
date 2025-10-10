@@ -22,7 +22,7 @@ function Signup({ onSignup }) {
   const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
 
-  const adminEmails = ["shyam44n@gmail.com", "admin2@example.com", "admin3@example.com", "admin4@example.com"];
+  const adminEmails = ["shyam44n@gmail.com", "sabarinathanr2022@gmail.com", "admin3@example.com", "admin4@example.com"];
 
   // Check if user is already logged in on component mount
   useEffect(() => {

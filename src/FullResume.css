@@ -10,6 +10,7 @@
 }
 
 .full-resume-container {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,11 +22,11 @@
   min-height: 1123px;
   overflow: visible;
   margin-top: 50px;
-  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   padding-bottom: 20px;
 }
 
 .resume-header {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -46,6 +47,7 @@
 }
 
 .resume-text {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -57,6 +59,7 @@
 }
 
 .centered-container {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   margin: auto;
   display: flex;
   align-items: flex-start;
@@ -94,6 +97,7 @@
 }
 
 .resume-content {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: flex;
   width: 100%;
   max-width: 100%;
@@ -102,6 +106,7 @@
 }
 
 .left-column {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   flex: 4;
   border-right: 1px solid rgb(22, 21, 21);
   padding: 30px;
@@ -256,6 +261,7 @@
 }
 
 .word, .word2 {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: flex;
   align-items: flex-start;
   gap: 4px;
@@ -267,12 +273,14 @@
 }
 
 .word strong, .word2 strong {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   flex-shrink: 0;
   display: flex;
   align-items: center;
 }
 
 .word span, .word2 span {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: inline-block;
   flex-grow: 1;
   min-width: 0;
@@ -281,6 +289,7 @@
 }
 
 .resumeul {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   list-style-type: none;
   font-size: 15px;
   margin-left: 10px;
@@ -288,6 +297,7 @@
 }
 
 .resumeul .resumeli{
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   padding: 2px;
   padding-left: 0px;
   font-size: 18px;
@@ -296,6 +306,7 @@
 
 #ul-li{
   font-size: 18px;
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
 }
 
 .resumeul .resumeli::before {
@@ -305,6 +316,7 @@
 }
 
 .right-column {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   flex: 6;
   margin-left: 10px;
   font-size: 15px;
@@ -314,16 +326,17 @@
 }
 
 .car-para{
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   width: 95%; 
   word-wrap: break-word;
   text-align: justify;
   margin-top: 10px;
   font-size: 17px;
   margin-bottom: 10px;
-  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
 }
 
 .internships-section, .projects-section {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   margin-top: 10px;
   word-wrap: break-word;
   text-align: justify;
@@ -338,6 +351,7 @@
 }
 
 .para1{
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   font-size: 17px;
   padding: 0;
   margin: 0;
@@ -347,6 +361,7 @@
 }
 
 .parain{
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   font-size: 17px;
   padding: 0;
   margin: 0;
@@ -356,6 +371,7 @@
 }
 
 .parain1{
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   font-size: 17px;
   padding: 0;
   margin: 0;
@@ -373,6 +389,7 @@
 }
 
 .parapro1{
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   font-size: 17px;
   padding: 0;
   margin: 0;
@@ -422,6 +439,7 @@
 
 
 .btn{
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   color:white;
   background-color: black;
   border-radius: 0px;
@@ -447,6 +465,7 @@
 }
 
 .back-to-generate-button {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   text-align: center;
   color: tomato;
   padding: 8px;
@@ -466,6 +485,7 @@
 }
 
 .confirm-overlay {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   position: fixed;
   top: 0;
   left: 0;
@@ -479,6 +499,7 @@
 }
 
 .confirm-box {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   background: white;
   padding: 20px;
   width: 350px;
@@ -488,7 +509,12 @@
   z-index: 1001;
 }
 
+.confirm-box p {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
+}
+
 .confirm-buttons {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   margin-top: 15px;
   display: flex;
   justify-content: space-evenly;
@@ -496,6 +522,7 @@
 
 .confirm-btn,
 .cancel-btn {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   padding: 8px 15px;
   border: none;
   cursor: pointer;
@@ -522,6 +549,7 @@
 }
 
 .fotter-r {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -603,4 +631,30 @@
     width: 100%;
     max-width: 280px;
   }
+}
+
+/* Loading Container */
+.loading-container {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 18px;
+  color: #333;
+}
+
+/* Global font-family override for all elements */
+* {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif !important;
+}
+
+/* Specific overrides for all text elements */
+h1, h2, h3, h4, h5, h6, p, span, div, li, ul, ol, a, button, input, textarea, select, label {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif !important;
+}
+
+/* Override for strong and em tags */
+strong, em, b, i {
+  font-family: 'Calibri', 'Helvetica', 'Arial', sans-serif !important;
 }
