@@ -1,3 +1,14 @@
+@font-face {
+  font-family: 'Calibri';
+  src: url('calibri.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: 'Calibri', sans-serif !important;
+}
+
 .area {
   background: linear-gradient(135deg, #e6f0fa 0%, #d0e1f9 100%);
   min-height: 100vh;
